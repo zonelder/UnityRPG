@@ -11,7 +11,6 @@ public class IUnitState : MonoBehaviour
 {
     public ActiveAbility curAbility;
     public Attack curAttack;
-    public Cooldown attackTime;
     public Weapon weapon;//экземпляр оружия на юните
     public int curAttackIndex = 0;
     public UnitState state = UnitState.DEFAULT;
@@ -29,12 +28,14 @@ public class IUnitState : MonoBehaviour
         }
         if (state == UnitState.USE_ABILITY && curAbility.IsUse())
         {
-            curAttack.property.speed = curAttack.property.GetShift().magnitude / curAttack.property.GetDuration();//скорость пермещение-дистанция/ время
-            attackTime.TickTime(Time.deltaTime);//отсчитываем время пока идет атака
-            Vector3 shift = gameObject.transform.forward * curAttack.property.GetShift().z + gameObject.transform.right * curAttack.property.GetShift().x + gameObject.transform.up * curAttack.property.GetShift().y;//вектор скалярного произведения?
+            curAttack.property.BaseDuration.TickTime(Time.deltaTime);//вынести бы это выше
+            Vector3 shift = curAttack.property.VectorOfMove(gameObject);
+            shift.Normalize();
             //очень похоже на {shift*vector(1,1,1)} только на выхоже тоже вектор
-            gameObject.transform.position += (shift) * Time.deltaTime/ curAttack.property.GetDuration()* curAttack.property.GetSpeed();//duration/speedAmp =время проведения каста
-            if (attackTime.IsReady())//если кончилось
+
+            //tickWithAmp shift.GetDuration()/curAttack.property.GetSpeed();
+            gameObject.transform.position += (shift) * curAttack.property.VelocityAt(curAttack.property.BaseDuration.curTime()) * Time.deltaTime;//duration/speedAmp =время проведения каста
+            if (curAttack.property.BaseDuration.IsReady())//если кончилось
             {
                 curAttack.EndAttack();
                 curAttackIndex++;
@@ -90,8 +91,9 @@ public class IUnitState : MonoBehaviour
     }
     public void StartAttackCountdown()
     {
-        attackTime = new Cooldown(curAbility.GetAttackAt(curAttackIndex).property.GetDuration()/ curAbility.GetAttackAt(curAttackIndex).property.GetSpeed());//duration/speedAmp =время проведения каста
-        attackTime.StartСountdown();
+        //attackTime = new Cooldown(curAbility.GetAttackAt(curAttackIndex).property.GetImprovedDuration());//duration/speedAmp =время проведения каста
+        //attackTime.StartСountdown();
+        curAttack.property.BaseDuration.StartСountdown();
     }
 
     private  void DisableMove() { gameObject.GetComponent<movement>().canMove = false; }

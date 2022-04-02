@@ -19,6 +19,7 @@ public class Cooldown
     }
     public float GetCooldown() { return cooldownTime; }
     public void  SetCooldown(float value) { cooldownTime = value; }
+    public float curTime() { return cooldownTime - remainingTime; }
     public bool IsReady()
     {
         return !isCountDown;

@@ -22,17 +22,8 @@ public class ActiveAbility : AbstractAbility
     public override void StartAbility()
     {
         isActive = true;
-        cooldown.Start—ountdown();//ÎË·Ó 
-        //for (int i = 0; i < strokesNum; ++i)
-        {
-           // attack[i].StartAttack();
-        }
+        cooldown.Start—ountdown();
     }
-    public void StartAttackAt(int i)
-    {
-
-    }
-
     public override void EndAbility()
     {
         isActive = false;

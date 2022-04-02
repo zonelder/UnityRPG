@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum UnitState
 {
-    DEFAULT,
+    WAITING,
    USE_ABILITY,
+   USE_ITEM,
 }
 
 public class IUnitState : MonoBehaviour
@@ -13,36 +14,35 @@ public class IUnitState : MonoBehaviour
     public Attack curAttack;
     public Weapon weapon;//экземпляр оружия на юните
     public int curAttackIndex = 0;
-    public UnitState state = UnitState.DEFAULT;
+    public UnitState state = UnitState.WAITING;
     public void  Update()
     {
-        if(Input.GetKeyDown(KeyCode.Q) && state == UnitState.DEFAULT)
-        {
-            UseAbilityAt(0);
-          
-        }
-        if (Input.GetKeyDown("1") && state == UnitState.DEFAULT)
-        {
-            UseAbilityAt(1);
-
-        }
+        TryToUseSomething();
         if (state == UnitState.USE_ABILITY && curAbility.IsUse())
         {
-            curAttack.property.BaseDuration.TickTime(Time.deltaTime);//вынести бы это выше
-            Vector3 shift = curAttack.property.VectorOfMove(gameObject);
-            shift.Normalize();
-            //очень похоже на {shift*vector(1,1,1)} только на выхоже тоже вектор
-
-            //tickWithAmp shift.GetDuration()/curAttack.property.GetSpeed();
-            gameObject.transform.position += (shift) * curAttack.property.VelocityAt(curAttack.property.BaseDuration.curTime()) * Time.deltaTime;//duration/speedAmp =время проведения каста
-            if (curAttack.property.BaseDuration.IsReady())//если кончилось
+            curAttack.property.duration.TickTime(Time.deltaTime);//вынести бы это выше
+            if (!curAttack.shift.alreadyUsed && curAttack.property.duration.curTime() > curAttack.shift.startTime)// в случае если  еще не юзалос перемещение то начинаем перемещать 
             {
+                curAttack.shift.duration.StartСountdown();
+                curAttack.shift.alreadyUsed = true;
+            }
+            if (!curAttack.shift.duration.IsReady())//если время перемещаться
+            {
+                curAttack.shift.duration.TickTime(Time.deltaTime * curAttack.property.GetSpeedAmp());//вводим что мы двигались
+                Vector3 shift = curAttack.shift.VectorOfMove(gameObject);//направление движения с учетом того куда смотрит юнит
+                shift.Normalize();
+                gameObject.transform.position += (shift) * curAttack.shift.Velocity()*curAttack.property.GetSpeedAmp() * Time.deltaTime;//изменяем положение юнита по заданому вектору с заданой скоростью
+            }
+           
+            if (curAttack.property.duration.IsReady())//если кончилась атака
+            {
+                curAttack.shift.alreadyUsed = false;
                 curAttack.EndAttack();
                 curAttackIndex++;
                 if (curAttackIndex >= curAbility.Size())
                 {
                     curAttackIndex = 0;
-                    state = UnitState.DEFAULT;
+                    state = UnitState.WAITING;
                     weapon.SetToDefault();
                     EnableMove();
                 }
@@ -54,7 +54,12 @@ public class IUnitState : MonoBehaviour
                 }
             }
         }
+        if(state==UnitState.USE_ITEM)
+        {
+            //взять этот предмет и запустить анимацию+добавить эффекты
+        }
     }
+  
     public void UseAbilityAt(int i)
     {
 
@@ -91,11 +96,21 @@ public class IUnitState : MonoBehaviour
     }
     public void StartAttackCountdown()
     {
-        //attackTime = new Cooldown(curAbility.GetAttackAt(curAttackIndex).property.GetImprovedDuration());//duration/speedAmp =время проведения каста
-        //attackTime.StartСountdown();
-        curAttack.property.BaseDuration.StartСountdown();
+        curAttack.property.duration.StartСountdown();
     }
+    public void TryToUseSomething()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && state == UnitState.WAITING)
+        {
+            UseAbilityAt(0);
 
+        }
+        if (Input.GetKeyDown("1") && state == UnitState.WAITING)
+        {
+            UseAbilityAt(1);
+
+        }
+    }
     private  void DisableMove() { gameObject.GetComponent<movement>().canMove = false; }
     private void EnableMove() { gameObject.GetComponent<movement>().canMove = true; }
 }

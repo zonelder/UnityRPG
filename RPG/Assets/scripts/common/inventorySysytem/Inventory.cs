@@ -4,25 +4,22 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public int InventorySize = 10;//на будущее
+    public int InventorySize = 10;
     public GameObject carrier;
     public GUISkin oneCellSkin;
     List<ScriptableItem> cells = new List<ScriptableItem>(0);
     List<int> CountOfItem = new List<int>(0);
     Inventory()
     {
-        // oneCellStyle.normal.background=
-        //oneCellStyle.
     }
     public void AddItem(ScriptableItem NewItem,int count=1)
     {
 
-        if(this.Contains(NewItem))//елси предмет уже есть в инвенторе(не видит подобных)
+        if(this.Contains(NewItem))//елси предмет уже есть в инвенторе
         {
 
             //int i = cells.LastIndexOf(NewItem);
             int i = this.LastIndexOf(NewItem);
-            Debug.Log(CountOfItem[i]+1);
             if (CountOfItem[i]+count>cells[i].CountInStack)//если столько пихнуть невозмоожно
             {
                
@@ -104,7 +101,7 @@ public class Inventory : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.I))
         {
-            carrier.GetComponent<PlayerGUI>().InventoryOpen =!carrier.GetComponent<PlayerGUI>().InventoryOpen;
+            carrier.GetComponent<PlayerGUI>().InventoryOpen =!carrier.GetComponent<PlayerGUI>().InventoryOpen;//лишн€€ св€зь-убрать
         }
     }
     void OnGUI()

@@ -13,6 +13,7 @@ public abstract class Attack
     protected Animation attackAnimation;
     /// <переменные_отвечающие_за_характеристики>
     public AttackStats property=new AttackStats();
+    public Shift shift=new Shift();
     /// </переменные_отвечающие_за_характеристики>
     //public List<TimedBuff> buffOnUser;
     //public List<TimedBuff> buffOnTarget;
@@ -28,6 +29,35 @@ public abstract class Attack
         //EndAttack();
     }
 
+    public void TickTime(float delta)
+    {
+        property.duration.TickTime(delta);
+        if(!shift.alreadyUsed && property.duration.curTime()>shift.startTime)// в случае если  еще не юзалос перемещение то начинаем перемещать 
+        {
+            shift.duration.StartСountdown();
+            shift.alreadyUsed = true;
+        }
+        if(!shift.duration.IsReady())
+        {
+            shift.duration.TickTime(delta);
+        }
+    }
+    /*возможный шаблон на будущее- если везде пихать OnMove on Attack OnUse etc. то можно перебирать все возможные точки активности. но насколько это лучше хранения общего их вклада?
+    public void OnMove(Vector3 move)
+    {
+        move *= property.GetSpeedAmp();
+    }
+    */
+    public void CalculateDuration()
+    {
+        float shiftEndTime = shift.duration.GetCooldown() + shift.startTime;
+        if (shiftEndTime > property.duration.GetCooldown())//если абилка закоччиться раньше чем дэш
+        {
+            float dt = shiftEndTime - property.duration.GetCooldown();
+            property.duration.SetCooldown(property.duration.GetCooldown() + dt);//увеличиваем время чтобы атака кончала в упор к концу деша
+        }
+       
+    }
     public virtual void EndAttack()
     {
         //Debug.Log("end");

@@ -10,62 +10,38 @@ public class SkillBook : MonoBehaviour//все чем занимаетс€ этот класс это хранит
     public void Start()//это уйдет вообще и по€витьс€ отдельный обьект дл€ добавлени€
     {
         ActiveAbility NewAbility = new ActiveAbility(10);
+
+
         Attack firstAttack= new MeleeAttack(gameObject);
-        firstAttack.property.SetDamageAmp(2.0f);
-        firstAttack.property.SetSpeedAmp(1.5f);
-        firstAttack.property.SetSpeed(5.0f,0.0f);
-        firstAttack.property.SetShift(new Vector3(-2,0,0));
-        firstAttack.property.RecalculateDuration();
+        firstAttack.property.SetAll(2.0f, 1.5f, 1.0f, 4.0f);//урон скорость скорость атаки длительность
+        firstAttack.shift.startTime = 1;
+        firstAttack.shift.SetSpeed(5.0f,0.0f);
+        firstAttack.shift.Set(new Vector3(-2,0,0));
+        firstAttack.shift.RecalculateDuration();
+        firstAttack.CalculateDuration();
+
+
         Attack secondAttack = new MeleeAttack(gameObject);
-        secondAttack.property.SetDamageAmp(1.0f);
-        //secondAttack.property.SetDuration(3.0f)
-         secondAttack.property.SetSpeed(5.0f,0.0f);
-        secondAttack.property.SetSpeedAmp(1.5f);
-        secondAttack.property.SetShift(new Vector3(4, 0, 0));
-        secondAttack.property.RecalculateDuration();
+        secondAttack.property.SetAll(1.0f,1.5f,1.0f,2.0f);
+        secondAttack.shift.SetSpeed(1.0f, 1.0f);
+        secondAttack.shift.startTime = 0;
+        secondAttack.shift.Set(new Vector3(4, 0, 0));
+        secondAttack.shift.RecalculateDuration();
+        secondAttack.CalculateDuration();
+
+
         Attack therdAttack = new MeleeAttack(gameObject);
-        therdAttack.property.SetDamageAmp(5.0f);
-        //therdAttack.property.SetDuration(1.0f);
-        therdAttack.property.SetSpeedAmp(1.5f);
-        therdAttack.property.SetSpeed(0.0f,5.0f);
-        therdAttack.property.SetShift(new Vector3(0, 3, 0));
-        therdAttack.property.RecalculateDuration();
+        therdAttack.property.SetAll(5.0f,1.5f,1.0f,1.0f);
+        therdAttack.shift.SetSpeed(0.0f,5.0f);
+        therdAttack.shift.Set(new Vector3(0, 3, 0));
+        therdAttack.shift.RecalculateDuration();
+        therdAttack.CalculateDuration();
+
+
         NewAbility.AddAttack(firstAttack);
         NewAbility.AddAttack(secondAttack);
         NewAbility.AddAttack(therdAttack);
         AddAbility(NewAbility);
-
-
-        ActiveAbility NewAbility2 = new ActiveAbility(10);
-        Attack firstAttack2 = new MeleeAttack(gameObject);
-        firstAttack2.property.SetDamageAmp(2.0f);
-        firstAttack2.property.SetSpeedAmp(2.0f);
-        firstAttack2.property.SetSpeed(10.0f, 10.0f);
-        firstAttack2.property.SetShift(new Vector3(-2, 0, -1));
-        firstAttack2.property.RecalculateDuration();
-        Attack secondAttack2 = new MeleeAttack(gameObject);
-        secondAttack2.property.SetDamageAmp(1.0f);
-        secondAttack2.property.SetSpeed(1.0f, 1.5f);
-        secondAttack2.property.SetSpeedAmp(2.0f);
-        secondAttack2.property.SetShift(new Vector3(4, 0, 0));
-        secondAttack2.property.RecalculateDuration();
-        Attack therdAttack2 = new MeleeAttack(gameObject);
-        therdAttack2.property.SetDamageAmp(5.0f);
-        therdAttack2.property.SetSpeed(1.0f,3.2f);
-        therdAttack2.property.SetSpeedAmp(2.0f);
-        therdAttack2.property.SetShift(new Vector3(-2, 0, 3));
-        therdAttack2.property.RecalculateDuration();
-        Attack fothAttack2 = new MeleeAttack(gameObject);
-        fothAttack2.property.SetDamageAmp(5.0f);
-        fothAttack2.property.SetSpeed(0.0f, 6f);
-        fothAttack2.property.SetSpeedAmp(2.0f);
-        fothAttack2.property.SetShift(new Vector3(0, 0, -2));
-        fothAttack2.property.RecalculateDuration();
-        NewAbility2.AddAttack(firstAttack2);
-        NewAbility2.AddAttack(secondAttack2);
-        NewAbility2.AddAttack(therdAttack2);
-        NewAbility2.AddAttack(fothAttack2);
-        AddAbility(NewAbility2);
     }
     public void Update()
     {

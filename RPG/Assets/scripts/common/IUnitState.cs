@@ -20,23 +20,15 @@ public class IUnitState : MonoBehaviour
         TryToUseSomething();
         if (state == UnitState.USE_ABILITY && curAbility.IsUse())
         {
-            curAttack.property.duration.TickTime(Time.deltaTime);//вынести бы это выше
-            if (!curAttack.shift.alreadyUsed && curAttack.property.duration.curTime() > curAttack.shift.startTime)// в случае если  еще не юзалос перемещение то начинаем перемещать 
-            {
-                curAttack.shift.duration.StartСountdown();
-                curAttack.shift.alreadyUsed = true;
-            }
+            float finalSpeedAmp = curAttack.property.GetSpeedAmp();
+            curAttack.TickTime(Time.deltaTime, finalSpeedAmp);
             if (!curAttack.shift.duration.IsReady())//если время перемещаться
             {
-                curAttack.shift.duration.TickTime(Time.deltaTime * curAttack.property.GetSpeedAmp());//вводим что мы двигались
-                Vector3 shift = curAttack.shift.VectorOfMove(gameObject);//направление движения с учетом того куда смотрит юнит
-                shift.Normalize();
-                gameObject.transform.position += (shift) * curAttack.shift.Velocity()*curAttack.property.GetSpeedAmp() * Time.deltaTime;//изменяем положение юнита по заданому вектору с заданой скоростью
-            }
-           
+                Shifting();
+            }       
             if (curAttack.property.duration.IsReady())//если кончилась атака
             {
-                curAttack.shift.alreadyUsed = false;
+                //curAttack.shift.alreadyUsed = false;
                 curAttack.EndAttack();
                 curAttackIndex++;
                 if (curAttackIndex >= curAbility.Size())
@@ -59,7 +51,12 @@ public class IUnitState : MonoBehaviour
             //взять этот предмет и запустить анимацию+добавить эффекты
         }
     }
-  
+    private void Shifting()
+    {
+        Vector3 shift = curAttack.shift.VectorOfMove(gameObject);//направление движения с учетом того куда смотрит юнит
+        shift.Normalize();
+        gameObject.transform.position += (shift) * curAttack.shift.Velocity() * curAttack.property.GetSpeedAmp() * Time.deltaTime;//изменяем положение юнита по заданому вектору с заданой скоростью
+    }
     public void UseAbilityAt(int i)
     {
 

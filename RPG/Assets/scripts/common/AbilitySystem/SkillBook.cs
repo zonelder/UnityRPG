@@ -42,6 +42,12 @@ public class SkillBook : MonoBehaviour//все чем занимается этот класс это хранит
         NewAbility.AddAttack(secondAttack);
         NewAbility.AddAttack(therdAttack);
         AddAbility(NewAbility);
+
+        ActiveAbility NewAbility2 = new ActiveAbility(10);
+        firstAttack = new RaycastAttack(gameObject);
+        NewAbility2.AddAttack(firstAttack);
+        AddAbility(NewAbility2);
+
     }
     public void Update()
     {

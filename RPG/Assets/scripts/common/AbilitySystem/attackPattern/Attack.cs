@@ -29,7 +29,7 @@ public abstract class Attack
         //EndAttack();
     }
 
-    public void TickTime(float delta)
+    public virtual void TickTime(float delta,float finalSpeedAmp=1)
     {
         property.duration.TickTime(delta);
         if(!shift.alreadyUsed && property.duration.curTime()>shift.startTime)// в случае если  еще не юзалос перемещение то начинаем перемещать 
@@ -39,7 +39,7 @@ public abstract class Attack
         }
         if(!shift.duration.IsReady())
         {
-            shift.duration.TickTime(delta);
+            shift.duration.TickTime(finalSpeedAmp*delta);
         }
     }
     /*возможный шаблон на будущее- если везде пихать OnMove on Attack OnUse etc. то можно перебирать все возможные точки активности. но насколько это лучше хранения общего их вклада?
@@ -63,5 +63,6 @@ public abstract class Attack
         //Debug.Log("end");
         //attackAnimation.Stop();
         isActive = false;
+        shift.alreadyUsed = false;
     }
 }

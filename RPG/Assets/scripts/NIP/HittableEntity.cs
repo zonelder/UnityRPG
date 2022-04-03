@@ -9,17 +9,8 @@ public class HittableEntity : MonoBehaviour//это все в какую нибудь обшивку пихн
     {
        if (collision.gameObject.tag == "weapon")//тут спорная хуйня я бы поменял
         {
-            
-             GameObject attaker = collision.gameObject.transform.parent.gameObject;//узнаем самого атакующего по его оружию
-            if(attaker.tag== "Player")//вывод информации на дисплей в случае если это игрок
-            {
-                attaker.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
-            }
-            Hit(collision.gameObject.GetComponent<Weapon>().CalculateDamage());
-            if (UnitDead())
-            {
-                attaker.GetComponent<UnitStats>().GetExpFrom(GetComponent<UnitStats>());//если после нанесения урона хп мало то выдаем опыт убийце
-            }
+            GameObject attaker = collision.gameObject.transform.parent.gameObject;//узнаем самого атакующего по его оружию
+            HitWillDone(attaker, collision.gameObject);
 
         }
        if(collision.gameObject.tag =="createdHitBox")
@@ -37,6 +28,21 @@ public class HittableEntity : MonoBehaviour//это все в какую нибудь обшивку пихн
         GetComponent<UnitStats>().getDamage(improvedDamage);//наносим урон
         
     }
+    public void  HitWillDone(GameObject attaker,GameObject weapon)
+    {
+       
+        if (attaker.tag == "Player")//вывод информации на дисплей в случае если это игрок
+        {
+            attaker.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
+        }
 
+        Hit(weapon.GetComponent<Weapon>().CalculateDamage());
+
+
+        if (UnitDead())
+        {
+            attaker.GetComponent<UnitStats>().GetExpFrom(GetComponent<UnitStats>());//если после нанесения урона хп мало то выдаем опыт убийце
+        }
+    }
     public bool UnitDead() { return GetComponent<UnitStats>().curHP <= 0; }
 }

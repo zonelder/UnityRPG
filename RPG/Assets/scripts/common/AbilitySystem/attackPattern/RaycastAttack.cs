@@ -15,6 +15,10 @@ public class RaycastAttack : Attack
     {
         weapon = user.transform.Find("weapon").gameObject;
         Cam = user.transform.Find("playerCam").gameObject;
+        laserLine=weapon.GetComponent<LineRenderer>();
+        laserLine.startWidth = 0.02f;
+        laserLine.endWidth = 0.02f;
+
     }
     public override void StartAttack()
     {
@@ -26,6 +30,7 @@ public class RaycastAttack : Attack
         base.TickTime(delta,SpeedAmp);
         if(property.duration.curTime() >timeToShoot && !shootDone)
         {
+            shootDone = true;
             Shoot();
         }
         if (!lineRenderTime.IsReady())
@@ -34,7 +39,7 @@ public class RaycastAttack : Attack
         }
         else
         {
-           // laserLine.enabled = false;
+            laserLine.enabled = false;
         }
 
     }
@@ -47,11 +52,11 @@ public class RaycastAttack : Attack
 
         // Declare a raycast hit to store information about what our raycast has hit
         RaycastHit hit;
-
+        laserLine.SetPosition(0, weapon.transform.position);
         if (Physics.Raycast(rayOrigin, Cam.GetComponent<Camera>().transform.forward, out hit, weaponRange))
         {
             // Set the end position for our laser line 
-            //laserLine.SetPosition(1, hit.point);
+            laserLine.SetPosition(1, hit.point);
 
             // Get a reference to a health script attached to the collider we hit
             HittableEntity enemy = hit.collider.GetComponent<HittableEntity>();
@@ -61,12 +66,17 @@ public class RaycastAttack : Attack
             {
                 // Call the damage function of that script, passing in our gunDamage variable
                 enemy.HitWillDone(weapon.transform.parent.gameObject,weapon);
-                shootDone = true;
-                //laserLine.SetPosition(1, hit.point);
+               
+                laserLine.SetPosition(1, hit.point);
             }
             lineRenderTime.Start—ountdown();
-            //laserLine.enabled = true;
+            laserLine.enabled = true;
         }
+        else
+        {
+            laserLine.SetPosition(1, rayOrigin + (Cam.transform.forward * weaponRange));
+        }
+        
     }
     public override void EndAttack()
     {

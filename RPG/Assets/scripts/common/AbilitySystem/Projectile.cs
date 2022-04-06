@@ -44,6 +44,6 @@ public class Projectile : MonoBehaviour
 
         Debug.Log("destroy");
 
-        destroy(gameObject);
+        Destroy(gameObject);
     }
 }

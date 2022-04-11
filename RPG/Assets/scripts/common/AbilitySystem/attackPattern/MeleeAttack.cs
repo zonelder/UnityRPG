@@ -13,10 +13,10 @@ public class MeleeAttack : Attack
 
     public override void StartAttack()
     {
-       
+        base.StartAttack();
         weapon.hitBox.enabled=true;
         Debug.Log("hitBox enabled");
-        base.StartAttack();
+       
     }
     public override void EndAttack()
     {

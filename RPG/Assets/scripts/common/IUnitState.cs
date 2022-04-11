@@ -85,11 +85,11 @@ public class IUnitState : MonoBehaviour
     }
     public void BeginNewAttack()
     {
-        curAttack = curAbility.GetAttackAt(curAttackIndex);
-        curAttack.StartAttack();
+        curAttack = curAbility.GetAttackAt(curAttackIndex); 
         weapon.SetAttackEffects(curAttack.property);
         StartAttackCountdown();
         Debug.Log("start " + (curAttackIndex + 1) + "th attack");
+        curAttack.StartAttack();
     }
     public void StartAttackCountdown()
     {

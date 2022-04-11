@@ -65,7 +65,7 @@ public class RaycastAttack : Attack
             if (enemy != null)
             {
                 // Call the damage function of that script, passing in our gunDamage variable
-                enemy.HitWillDone(weapon.transform.parent.gameObject,weapon);
+                enemy.HitWillDone(weapon.transform.parent.gameObject,weapon.GetComponent<Weapon>());
                
                 laserLine.SetPosition(1, hit.point);
             }

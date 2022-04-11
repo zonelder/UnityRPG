@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public AttackStats curAttackEffects;
+    public AttackStats curAttackEffects=new AttackStats();
     public Damage curDamage;
     public Collider hitBox;
     private MeshFilter mesh;

@@ -7,11 +7,13 @@ TagManager:
   - weapon
   - Unit
   - createdHitBox
+  - head
+  - StaticUnit
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ignoreHitboxes
   - Water
   - UI
   - 

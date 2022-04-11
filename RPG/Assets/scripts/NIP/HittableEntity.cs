@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HittableEntity : MonoBehaviour//это все в какую нибудь обшивку пихнуть
+public class HittableEntity : MonoBehaviour
 {
 
     private void OnTriggerEnter(Collider collision)
@@ -10,7 +10,7 @@ public class HittableEntity : MonoBehaviour//это все в какую нибудь обшивку пихн
        if (collision.gameObject.tag == "weapon")//тут спорная хуйня я бы поменял
         {
             GameObject attaker = collision.gameObject.transform.parent.gameObject;//узнаем самого атакующего по его оружию
-            HitWillDone(attaker, collision.gameObject);
+            HitWillDone(attaker, collision.gameObject.GetComponent<Weapon>());
 
         }
        if(collision.gameObject.tag =="createdHitBox")
@@ -28,15 +28,14 @@ public class HittableEntity : MonoBehaviour//это все в какую нибудь обшивку пихн
         GetComponent<UnitStats>().getDamage(improvedDamage);//наносим урон
         
     }
-    public void  HitWillDone(GameObject attaker,GameObject weapon)
+    public void HitWillDone(GameObject attaker, Weapon weapon)
     {
-       
         if (attaker.tag == "Player")//вывод информации на дисплей в случае если это игрок
         {
             attaker.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
         }
 
-        Hit(weapon.GetComponent<Weapon>().CalculateDamage());
+        Hit(weapon.CalculateDamage());
 
 
         if (UnitDead())

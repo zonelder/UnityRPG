@@ -22,6 +22,7 @@ public abstract class Attack
     {
         
         isActive = true;
+        property.duration.Start—ountdown();
         //attackAnimation["attack"].speed=property.GetSpeed();
         //attackAnimation.Play("attack");
         //while (attackAnimation.isPlaying) { continue; };

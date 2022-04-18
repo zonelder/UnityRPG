@@ -46,16 +46,16 @@ public class DialogInteraction : ScriptableInteraction
    public override  void Interact(GameObject Unit)
     {
         Debug.Log("start inter");
-        Unit.GetComponent<PlayerGUI>().inDialog = true;
-        Unit.GetComponent<PlayerGUI>().isCameraFreeze = true;
+        //Unit.GetComponent<PlayerGUI>().inDialog = true;
+        Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze =true;
         Unit.GetComponent<movement>().canMove = false;
         dialogStart = true;
     }
     public override void EndInteract()
     {
         Debug.Log("end Inter");
-        Unit.GetComponent<PlayerGUI>().inDialog = false;
-        Unit.GetComponent<PlayerGUI>().isCameraFreeze = false;
+        //Unit.GetComponent<PlayerGUI>().inDialog = false;
+        Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze = false;
         Unit.GetComponent<movement>().canMove = true;
         dialogStart = false;
     }

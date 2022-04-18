@@ -4,32 +4,26 @@ using UnityEngine;
 
 public class AttackStats
 {
-    private float speedAmp = 1;
-    private float attackSpeedAmp = 1;
-    private float damageAmp = 1;
-    public Cooldown duration = new Cooldown(1);
+    public Multiplier speedAmp;
+    public Multiplier attackSpeedAmp;
+    public Multiplier damageAmp;
+    public Cooldown duration;
 
     public void SetAll(float dAmp,float sAmp,float asAmp,float time)
     {
-        speedAmp = sAmp;
-        attackSpeedAmp = asAmp;
-        damageAmp = dAmp;
+        speedAmp.value = sAmp;
+        attackSpeedAmp.value = asAmp;
+        damageAmp.value = dAmp;
         duration.SetCooldown(time);
     }
-    public float GetSpeedAmp() { return speedAmp; }
-    public  void SetSpeedAmp(float value) { speedAmp = value; }
 
-    public float GetDamageAmp() { return damageAmp; }
-    public  void SetDamageAmp(float value) { damageAmp = value; }
-
-    public float GetDuration() { return duration.GetCooldown(); }
-    public void SetDuration(float value) { duration.SetCooldown(value); }
-
-
-    public float GetImprovedDuration() { return duration.GetCooldown() / speedAmp;}
-    public AttackStats()
+    public float GetImprovedDuration() { return duration.GetCooldown() /speedAmp;}
+    public AttackStats(float SAmp=1,float ASAmp=1,float dAmp=1,float duration=1)
     {
-
+        speedAmp = new Multiplier(SAmp);
+        attackSpeedAmp = new Multiplier(ASAmp);
+        damageAmp = new Multiplier(dAmp);
+        this.duration = new Cooldown(duration);
     }
 
 }

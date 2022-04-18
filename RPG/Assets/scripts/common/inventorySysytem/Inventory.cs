@@ -5,6 +5,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public int InventorySize = 10;
+    public bool inventoryOpen = false;
     public GameObject carrier;
     public GUISkin oneCellSkin;
     List<ScriptableItem> cells = new List<ScriptableItem>(0);
@@ -74,9 +75,18 @@ public class Inventory : MonoBehaviour
 
     public void UseItemAt(int i)
     {
-        cells[i].Use(carrier);
-        if(cells[i].IsRemoveWhenUsed)
-        this.RemoveItem(cells[i]);
+        if (carrier.GetComponent<IUnitState>().state == UnitState.WAITING)//лишняя связь. надо перестроить все так что бы тут только юзалось без проверок и процего
+        {
+            cells[i].Use(carrier);
+            carrier.GetComponent<IUnitState>().state = UnitState.USE_ITEM;
+            carrier.GetComponent<IUnitState>().itemTime = new Cooldown(cells[i].usingDuration);
+            carrier.GetComponent<IUnitState>().itemTime.StartСountdown();
+            if (cells[i].IsRemoveWhenUsed)
+                this.RemoveItem(cells[i]);
+        }
+        else
+            Debug.Log("cant use it now");
+      
     }
     public bool Contains(ScriptableItem Item)
     {
@@ -101,12 +111,12 @@ public class Inventory : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.I))
         {
-            carrier.GetComponent<PlayerGUI>().InventoryOpen =!carrier.GetComponent<PlayerGUI>().InventoryOpen;//лишняя связь-убрать
+            inventoryOpen =!inventoryOpen;
         }
     }
     void OnGUI()
     {
-        if (carrier.GetComponent<PlayerGUI>().InventoryOpen)//можно заменить на GetComponent<PlayerGUI>().InventoryOpen если скрипт убдет висеть на игроке
+        if (inventoryOpen)//
         {
             GUI.Box(new Rect(Screen.width - 310, 70, 300, 300), "inventory");
             for (int i = 0; i <InventorySize; ++i)

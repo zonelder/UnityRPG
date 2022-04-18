@@ -22,7 +22,7 @@ public class Weapon : MonoBehaviour
     public float CalculateDamage()
     {
         //если в AttackStats  будет что-то, способно повлиять на расчет урона, то создаем тут временную переменную в которой собираем весь возможный импакт и от него уже обращаемся к методу caclulate()
-        return curDamage.calculate() * curAttackEffects.GetDamageAmp();
+        return curDamage.calculate() * curAttackEffects.damageAmp;
     }
     public void SetToDefault()
     {

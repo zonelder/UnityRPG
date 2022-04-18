@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class UnitPlayer : UnitStats
 {
     int pointstat = 0; //кол-во поинтов дающихс€ при повышении(только дл€ игрока)
+    public bool showStats;
     public UnitPlayer():base(1000,600,20,20,20)
     {
         //кастомныые
@@ -18,6 +19,7 @@ public class UnitPlayer : UnitStats
         _improved.HPregen = 10;
         //this.newImprovedStats();
         //this.newDmg();
+        showStats = false;
         StartExistence();
     }
 
@@ -34,7 +36,8 @@ public class UnitPlayer : UnitStats
         base.Update();
             if (Input.GetKeyDown(KeyCode.P)) //ѕринажатии на клавишу P
             {
-                GetComponent<PlayerGUI>().showStats = !GetComponent<PlayerGUI>().showStats;//мен€ем открываем или закрываем окно(фигн€ св€зывает этот юнит и другой)
+            //GetComponent<PlayerGUI>().showStats = !GetComponent<PlayerGUI>().showStats;//мен€ем открываем или закрываем окно(фигн€ св€зывает этот юнит и другой)
+            showStats = !showStats;
             }
 
         if (curEXP >=ExpToUp) //≈сли количество опыта у нас рано и ли больше нужного кол-ва опыта
@@ -46,7 +49,7 @@ public class UnitPlayer : UnitStats
 
     void OnGUI()
     {
-        if (GetComponent<PlayerGUI>().showStats)
+        if (showStats)
         {
             GUI.Box(new Rect(10, 70, 300, 300), "stats");
             GUI.Label(new Rect(10, 95, 300, 300), "LvL: " + lvl);

@@ -620,6 +620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827733dac627aa24f82aeaad30d59fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   lvl: 1
   ExpToUp: 1000
   death: 0
@@ -627,6 +628,7 @@ MonoBehaviour:
   curHP: 0
   curMP: 0
   curEXP: 0
+  reviveAtOnce: 1
 --- !u!136 &899253234
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -842,6 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ece4b79ebd289647a041fa3fb05aa79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   lvl: 1
   ExpToUp: 1000
   death: 0
@@ -849,6 +852,7 @@ MonoBehaviour:
   curHP: 0
   curMP: 0
   curEXP: 0
+  showStats: 0
 --- !u!114 &1456653850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -897,22 +901,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Enemy: {fileID: 0}
   EnemyHPbar: {fileID: 11400000, guid: dbd71f7d673675e4d99168a1f89088a0, type: 2}
---- !u!114 &1456653858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1456653848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 087ec50108ed85743b69c32c3831532f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showStats: 0
-  inDialog: 0
-  isCameraFreeze: 0
-  InventoryOpen: 0
 --- !u!114 &1456653859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,6 +914,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventorySize: 10
+  inventoryOpen: 0
   carrier: {fileID: 1456653848}
   oneCellSkin: {fileID: 11400000, guid: 23a821739d9a9ed49ba61f7748fd273b, type: 2}
 --- !u!114 &1456653861
@@ -1306,8 +1295,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2028384067}
-  - component: {fileID: 2028384068}
   - component: {fileID: 2028384070}
+  - component: {fileID: 2028384068}
   - component: {fileID: 2028384072}
   m_Layer: 0
   m_Name: dummy
@@ -1369,6 +1358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827733dac627aa24f82aeaad30d59fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   lvl: 1
   ExpToUp: 1000
   death: 0
@@ -1376,6 +1366,7 @@ MonoBehaviour:
   curHP: 0
   curMP: 0
   curEXP: 0
+  reviveAtOnce: 1
 --- !u!1 &2037649795
 GameObject:
   m_ObjectHideFlags: 0

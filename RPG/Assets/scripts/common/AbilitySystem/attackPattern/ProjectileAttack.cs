@@ -57,6 +57,7 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
     }
     private void ClearTrajctory()
     {
+        sightLine.positionCount = 0;
         sightLine.enabled = false;
     }
     private void RenderTrajectory()
@@ -85,7 +86,7 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
             if (Physics.Raycast(segments[i - 1], segVelocity, out hit, segmentScale))
             {
                 // remember who we hit
-                Debug.Log("hit trajectory" + hit.collider.gameObject);
+                //Debug.Log("hit trajectory" + hit.collider.gameObject);
                 _hitObject = hit.collider;
 
                 // set next position to the position where we hit the physics object

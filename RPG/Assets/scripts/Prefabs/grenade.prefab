@@ -110,7 +110,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBase: 1
-  createCopiesOnDestroy: 1
+  createCopiesOnDestroy: 0
+  explodeWhenDestory: 1
   user: {fileID: 0}
   projectileStats: {fileID: 0}
   destroyEffect: {fileID: 1000011797152326, guid: acf39d9f4addf294d93fa56fa373961b, type: 3}

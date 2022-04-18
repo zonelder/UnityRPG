@@ -5,10 +5,11 @@ using UnityEngine;
 public class RaycastAttack : Attack
 {
     private bool shootDone=false;
+    public GameObject HitEffect;
     private GameObject Cam;
     public GameObject weapon;
     private LineRenderer laserLine;
-    private Cooldown lineRenderTime = new Cooldown(0.2f);
+    private Cooldown lineRenderTime = new Cooldown(0.4f);
     public float timeToShoot=0;
     public float weaponRange = 100;
     public RaycastAttack(GameObject user)
@@ -23,6 +24,7 @@ public class RaycastAttack : Attack
     public override void StartAttack()
     {
         isActive = true;
+        laserLine.positionCount = 2;
         //raycat
     }
     public override void TickTime(float delta,float SpeedAmp=1)
@@ -43,45 +45,48 @@ public class RaycastAttack : Attack
         }
 
     }
+    public void OnAttack(GameObject beaten)
+    {
+        HittableEntity enemy = beaten.GetComponent<HittableEntity>();
+        if (enemy!=null)
+        enemy.HitWillDone(weapon.transform.parent.gameObject, weapon.GetComponent<Weapon>());
+    }
     public void Shoot()
     {
-
-        Debug.Log("shoot start");
         // Create a vector at the center of our camera's viewport
         Vector3 rayOrigin = Cam.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
 
-        // Declare a raycast hit to store information about what our raycast has hit
         RaycastHit hit;
+        Vector3 EndPoint = Vector3.zero;
         laserLine.SetPosition(0, weapon.transform.position);
         if (Physics.Raycast(rayOrigin, Cam.GetComponent<Camera>().transform.forward, out hit, weaponRange))
         {
-            // Set the end position for our laser line 
-            laserLine.SetPosition(1, hit.point);
-
-            // Get a reference to a health script attached to the collider we hit
-            HittableEntity enemy = hit.collider.GetComponent<HittableEntity>();
-
-            // If there was a health script attached
-            if (enemy != null)
-            {
-                // Call the damage function of that script, passing in our gunDamage variable
-                enemy.HitWillDone(weapon.transform.parent.gameObject,weapon.GetComponent<Weapon>());
-               
-                laserLine.SetPosition(1, hit.point);
-            }
-            lineRenderTime.StartСountdown();
-            laserLine.enabled = true;
+            EndPoint = hit.point;
         }
         else
         {
-            laserLine.SetPosition(1, rayOrigin + (Cam.transform.forward * weaponRange));
+            EndPoint = rayOrigin + (Cam.transform.forward * weaponRange);
         }
-        
+
+        AttackBehaviour.BlowUp(EndPoint, 5, OnAttack);
+        //<base module for raycast>
+            //<lazerRender>
+        laserLine.SetPosition(1, EndPoint);
+        lineRenderTime.StartСountdown();
+        laserLine.enabled = true;
+            //</lazerRender>
+        if (HitEffect != null)
+        {
+            GameObject curEffect = MonoBehaviour.Instantiate(HitEffect, laserLine.GetPosition(1), Cam.transform.rotation);//запустили эфект который проигрывается при уничтожении обьекта(уничтожить потом его тоже надо)
+            MonoBehaviour.Destroy(curEffect, 3.9f);
+        }
+        //</base module for raycast>
     }
     public override void EndAttack()
     {
         shootDone = false;
         isActive = false;
+        laserLine.positionCount = 0;
     }
    
 }

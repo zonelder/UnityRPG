@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using stats;
-enum LifeStates
+public enum LifeStates
 { 
+    STABLE,
     BODY_ON_THE_EDGE,
     MIND_ON_THE_EDGE,
-    DEAD,
-    STABLE
+    DEAD
 }
 
 public class UnitStats : MonoBehaviour
 {
+    public LifeStates state;
+    private float bodyAtrophy = 100;//point in second
+    private float mindAtrophy = 100;//point in second
     public int lvl = 1;
     public float ExpToUp = 1000;
     public  bool death;
@@ -50,32 +53,63 @@ public class UnitStats : MonoBehaviour
     public virtual void Start()
     {
         Time.timeScale = 1;
-        death = false;
+        //death = false;
+        state = LifeStates.STABLE;
         this.refresh();
         
     }
     // Update is called once per frame
     public virtual void Update()
     {
-        if (curHP < _improved.HP && !death)//health regeneration
+        //if (curHP < _improved.HP && !death)//health regeneration
+        if(state != LifeStates.DEAD)
         {
-            curHP += _improved.HPregen * Time.deltaTime;
+            if (curHP < _improved.HP)
+            {
+                curHP += _improved.HPregen * Time.deltaTime;
+            }
+
+            if (curMP < _improved.MP)
+            {
+                curMP += _improved.MPregen * Time.deltaTime;
+            }
         }
+
         if (curHP > _improved.HP)
             curHP = _improved.HP;
         if (curHP <= 0) //≈сли кол-во жизни меньше или равно 0
         {
             curHP = 0; //—тавим 0 дабы наш бар не рисовалс€ не корректно
-            death = true; //—тавим что персонаж мертв
-        }
-        if(curMP<_improved.MP && !death)
-        {
-            curMP += _improved.MPregen * Time.deltaTime;
+            if (state != LifeStates.BODY_ON_THE_EDGE)
+            {
+                if (state == LifeStates.MIND_ON_THE_EDGE)//были на гранипсихоза а тут еще и тело отказало
+                    state = LifeStates.DEAD;
+                else
+                    state = LifeStates.BODY_ON_THE_EDGE;
+            }
         }
         if (curMP < 0)
+        {
             curMP = 0;
+            if(state!=LifeStates.MIND_ON_THE_EDGE)
+            {
+                if (state == LifeStates.BODY_ON_THE_EDGE)
+                    state = LifeStates.DEAD;
+                else
+                    state= LifeStates.MIND_ON_THE_EDGE;
+            }
+        }
         if (curMP > _improved.MP)
             curMP = _improved.MP;
+
+        if(state==LifeStates.MIND_ON_THE_EDGE)
+        {
+            curHP -= bodyAtrophy * Time.deltaTime;
+        }
+        if(state==LifeStates.BODY_ON_THE_EDGE)
+        {
+            curMP -= mindAtrophy*Time.deltaTime;
+        }
         if (curEXP >= ExpToUp) //≈сли количество опыта у нас рано и ли больше нужного кол-ва опыта
         {
             curEXP = ExpToUp; //кол-во опыта ставим 0
@@ -89,14 +123,6 @@ public class UnitStats : MonoBehaviour
         curEXP = 0;
         ExpForDeath += 50;
     }
-    /*public void newImprovedStats()
-    {
-        int equipmentStats = 0;//вложение от экипировки
-        _improved.STR = _base.STR + equipmentStats;
-        _improved.vitality = _base.vitality + equipmentStats;
-        _improved.energy = _base.energy + equipmentStats;
-        _improved.HPregen = _base.HPregen + equipmentStats;
-    }*/
     public void refresh()
     {
         curHP = _improved.HP; //¬ начале у персонажа кол-во жизней максимально

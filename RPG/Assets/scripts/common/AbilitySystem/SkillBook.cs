@@ -24,6 +24,7 @@ public class SkillBook : MonoBehaviour//все чем занимается этот класс это хранит
 
         ActiveAbility NewAbility2 = new ActiveAbility(10);
         Attack firstAttack2 = new RaycastAttack(gameObject);
+        ((RaycastAttack)firstAttack2).HitEffect = projectile.GetComponent<Projectile>().destroyEffect;//прсто что бы был видимый эффект попадания
         NewAbility2.AddAttack(firstAttack2);
         AddAbility(NewAbility2);
 

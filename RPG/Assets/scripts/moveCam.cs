@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class moveCam : MonoBehaviour
 {
+    public bool CameraFreeze;
     public Transform target; //юнит за которым следеут камера
     public float distance = 5.0f; //расстояние между камерой и юнитом
     public float xSpeed = 125.0f; //чувствителльность поворота мыши по х
@@ -24,7 +25,7 @@ public class moveCam : MonoBehaviour
 
     public void Start()
     {
-        
+        CameraFreeze = false;
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
         y = angles.x;
@@ -35,7 +36,7 @@ public class moveCam : MonoBehaviour
 
     public void LateUpdate()
     {
-        if (!gameObject.transform.parent.gameObject.GetComponent<PlayerGUI>().isCameraFreeze)//тут надо поменять. чтобы не было обращений за пределы юнита
+        if (!CameraFreeze)//тут надо поменять. чтобы не было обращений за пределы юнита
         {
             if (target)
             {

@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public abstract class ScriptableItem : ScriptableObject
     public Texture2D ItemImg;
     public bool IsRemoveWhenUsed;
     public string description;
+    public float usingDuration=0.0f;
     public abstract void Use(GameObject Unit);
     public virtual bool Equals(Object other)//на случай если залетит(метод будет перегружен для всех последующих классов)
     {

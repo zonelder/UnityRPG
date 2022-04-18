@@ -47,6 +47,7 @@ public class PlayerBarDisplay : MonoBehaviour
             GUI.Box(new Rect(10, 35, 254 * ManaBarLen, 15), " ", GUI.skin.GetStyle("MPbar"));
             GUI.Box(new Rect(10, 55, 254 * ExpBarLen, 15), " ", GUI.skin.GetStyle("EXPbar"));
             GUI.Box(new Rect(10, 10, 254, 64), " ", GUI.skin.GetStyle("PlayerBar"));
+            GUI.Box(new Rect(Screen.width/2-7, Screen.height/2-7,14,14), " ", GUI.skin.GetStyle("Crosshair"));
 
 
         }

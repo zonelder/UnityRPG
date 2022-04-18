@@ -7,7 +7,8 @@ public class Projectile : MonoBehaviour
     //<пачка булевых переменных определяющая поведение обьекта>
    //может быть и брольше по этмоу тови задумать о вынесении их в отдельный класс  и формироавании шаблона state для класса projectile
     public bool isBase = false;
-    public bool createCopiesOnDestroy = true;
+    public bool createCopiesOnDestroy = false;
+    public bool explodeWhenDestory = true;
     bool actionDone = false;
     //</пачка булевых переменных определяющая поведение обьекта>
     public GameObject user;
@@ -43,18 +44,13 @@ public class Projectile : MonoBehaviour
     {
         Debug.Log(gameObject.name + " Touch "+tangentSurface.name);
         OnAttackWhenTouch(tangentSurface);
-        //Instantiate(gameObject, transform.position, transform.rotation);
     }
-
-    public void OnAttack(GameObject beaten)//что происходит когда атака снаряда попадает по потивнику
+    public void OnAttackWhenDestroy(GameObject beaten)
     {
-        //попадание атаки.
         HittableEntity beatenEntity = beaten.GetComponent<HittableEntity>();
         if (beatenEntity != null)
             beatenEntity.HitWillDone(user, projectileStats);
-        //это даже скучно. можно разделить на OnAttaackWhenTouch
-        //OnAttackWhenDestroy
-        //OnAttackWhenFly;
+
     }
     public void OnAttackWhenTouch(GameObject obj)
     {
@@ -65,47 +61,28 @@ public class Projectile : MonoBehaviour
             //примеры взаимодействий по касанию. надо опписать как можно больше возможных взаимодействий
 
         }
-        
+        //OnEndLiveTime();
+
+
     }
     public void OnEndLiveTime()
     {
-       
-        //<blow up when destroy>
-        //delegate void AttackPattern(GameObject beaten);
-        //AttackPattern AttackForThisCase = OnAttack;
-        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-        foreach (Collider nearbyObject in colliders)
-        {  
-            if (nearbyObject.isTrigger==true)
-            {
+        if(explodeWhenDestory)
+        AttackBehaviour.BlowUp(transform.position, radius, OnAttackWhenDestroy);
 
-                //AttackForThisCase(nearbyObject.gameObject);
-                OnAttack(nearbyObject.gameObject);
-            }
-
-        }//</blow up when destroy>
-
-        //<create coppies of another object>
-        if(createCopiesOnDestroy)
-         for(int i=0;i<3;i++)
-        {
-            GameObject objectAfterDestory = gameObject;
-            Vector3 randomVector = new Vector3(Random.value, Random.value, Random.value);
-            GameObject copyProjectile = Instantiate(objectAfterDestory, objectAfterDestory.transform.position + randomVector, objectAfterDestory.transform.rotation);
-            copyProjectile.GetComponent<Projectile>().createCopiesOnDestroy = false;
-            randomVector = new Vector3(Random.value, 2, Random.value);
-            copyProjectile.GetComponent<Rigidbody>().AddForce(5*randomVector, ForceMode.Impulse);
-        }
-        //</create copies of original>
+        if (createCopiesOnDestroy)
+            AttackBehaviour.Create(transform.position, transform.rotation, gameObject, 3);
 
 
+        
+        
         //<base module for projectile>
         if (destroyEffect != null)
         {
             GameObject curEffect = Instantiate(destroyEffect, transform.position, transform.rotation);//запустили эфект который проигрывается при уничтожении обьекта(уничтожить потом его тоже надо)
             Destroy(curEffect, 3.9f);
         }
-        Debug.Log("destroy");
+        //Debug.Log("destroy");
         Destroy(gameObject);
         //</base module for projectile>
 

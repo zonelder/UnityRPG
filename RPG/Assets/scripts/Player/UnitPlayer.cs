@@ -95,7 +95,7 @@ public class UnitPlayer : UnitStats
         }
         else// if (showstat == 0)
             useGUILayout = false; //Скрываем окно статов
-        if (base.death == true) //Если умерли
+        if (state == LifeStates.DEAD) //Если умерли
         {
             if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2, 100, 50), "Переиграть")) //Ресуем кнопку переиграть
             {

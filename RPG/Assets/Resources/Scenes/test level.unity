@@ -598,7 +598,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 899253237}
-  - component: {fileID: 899253235}
   - component: {fileID: 899253234}
   - component: {fileID: 899253232}
   m_Layer: 0
@@ -620,13 +619,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827733dac627aa24f82aeaad30d59fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curHP: 0
+  curMP: 0
+  outgoingDamageText: {fileID: 3006598331969246652, guid: da478f40b35f89943b3ec13faab387e1, type: 3}
+  outgoingCritText: {fileID: 510788396351174817, guid: 82e6a287d5f2298428b1180ee01b3e87, type: 3}
   state: 0
   lvl: 1
   ExpToUp: 1000
-  death: 0
   ExpForDeath: 0
-  curHP: 0
-  curMP: 0
   curEXP: 0
   reviveAtOnce: 1
 --- !u!136 &899253234
@@ -643,18 +643,6 @@ CapsuleCollider:
   m_Height: 2.58
   m_Direction: 1
   m_Center: {x: 0, y: -1.63, z: 0}
---- !u!114 &899253235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 899253231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7f90660a33f87b448ee9313195f014e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &899253237
 Transform:
   m_ObjectHideFlags: 0
@@ -745,6 +733,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1392953081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1392953082}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1392953082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392953081}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.97, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2028384067}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1430133035
 GameObject:
@@ -844,13 +862,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ece4b79ebd289647a041fa3fb05aa79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curHP: 0
+  curMP: 0
+  outgoingDamageText: {fileID: 3006598331969246652, guid: da478f40b35f89943b3ec13faab387e1, type: 3}
+  outgoingCritText: {fileID: 510788396351174817, guid: 82e6a287d5f2298428b1180ee01b3e87, type: 3}
   state: 0
   lvl: 1
   ExpToUp: 1000
-  death: 0
   ExpForDeath: 0
-  curHP: 0
-  curMP: 0
   curEXP: 0
   showStats: 0
 --- !u!114 &1456653850
@@ -1296,7 +1315,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2028384067}
   - component: {fileID: 2028384070}
-  - component: {fileID: 2028384068}
   - component: {fileID: 2028384072}
   m_Layer: 0
   m_Name: dummy
@@ -1317,21 +1335,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2037649796}
+  - {fileID: 1392953082}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2028384068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2028384066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7f90660a33f87b448ee9313195f014e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &2028384070
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1358,13 +1365,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827733dac627aa24f82aeaad30d59fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curHP: 0
+  curMP: 0
+  outgoingDamageText: {fileID: 3006598331969246652, guid: da478f40b35f89943b3ec13faab387e1, type: 3}
+  outgoingCritText: {fileID: 510788396351174817, guid: 82e6a287d5f2298428b1180ee01b3e87, type: 3}
   state: 0
   lvl: 1
   ExpToUp: 1000
-  death: 0
   ExpForDeath: 0
-  curHP: 0
-  curMP: 0
   curEXP: 0
   reviveAtOnce: 1
 --- !u!1 &2037649795

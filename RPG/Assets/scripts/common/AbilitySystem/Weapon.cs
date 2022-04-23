@@ -19,10 +19,12 @@ public class Weapon : MonoBehaviour
         curAttackEffects = attackStats;
     }
 
-    public float CalculateDamage()
+    public GeneratedDamage CalculateDamage()
     {
         //если в AttackStats  будет что-то, способно повлиять на расчет урона, то создаем тут временную переменную в которой собираем весь возможный импакт и от него уже обращаемся к методу caclulate()
-        return curDamage.calculate() * curAttackEffects.damageAmp;
+        GeneratedDamage damage = curDamage.calculate();
+        damage.damage *= curAttackEffects.damageAmp;
+        return damage;
     }
     public void SetToDefault()
     {

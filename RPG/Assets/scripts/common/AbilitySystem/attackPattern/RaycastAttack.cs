@@ -2,15 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RaycastState
+{
+    BEFORE_AIMING,
+    AIMING,
+    SHOOT,
+    AFTER_SHOOT
+}
 public class RaycastAttack : Attack
 {
-    private bool shootDone=false;
+    private RaycastState rState;
     public GameObject HitEffect;
     private GameObject Cam;
     public GameObject weapon;
     private LineRenderer laserLine;
     private Cooldown lineRenderTime = new Cooldown(0.4f);
-    public float timeToShoot=0;
+    public float timeToAim=0.0f;
+    public float timeToShoot=0.4f;
     public float weaponRange = 100;
     public RaycastAttack(GameObject user)
     {
@@ -23,16 +31,33 @@ public class RaycastAttack : Attack
     }
     public override void StartAttack()
     {
-        isActive = true;
+        //isActive = true;
+        base.StartAttack();
         laserLine.positionCount = 2;
+        rState = RaycastState.BEFORE_AIMING;
         //raycat
     }
     public override void TickTime(float delta,float SpeedAmp=1)
     {
         base.TickTime(delta,SpeedAmp);
-        if(property.duration.curTime() >timeToShoot && !shootDone)
+        if(property.duration.curTime()>timeToAim && rState==RaycastState.BEFORE_AIMING)
         {
-            shootDone = true;
+            //shootDone = true;
+            rState = RaycastState.AIMING;
+            lineRenderTime.Start—ountdown();
+            //Aim();
+            //Shoot();
+        }
+        if(rState ==RaycastState.AIMING && !(property.duration.curTime() > timeToShoot))
+        {
+            Aim();
+            
+            //state = RaycastState.SHOOT;
+            //Shoot();
+        }
+        if(rState == RaycastState.AIMING && property.duration.curTime() > timeToShoot)
+        {
+            rState = RaycastState.SHOOT;
             Shoot();
         }
         if (!lineRenderTime.IsReady())
@@ -44,6 +69,26 @@ public class RaycastAttack : Attack
             laserLine.enabled = false;
         }
 
+    }
+    public void Aim()
+    {
+        Vector3 rayOrigin = Cam.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
+
+        RaycastHit hit;
+        Vector3 EndPoint = Vector3.zero;
+        laserLine.SetPosition(0, weapon.transform.position);
+        if (Physics.Raycast(rayOrigin, Cam.GetComponent<Camera>().transform.forward, out hit, weaponRange))
+        {
+            EndPoint = hit.point;
+        }
+        else
+        {
+            EndPoint = rayOrigin + (Cam.transform.forward * weaponRange);
+        }
+
+        //<lazerRender>
+        laserLine.SetPosition(1, EndPoint);
+        laserLine.enabled = true;
     }
     public void OnAttack(GameObject beaten)
     {
@@ -72,7 +117,6 @@ public class RaycastAttack : Attack
         //<base module for raycast>
             //<lazerRender>
         laserLine.SetPosition(1, EndPoint);
-        lineRenderTime.Start—ountdown();
         laserLine.enabled = true;
             //</lazerRender>
         if (HitEffect != null)
@@ -81,12 +125,13 @@ public class RaycastAttack : Attack
             MonoBehaviour.Destroy(curEffect, 3.9f);
         }
         //</base module for raycast>
+        rState = RaycastState.AFTER_SHOOT;
     }
     public override void EndAttack()
     {
-        shootDone = false;
-        isActive = false;
+        //isActive = false;
         laserLine.positionCount = 0;
+        base.EndAttack();
     }
    
 }

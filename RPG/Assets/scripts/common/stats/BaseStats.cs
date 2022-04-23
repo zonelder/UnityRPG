@@ -17,6 +17,8 @@ namespace stats
         public float SPregen;//реген стамины
         public float armor;
         public float armorRegen;
+
+
         public Attributes attributes = new Attributes();
         public BaseStats()//пусть пока все будет public но после инициализации здесь можно будет только менять и никак не устанавливать начения
         {

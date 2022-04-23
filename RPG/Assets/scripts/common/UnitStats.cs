@@ -10,22 +10,19 @@ public enum LifeStates
     DEAD
 }
 
-public class UnitStats : MonoBehaviour
+public class UnitStats : HittableEntity
 {
     public LifeStates state;
     private float bodyAtrophy = 100;//point in second
     private float mindAtrophy = 100;//point in second
     public int lvl = 1;
     public float ExpToUp = 1000;
-    public  bool death;
     public BaseStats _base = new BaseStats(0,0,0,0,0);
     public Stats _improved = new Stats(0, 0, 0, 0, 0);
     public float ExpForDeath;
  
     /// <current value>
     ///
-    public float curHP; //кол-во жизней персонаж нынешние
-    public float curMP; //кол-во маны персонажа
     public float curEXP; //кол-во опыта
 
     public UnitStats(int HP, int MP, int STR, int vitality, int energy)
@@ -61,7 +58,6 @@ public class UnitStats : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        //if (curHP < _improved.HP && !death)//health regeneration
         if(state != LifeStates.DEAD)
         {
             if (curHP < _improved.HP)
@@ -128,15 +124,7 @@ public class UnitStats : MonoBehaviour
         curHP = _improved.HP; //В начале у персонажа кол-во жизней максимально
         curMP = _improved.MP; //маны тоже
     }
-    public float CalculateDamage()
-    {
-        return _improved.damage.calculate();
-    }
-    public void getDamage(float  damage)
-    {
-        curHP -= damage;
 
-    }
     public void GetExpFrom(UnitStats defeatedEnemy)
     {
         this.curEXP += defeatedEnemy.ExpForDeath;

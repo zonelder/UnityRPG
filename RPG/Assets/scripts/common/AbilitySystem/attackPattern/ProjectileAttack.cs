@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public enum ProjectileState
+{
+    BEFORE_PREPARATION,
+    PREPARATION,
+    LAUNCH,
+    AFTER_LAUNCH
+}
 
 public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уже много, лучше выделить класс под это
 {
+    private ProjectileState pState;
     private LineRenderer sightLine;
-    private bool launchStart = false;
-    private bool preparationStart = false;
     private float impulseLaunch = 10.0f;
     private float launchTime = 0;//время относительно начала атаки когда надо запустить снаряд
     private Cooldown launchPreparation;//время подготовки с запуску снаряда
@@ -30,28 +36,31 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
  
     public override void StartAttack()
     {
-        isActive = true;
+        //isActive = true;
+        base.StartAttack();
+        pState = ProjectileState.BEFORE_PREPARATION;
     }
 
     public override void TickTime(float delta, float SpeedAmp = 1)
     {
         base.TickTime(delta,SpeedAmp);
-        if(property.duration.curTime()>launchTime && !launchStart)
+        if (property.duration.curTime() > launchTime && pState == ProjectileState.BEFORE_PREPARATION )
         {
-            //launchStart = true;
-            if(!preparationStart)
+            pState = ProjectileState.PREPARATION;
             PrepareForLaunch();
-            else
-            {
-                launchPreparation.TickTime(Time.deltaTime);
-                RenderTrajectory();
-            }
         }
-        if (preparationStart && launchPreparation.IsReady() && !launchStart)
+        if(pState == ProjectileState.PREPARATION && !(launchPreparation.IsReady()))
         {
-            launchStart = true;
+            RenderTrajectory();
+            launchPreparation.TickTime(delta);
+        }
+
+        if(pState == ProjectileState.PREPARATION && launchPreparation.IsReady())
+        {
+            
             Launch();
             ClearTrajctory();
+            pState = ProjectileState.LAUNCH;
         }
 
     }
@@ -119,9 +128,7 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
     }
     private void PrepareForLaunch()//подготовка к запуску снаряда(появляется трек показывающий как полетит снаряд при таком расположении камеры )
     {
-        //RenderTrajectory();
         launchPreparation.StartСountdown();
-        preparationStart = true;
     }
     public void Launch()//запускаем снаряд
     {
@@ -129,11 +136,12 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
         GameObject curProjectile= MonoBehaviour.Instantiate(projectile, weapon.transform.position + weapon.transform.forward, weapon.transform.rotation);
         curProjectile.GetComponent<Projectile>().isBase = false;
         curProjectile.GetComponent<Rigidbody>().AddForce(impulseLaunch*camera.transform.forward,ForceMode.Impulse);
+
+        pState = ProjectileState.AFTER_LAUNCH;
     }
     public override void EndAttack()
     {
-        launchStart = false;
-        isActive = false;
-        preparationStart = false;
+        //isActive = false;
+        base.EndAttack();
     }
 }

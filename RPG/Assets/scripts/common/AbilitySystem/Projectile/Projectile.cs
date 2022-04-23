@@ -57,7 +57,10 @@ public class Projectile : MonoBehaviour
         if (obj.tag == "Unit")//в случчае если коснулись юнита
         {
             Debug.Log("encounter a " + obj.name);
-            obj.GetComponent<HittableEntity>().Hit(10.0f);//наносиим урон от удара
+            //obj.GetComponent<HittableEntity>().Hit(10.0f);//наносиим урон от удара
+            HittableEntity beatenEntity = obj.GetComponent<HittableEntity>();
+            if (beatenEntity != null)
+                beatenEntity.HitWillDone(user, projectileStats);
             //примеры взаимодействий по касанию. надо опписать как можно больше возможных взаимодействий
 
         }

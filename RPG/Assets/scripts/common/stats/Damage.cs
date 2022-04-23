@@ -13,16 +13,17 @@ public class Damage
         minDMG += d_min;
         maxDMG += d_max;
     }
-    public float calculate()//кажется что это будет считаться где то выше с учетом атрибутов атаки
+    public GeneratedDamage calculate()//кажется что это будет считаться где то выше с учетом атрибутов атаки
     {
         float curDamage = 0;
-
+        DamageType type = DamageType.common;
         curDamage = Random.Range(minDMG, maxDMG);//возвращает случайное число от minDMG до maxDMG
         if (Random.Range(0.0f, 100.0f) <= critChanсe)//если прошел крит
         {
+            type = DamageType.crit;
             curDamage *= critDamage;
         }
-        return curDamage;
+        return  new GeneratedDamage(curDamage,type);
     }
 
 }

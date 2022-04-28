@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Map : MonoBehaviour//перетащить все что касатес€ создание супертерраина в отдельный класс.
+public class Map : MonoBehaviour
 {//тут будет содержатьс€ сам супертерраин и некотора€ информаци€ о чанках(¬Ћј∆Ќќ—“№ “≈ћѕ≈–ј“”–ј ј “»¬Ќќ—“№ ¬ƒќЋ№ Ѕ≈–≈√ќ¬ќ… Ћ»Ќ»» » ћќ∆≈“ ¬≈“≈–).
  // и тут иметь бы уровень мор€. поделить весь класс на два тоставл€ющие 1_ все что св€зано с картой высот и что св€зано с морем и ее уровнем
 
@@ -16,9 +16,8 @@ public class Map : MonoBehaviour//перетащить все что касатес€ создание супертерр
         chunksStapler.DiamonSquareStiching(terrain);
     }
 
-    public void RenderAround(int x,int y)
+    public void RenderAround(int x,int y)//8 chunck around
     {
-        //render size=8; mean chunk will load in a square with side=16  and center in x,y;
         for (int dx = -16; dx <= 16; dx++)
         {
             if (dx + x < 0 || dx + x >= terrain.GetWidth())
@@ -32,7 +31,6 @@ public class Map : MonoBehaviour//перетащить все что касатес€ создание супертерр
                     terrain.chunk[x + dx, y + dy].gameObject.SetActive(false);
                 else
                    terrain.chunk[x + dx, y + dy].gameObject.SetActive(true);
-
 
                 }
         }

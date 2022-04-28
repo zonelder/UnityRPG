@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogInteraction : ScriptableInteraction
+public class DialogInteraction : AbstractInteraction
 {
-    // в перспективе у одного юнита моет быть быть не одно взаимоедйствие а значит нужен управл€ющий элемент
-    bool dialogStart=false;
-    bool UnitTryToInteract = false;//проверка была ли в апдейт попытка взаимодействи€
-    public GUIStyle ExitButton;//вот это можно обобщить и сделать общий скин дл€ кнопок
+    private bool dialogStart=false;
+    private bool UnitTryToInteract = false;
+    public GUIStyle ExitButton;
     public GameObject Unit;
     void OnTriggerStay(Collider collision)
     { 
@@ -46,7 +45,6 @@ public class DialogInteraction : ScriptableInteraction
    public override  void Interact(GameObject Unit)
     {
         Debug.Log("start inter");
-        //Unit.GetComponent<PlayerGUI>().inDialog = true;
         Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze =true;
         Unit.GetComponent<movement>().canMove = false;
         dialogStart = true;
@@ -54,7 +52,6 @@ public class DialogInteraction : ScriptableInteraction
     public override void EndInteract()
     {
         Debug.Log("end Inter");
-        //Unit.GetComponent<PlayerGUI>().inDialog = false;
         Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze = false;
         Unit.GetComponent<movement>().canMove = true;
         dialogStart = false;
@@ -64,28 +61,44 @@ public class DialogInteraction : ScriptableInteraction
         if(dialogStart)
         {
             GUI.Box(new Rect(0, 4 * Screen.height / 5, Screen.width, Screen.height / 5)," ");//полоска снизу
-            if(GUI.Button(new Rect(4*Screen.width/5, 4 * Screen.height / 5+6, Screen.height/6, Screen.height/6)," Exit")){//перва€ кнопка(выход из диалога)
+            ButtonExit();
+            BuffButton();
+            HealButton();
+            ExpansionButton();
+        }
+    }
 
-                this.EndInteract();
-                }
-            if (GUI.Button(new Rect(4 * Screen.width / 5- Screen.height / 6-1, 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetBuff "))//втор€ кнопка
-                {
-                TimedAPBuff toUnit = new TimedAPBuff(10, 15, Unit);
-                toUnit.Buff.Duration = 10;
-                //toUnit.Buff.IsEffectStacked = true;
-                Unit.GetComponent<BuffableEntity>().AddBuff(toUnit);
-                }//buff button
-            if (GUI.Button(new Rect(4 * Screen.width / 5 - 2*(Screen.height / 6 - 1), 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetPosion "))
-            {
-                Unit.GetComponent<Inventory>().AddItem(new HealingPosion(100));
+    private void ButtonExit()
+    {
+        if (GUI.Button(new Rect(4 * Screen.width / 5, 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), " Exit"))
+        {
 
-            }
-            if (GUI.Button(new Rect(4 * Screen.width / 5 - 3 * (Screen.height / 6 - 1), 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetExpansion "))
-            {
-                Unit.GetComponent<Inventory>().AddItem(new InventoryExpansion(3));
+            this.EndInteract();
+        }
+    }
+    private void BuffButton()
+    {
 
-            }
-            //exit button
+        if (GUI.Button(new Rect(4 * Screen.width / 5 - Screen.height / 6 - 1, 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetBuff "))
+        {
+            TimedAPBuff toUnit = new TimedAPBuff(10, 15, Unit);
+            toUnit.Buff.Duration = 10;
+            Unit.GetComponent<BuffableEntity>().AddBuff(toUnit);
+        }
+    }
+    private void HealButton()
+    {
+        if (GUI.Button(new Rect(4 * Screen.width / 5 - 2 * (Screen.height / 6 - 1), 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetPosion "))
+        {
+            Unit.GetComponent<Inventory>().AddItem(new HealingPosion(100));
+        }
+    }
+    private void ExpansionButton()
+    {
+        if (GUI.Button(new Rect(4 * Screen.width / 5 - 3 * (Screen.height / 6 - 1), 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetExpansion "))
+        {
+            Unit.GetComponent<Inventory>().AddItem(new InventoryExpansion(3));
+
         }
     }
 }

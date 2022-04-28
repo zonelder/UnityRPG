@@ -12,16 +12,18 @@ public class Multiplier//все множители буду описаны тут(множитель урона, скорост
     }
 
     public static Multiplier operator +(Multiplier a, Multiplier b) => new Multiplier(a.value + b.value - 1);
-    public static Multiplier operator +(Multiplier a, float b) => new Multiplier(a.value + (b/100));//если пишу myMultiplier+2 будет 2+value но надо чтобы это было2  процента то етсь 0.02
+    public static Multiplier operator +(Multiplier a, float b) => new Multiplier(a.value + (b/100));//если пишу myMultiplier+2 будет 0.02+value
     public static Multiplier operator +(float a, Multiplier b) => new Multiplier((a/100) + b.value);
+
+
 
     public static Multiplier operator -(Multiplier a, Multiplier b) => new Multiplier(a.value - b.value + 1);
     public static Multiplier operator -(Multiplier a, float b) => new Multiplier(a.value - (b/100));
     public static Multiplier operator -(float a, Multiplier b) => new Multiplier(b.value-(a/100));
 
+
+
     public static implicit operator float(Multiplier multiplier)=> multiplier.value;
-    //public static explicit operator float(Multiplier multiplier) => multiplier.value;
 
     public static implicit operator int(Multiplier multiplier) => (int)(multiplier.value*100);
-    //public static explicit operator float(Multiplier multiplier) => (int)(multiplier.value);
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class AbstractAbility //абилка это по сити набор последовательных сценариев с некоторыми числовыми данными
 {
-    public string name;
+    private string name;
     public bool isActive = false;
 
     protected AbstractAbility(string name)

@@ -7,28 +7,22 @@ namespace stats
     public class BaseStats//тут не производитьс€ никаких расчетов, а просто хран€тьс€ базовые значени€ дл€ апределленных юнитов
     {
         //<abstract stats>
-        public float HP;
-        public float MP;//mind points
-        public float SP;//speed point насколько быстро действует персонаж(дввигаетс€ юзает анимации и тд)
-        public float stamina;
-        public float accuracy;//точность(разброс при стрельбе и направлении хитбоксов+ ∆≈Ћј“≈Ћ№Ќќ добавить вариациию дл€ аттак в зависимости от точности(насколько персонаж может следовать первоначальному шаблону))
-        public float HPregen;//регенераци€ хп
-        public float MPregen;//регенераци€ мп
-        public float SPregen;//реген стамины
+        public AbstractStrip HP;
+        public AbstractStrip MP;
+        public AbstractStrip SP;
+        public float accuracy;
         public float armor;
         public float armorRegen;
-
-
         public Attributes attributes = new Attributes();
-        public BaseStats()//пусть пока все будет public но после инициализации здесь можно будет только мен€ть и никак не устанавливать начени€
+        public BaseStats()
         {
 
         }
 
         public BaseStats(int HP, int MP, int STR, int vitality, int intellect)
         {
-            this.HP = HP;
-            this.MP = MP;
+            this.HP = new AbstractStrip(HP);
+            this.MP = new AbstractStrip(MP);
             attributes.intellect = intellect;
             attributes.STR = STR;
             attributes.vitality = vitality;

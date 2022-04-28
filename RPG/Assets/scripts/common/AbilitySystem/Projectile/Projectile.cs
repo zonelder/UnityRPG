@@ -6,16 +6,22 @@ public class Projectile : MonoBehaviour
 {
     //<пачка булевых переменных определ€юща€ поведение обьекта>
    //может быть и брольше по этмоу тови задумать о вынесении их в отдельный класс  и формироавании шаблона state дл€ класса projectile
-    public bool isBase = false;
-    public bool createCopiesOnDestroy = false;
-    public bool explodeWhenDestory = true;
-    bool actionDone = false;
+   [SerializeField]
+    public  bool isBase = false;//надо зактырть
+    [SerializeField]
+    private bool createCopiesOnDestroy = false;
+    [SerializeField]
+    private bool explodeWhenDestory = true;
+
+
+    private bool actionDone = false;
     //</пачка булевых переменных определ€юща€ поведение обьекта>
-    public GameObject user;
-    public Weapon projectileStats;
-    public Cooldown delayBfDestroy = new Cooldown(3.0f);
-    public GameObject destroyEffect;
-    public float radius = 5.0f;
+    public  GameObject user;//надо закрыть
+    public  Weapon projectileStats;//надо закрыть
+    private Cooldown delayBfDestroy = new Cooldown(3.0f);
+    [SerializeField]
+    private GameObject destroyEffect;
+    private float radius = 5.0f;
    
      public void Awake()
     {
@@ -98,5 +104,15 @@ public class Projectile : MonoBehaviour
     private void OnCollisionEnter(Collision coll)
     {
         OnTouch(coll.gameObject);
+    }
+
+    public GameObject GetDestroyEffect() => destroyEffect;
+    public void StopCopy() => createCopiesOnDestroy = false;
+    public void SwitchBase() => isBase = !isBase;
+    public void Fill(bool _isBase,GameObject weapon)
+    {
+        isBase = true;
+        projectileStats = weapon.GetComponent<Weapon>();
+        user = weapon.transform.parent.gameObject;
     }
 }

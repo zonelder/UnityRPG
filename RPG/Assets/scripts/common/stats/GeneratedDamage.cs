@@ -17,9 +17,5 @@ public class GeneratedDamage
         type = _type;
     }
 
-    public static implicit operator float(GeneratedDamage cur)
-    {
-        return cur.damage;
-    }
-
+    public static implicit operator float(GeneratedDamage cur)=>cur.damage;
 }

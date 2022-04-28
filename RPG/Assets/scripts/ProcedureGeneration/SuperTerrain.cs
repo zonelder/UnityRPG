@@ -21,9 +21,7 @@ public class SuperTerrain
                 chunk[i, j].transform.Translate(i * CHUNK_SIZE, 0.0f, j * CHUNK_SIZE);
                 chunk[i, j].name = "Chunk(" + i + " " + j + ")";
             }
-        // chunk[0, 0].gameObject.SetActive(true);
-        Debug.Log("bildChunks");
-        SetNeighbors();//присваиваем соседей
+        SetNeighbors();
     }
     public void SetParent(Transform parent)
     {
@@ -58,10 +56,6 @@ public class SuperTerrain
         var newTerrain = Terrain.CreateTerrainGameObject(terrainData).GetComponent<Terrain>();
 
         newTerrain.transform.parent = Parent;
-
-        // newTerrain.transform.gameObject.layer = GameplayConstants.TerrainLayer;
-        //newTerrain.heightmapPixelError = GameplayConstants.SuperTerrainPixelError;
-
         return newTerrain;
     }
     private void SetNeighbors()
@@ -71,9 +65,9 @@ public class SuperTerrain
             for (int y = 0; y < width; y++)
             {
                 chunk[x, y].SetNeighbors(SafeGetTerrain(x - 1, y),
-                                                  SafeGetTerrain(x, y + 1),
-                                                  SafeGetTerrain(x + 1, y),
-                                  SafeGetTerrain(x, y - 1));
+                                         SafeGetTerrain(x, y + 1),
+                                         SafeGetTerrain(x + 1, y),
+                                        SafeGetTerrain(x, y - 1));
             }
         }
     }

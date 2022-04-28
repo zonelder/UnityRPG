@@ -26,7 +26,6 @@ public class TimedHPBuff : TimedBuff
 
     public override bool Equals(TimedBuff other)
     {
-        Debug.Log("chexk on Equals in TimedHPBuffs");
         if (other == null || !this.GetType().Equals(other.GetType()))
             return false;
         else

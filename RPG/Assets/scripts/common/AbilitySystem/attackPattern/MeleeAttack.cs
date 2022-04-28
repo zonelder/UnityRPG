@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class MeleeAttack : Attack
 {
-    //стоит ли хитбокс тут держать или всеже 
-    public Weapon weapon;//возможнос стоит поменять модификатор на private(передвать его всеранво никуда не стоит а если надо то лучше обраться к через юнита)
-    public MeleeAttack(GameObject user)//создавая атаку в редакторе обращаемся к этому конструктору,и он автоматически передает ссылку на оружие
+    private Weapon weapon;
+    public MeleeAttack(GameObject user)
     {
         weapon = user.transform.Find("weapon").gameObject.GetComponent<Weapon>();
     }
@@ -15,14 +14,12 @@ public class MeleeAttack : Attack
     {
         base.StartAttack();
         weapon.hitBox.enabled=true;
-        Debug.Log("hitBox enabled");
        
     }
     public override void EndAttack()
     {
         
-        weapon.hitBox.enabled=false;//когщда атака закончилось отрубаем хитбокс чтобы он слуайно не ранил кого-то не в проццессе атаки;(хотя может и не надо, решим дальше)
-        Debug.Log("hitbox disabled");
+        weapon.hitBox.enabled=false;
         base.EndAttack();
     }
 }

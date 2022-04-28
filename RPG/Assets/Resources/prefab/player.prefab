@@ -96,16 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a6c0cd99d07f004c98d528dae06c192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraFreeze: 0
   target: {fileID: 4569635166823012500}
-  distance: 3
   xSpeed: 125
   ySpeed: 50
-  targetHeight: 2
-  yMinLimit: -40
-  yMaxLimit: 80
-  maxDistance: 10
-  minDistance: 0.5
-  zoomRote: 90
 --- !u!1 &4569635166823012586
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +227,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 267de94c247458040a6c1088aa95cbb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
+  PlayerRigit: {fileID: 0}
   player: {fileID: 0}
-  rotation: 250
-  jump: 3
+  cam: {fileID: 0}
+  use: 0

@@ -2,21 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class moveCam : MonoBehaviour
+public class moveCam : MonoBehaviour//написать отдельный клаас под чувствутельность мыши и колесика
 {
-    public bool CameraFreeze;
-    public Transform target; //юнит за которым следеут камера
-    public float distance = 5.0f; //расстояние между камерой и юнитом
-    public float xSpeed = 125.0f; //чувствителльность поворота мыши по х
-    public float ySpeed = 50.0f; //чувствительность мыши по y
-    public float targetHeight = 2.0f; //высота юнита
+    public   bool CameraFreeze;
+    [SerializeField]
+    private Transform target; //юнит за которым следеут камера
+    [Range(0.5f,10.0f)]
+    private  float distance = 5.0f; //расстояние между камерой и юнитом
+    [SerializeField]
+    private float xSpeed = 125.0f; //чувствителльность поворота мыши по х
+    [SerializeField]
+    private float ySpeed = 50.0f; //чувствительность мыши по y
+    private float targetHeight = 2.0f; //высота юнита
                                      
-    public float yMinLimit = -40;
-    public float yMaxLimit = 80;
+    private float yMinLimit = -40;
+    private float yMaxLimit = 80;
     //в пределаю этих значений можно поворачивать ось по y
-    public float maxDistance = 10.0f;
-    public float minDistance = 0.5f;
-    public float zoomRote = 90.0f;//чувствительность калесика мыши
+    private const  float maxDistance = 10.0f;
+    private const  float minDistance = 0.5f;
+    private float zoomRote = 90.0f;//чувствительность калесика мыши
 
     private float x = 0.0f; //угол поворота по x
     private float y = 0.0f; //угол поворота по Y
@@ -47,7 +51,6 @@ public class moveCam : MonoBehaviour
                 distance = Mathf.Clamp(distance, minDistance, maxDistance);
 
                 y = ClampAngle(y, yMinLimit, yMaxLimit); 
-                movement.x = x;//передаем в movement чтобы там повернуть тело юнита вслед за камерой
                 
                 Quaternion rotation = Quaternion.Euler(y, x, 0);
                 transform.rotation = rotation;

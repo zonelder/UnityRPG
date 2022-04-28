@@ -9,7 +9,7 @@ public class ActiveAbility : AbstractAbility
     public  Cooldown cooldown;
     public Costs costs;
     public ActiveAbility(float cooldown) { this.cooldown = new Cooldown(cooldown); }
-    public int Size() { return strokesNum; }
+    public int Size() => strokesNum;
     public void AddAttack(Attack NewAttack)
     {
         attack.Add(NewAttack);

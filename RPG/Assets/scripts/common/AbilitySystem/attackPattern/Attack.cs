@@ -6,28 +6,21 @@ public abstract class Attack
 {
    
     protected bool isActive=false; 
-    //<переменные отвечающие за качественные особенности> 
-    protected bool isGrab = false;//производитьься ли захват при использовании способности(у таргера блокируется возможность двигаться и он подчиняется анимации заложенной тут становясь как амеда rigitBody)
-    //private bool canMove=false; 
-    //</переменные отвечающие за качественные особенности>
     protected Animation attackAnimation;
+
+
     /// <переменные_отвечающие_за_характеристики>
     public AttackStats property=new AttackStats();
     public Shift shift=new Shift();
     /// </переменные_отвечающие_за_характеристики>
-    //public List<TimedBuff> buffOnUser;
-    //public List<TimedBuff> buffOnTarget;
-    public bool InUse() { return isActive; }
+    /// 
+
+    public bool InUse() => isActive;
     public virtual  void StartAttack()
     {
         
         isActive = true;
         property.duration.StartСountdown();
-        //attackAnimation["attack"].speed=property.GetSpeed();
-        //attackAnimation.Play("attack");
-        //while (attackAnimation.isPlaying) { continue; };
-
-        //EndAttack();
     }
 
     public virtual void TickTime(float delta,float finalSpeedAmp=1)
@@ -43,12 +36,9 @@ public abstract class Attack
             shift.duration.TickTime(finalSpeedAmp*delta);
         }
     }
-    /*возможный шаблон на будущее- если везде пихать OnMove on Attack OnUse etc. то можно перебирать все возможные точки активности. но насколько это лучше хранения общего их вклада?
-    public void OnMove(Vector3 move)
-    {
-        move *= property.GetSpeedAmp();
-    }
-    */
+
+
+
     public void CalculateDuration()
     {
         float shiftEndTime = shift.duration.GetCooldown() + shift.startTime;
@@ -61,8 +51,6 @@ public abstract class Attack
     }
     public virtual void EndAttack()
     {
-        //Debug.Log("end");
-        //attackAnimation.Stop();
         isActive = false;
         shift.alreadyUsed = false;
     }

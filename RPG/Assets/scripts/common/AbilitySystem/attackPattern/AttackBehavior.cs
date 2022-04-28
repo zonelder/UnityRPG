@@ -24,7 +24,7 @@ public static class AttackBehaviour
         {
             Vector3 randomVector = new Vector3(Random.value, Random.value, Random.value);//смещение для координат
             GameObject copyProjectile = MonoBehaviour.Instantiate(createdObject, position + randomVector, rotation);
-            copyProjectile.GetComponent<Projectile>().createCopiesOnDestroy = false;
+            copyProjectile.GetComponent<Projectile>().StopCopy();
             randomVector = new Vector3(Random.value, 2, Random.value);//начальная скорость
             copyProjectile.GetComponent<Rigidbody>().AddForce(5 * randomVector, ForceMode.Impulse);
         }

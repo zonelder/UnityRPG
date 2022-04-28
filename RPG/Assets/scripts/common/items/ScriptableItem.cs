@@ -5,13 +5,12 @@ using UnityEngine;
 
 public abstract class ScriptableItem : ScriptableObject
 {
-    public int CountInStack;
-    public Texture2D ItemImg;
-    public bool IsRemoveWhenUsed;
-    public string description;
-    public float usingDuration=0.0f;
+    public  int CountInStack;
+    protected Texture2D ItemImg;
+    protected bool IsRemoveWhenUsed;
+    protected string description;
     public abstract void Use(GameObject Unit);
-    public virtual bool Equals(Object other)//на случай если залетит(метод будет перегружен для всех последующих классов)
+    public virtual bool Equals(Object other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))
              return false;
@@ -22,6 +21,9 @@ public abstract class ScriptableItem : ScriptableObject
         }
         
 
-    } 
+    }
+
+    public bool RemoveAfterUse() => IsRemoveWhenUsed;
+    public Texture2D GetTexture() => ItemImg;
  
 }

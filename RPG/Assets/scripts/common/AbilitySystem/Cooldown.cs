@@ -37,7 +37,7 @@ public class Cooldown
     {
         if(isCountDown)//на случай еесли юзер будет запрашивать активироваь то, что уже активинованно
         {
-            Debug.Log("ability is not ready");
+            Debug.Log("timer is not ready");
         }
         else
         {
@@ -45,11 +45,16 @@ public class Cooldown
             isCountDown = true;
         }
     }
+    public void RestartCountdown()
+    {
+        EndCountDown();
+        StartСountdown();
+    }
     private  void EndCountDown()//конец отсчета(оспользуется только если remaningTime стало меньше нуля )
     {
         if(!isCountDown)
         {
-            Debug.Log("ability is ready but there was a request to end ability");
+            Debug.Log("timer is ready but there was a request to end ability");
         }
         else
         {

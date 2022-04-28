@@ -9,6 +9,13 @@ public class AttackStats
     public Multiplier damageAmp;
     public Cooldown duration;
 
+    public AttackStats(float SAmp = 1, float ASAmp = 1, float dAmp = 1, float duration = 1)
+    {
+        speedAmp = new Multiplier(SAmp);
+        attackSpeedAmp = new Multiplier(ASAmp);
+        damageAmp = new Multiplier(dAmp);
+        this.duration = new Cooldown(duration);
+    }
     public void SetAll(float dAmp,float sAmp,float asAmp,float time)
     {
         speedAmp.value = sAmp;
@@ -17,13 +24,5 @@ public class AttackStats
         duration.SetCooldown(time);
     }
 
-    public float GetImprovedDuration() { return duration.GetCooldown() /speedAmp;}
-    public AttackStats(float SAmp=1,float ASAmp=1,float dAmp=1,float duration=1)
-    {
-        speedAmp = new Multiplier(SAmp);
-        attackSpeedAmp = new Multiplier(ASAmp);
-        damageAmp = new Multiplier(dAmp);
-        this.duration = new Cooldown(duration);
-    }
 
 }

@@ -17,7 +17,6 @@ public class DiamondSquare : Generator
     }
     private bool beyondBorder(int coord_x, int coord_y, int reach)
     {
-        //Debug.Log("into beyoabdBorder");
         if (coord_x - reach == 0 || coord_x + reach == Width)
             return true;
         if (coord_y - reach == 0 || coord_y + reach == Width)
@@ -27,7 +26,6 @@ public class DiamondSquare : Generator
     }
     private void Step(int size)
     {
-        //Debug.Log("into Step with size"+size);
         int half = size / 2;
         if (half < 1)
             return;
@@ -38,7 +36,6 @@ public class DiamondSquare : Generator
         for (int x = 0; x < Width; x += half)
         {
             col++;
-            //If this is an odd column.
             for (int z = half * (col % 2); z < Width; z += size)
                 diamondStep(x % Width, z % Width, half);
         }
@@ -50,10 +47,8 @@ public class DiamondSquare : Generator
     {
         int count = 0;
         float avg = 0.0f;
-        //Debug.Log("into SquareStep with" +x+y+reach);
         if (beyondBorder(x, y, reach))
         {
-            //Debug.Log("into Array= 0"+ x+y);
             Array[x, y] = 0.0f;
             return;
         }

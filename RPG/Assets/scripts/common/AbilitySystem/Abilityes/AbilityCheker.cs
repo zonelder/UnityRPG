@@ -18,7 +18,7 @@ public  class AbilityCheker //проверка на возможность использования
         {
             //ability isnt on cooldown
             UnitStats UserStat = user.GetComponent<UnitStats>();
-            if (ability.costs.IsHpEnough(UserStat.curHP) && ability.costs.IsMpEnough(UserStat.curMP))
+            if (ability.costs.IsHpEnough(UserStat._improved.HP.Current()) && ability.costs.IsMpEnough(UserStat._improved.MP.Current()))
             {
                 //hp and mp is enough
                 //if()//frmors check 

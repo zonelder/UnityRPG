@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class TextLifeTime : MonoBehaviour
 {
-   public  GameObject camera;
+   public  GameObject _camera;
    public GameObject targetUnit;
-    private Vector3 offSet;
+   private Vector3 offSet;
+
+
+    public void SetTextCarrier(GameObject target,GameObject camera)
+    {
+        targetUnit = target;
+        _camera = camera;
+    }
     void Update()
     {
-        offSet = -2 * camera.transform.right - 0.7f * camera.transform.up;
-        gameObject.transform.rotation = camera.transform.rotation;
+        offSet = -2 * _camera.transform.right - 0.7f * _camera.transform.up;
+        gameObject.transform.rotation = _camera.transform.rotation;
         gameObject.transform.position = targetUnit.transform.position + offSet;
     }
 }

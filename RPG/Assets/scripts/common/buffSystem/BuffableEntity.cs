@@ -4,8 +4,9 @@ using UnityEngine;
 using System.Linq;
 public class BuffableEntity : MonoBehaviour
 {
-    public int size = 0;
-    public GUISkin buffBar;
+    private int size = 0;
+    [SerializeField]
+    private GUISkin buffBar;
     readonly List<TimedBuff> _buffs = new List<TimedBuff>();
 
     void Update()
@@ -14,14 +15,13 @@ public class BuffableEntity : MonoBehaviour
         for (int i=0;i<size;++i)
         {
             _buffs[i].Tick(Time.deltaTime);
-            if (_buffs[i].IsFinished)
+            if (_buffs[i].Finished())
             {
                 _buffs.RemoveAt(i);
                 --size;
             }
         }
     }
-
     public void AddBuff(TimedBuff buff)
     {
         if (this.IsBuffContains(buff))
@@ -35,7 +35,7 @@ public class BuffableEntity : MonoBehaviour
             ++size;
         }
     }
-    public int IndexOf(TimedBuff Buff)
+    private int IndexOf(TimedBuff Buff)
     {
         int index = -1;
         for (int i = 0; i < size; i++)
@@ -47,7 +47,7 @@ public class BuffableEntity : MonoBehaviour
 
         return index;
     }
-    public bool IsBuffContains(TimedBuff NewBuff)
+    private bool IsBuffContains(TimedBuff NewBuff)
     {
         for(int i=0;i<size;++i)
         {
@@ -58,29 +58,20 @@ public class BuffableEntity : MonoBehaviour
     }
     void OnGUI()
     {
-        //public Tex
-        if (this.tag == "Player")
+        if (gameObject.tag == "Player")
         {
             
             int xBarPos = Screen.width / 3;
-             int yBarPos = 3 * Screen.height / 4;
-            int count = 0;
+            int yBarPos = 3 * Screen.height / 4;
             int iconSize = 20;
             for (int i=0;i<size;++i)
-            {   //Debug.Log("wanna print");
+            {  
                 buffBar.GetStyle("ImgAndTimer").normal.background = _buffs[i].Buff.BuffImg;
-                GUI.Box(new Rect(xBarPos+ (iconSize +1)* count,yBarPos, iconSize, iconSize),_buffs[i].ShowDuration(), buffBar.GetStyle("ImgAndTimer"));
-                GUI.Box(new Rect(xBarPos + (iconSize + 1) * count, yBarPos, iconSize, iconSize), _buffs[i].ShowStacks(), buffBar.GetStyle("EffectStacks"));
-                count++;
+                GUI.Box(new Rect(xBarPos+ (iconSize +1)* i,yBarPos, iconSize, iconSize),_buffs[i].ShowDuration(), buffBar.GetStyle("ImgAndTimer"));
+                GUI.Box(new Rect(xBarPos + (iconSize + 1) * i, yBarPos, iconSize, iconSize), _buffs[i].ShowStacks(), buffBar.GetStyle("EffectStacks"));
+
             }
            
         }
-        if(this.tag=="Unit")
-        {
-
-        }
-        //Assets / Resources / GUI / BuffSprites / APBuff.png
-
-
     }
 }

@@ -15,9 +15,9 @@ public class APBuff : ScriptableBuff
         base.IsEffectStacked = true;
     }
 
-    public override bool Equals(Object other)//на случай если залетит(метод будет перегружен для всех последующих классов)
+    public override bool Equals(Object other)
     {
-        Debug.Log("chexk on Equals apBuffs");
+
         if (other == null || !this.GetType().Equals(other.GetType()))
             return false;
         else

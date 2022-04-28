@@ -23,24 +23,24 @@ public class PlayerBarDisplay : MonoBehaviour
             //В инспекторе в Unity нужно указать на игрока
             UnitStats PlayerSt = (UnitStats)Char.GetComponent("UnitPlayer");
             //получаем значения
-            float MaxHealth = PlayerSt._improved.HP;
-            float CurHealth = PlayerSt.curHP;
-            float MaxMana = PlayerSt._improved.MP;
-            float CurMana = PlayerSt.curMP;
-            float needExp = PlayerSt.ExpToUp;
-            float curExp = PlayerSt.curEXP;
+            float MaxHealth = PlayerSt._improved.HP.Max();
+            float CurHealth = PlayerSt._improved.HP.Current();
+            float MaxMana = PlayerSt._improved.MP.Max();
+            float CurMana = PlayerSt._improved.MP.Current();
+            //float needExp = PlayerSt.ExpToUp;
+            //float curExp = PlayerSt.curEXP;
             //расчитываем коэффицент длинны полосы здоровья
             float HealthBarLen = CurHealth / MaxHealth; //если умножить на сто то будут проценты
                                                         //расчитываем коэффицент длинны полосы маны
             float ManaBarLen = CurMana / MaxMana; //если умножить на сто то будут проценты
                                                   //расчитываем коэффицент длинны полосы опыта
-            float ExpBarLen = curExp / needExp; //если умножить на сто то будут проценты
-
+                                                  // float ExpBarLen = curExp / needExp; //если умножить на сто то будут проценты
+            float ExpBarLen = PlayerSt.exp.DonePersent();
             //рисуем сам бар
-          
- 
+
+
             //полоса опыта
-            
+
             //полоса здоровья игрока
             GUI.Box(new Rect(10, 15, 254 * HealthBarLen, 15), " ", GUI.skin.GetStyle("HPbar"));
             //полоса маны игрока

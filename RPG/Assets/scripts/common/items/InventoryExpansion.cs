@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryExpansion : ScriptableItem
-{   // Start is called before the first frame update
-    int addingCells = 1;
-    public InventoryExpansion(int value)
+{   
+    private int addingCells;
+    public InventoryExpansion(int value=1)
     {
         addingCells = value;
         base.CountInStack = 10;
@@ -15,17 +15,17 @@ public class InventoryExpansion : ScriptableItem
 
     public override void Use(GameObject Unit)
     {
-        Unit.GetComponent<Inventory>().InventorySize += addingCells;
+        Unit.GetComponent<Inventory>().AddCells(addingCells);
     }
 
-    public override bool Equals(Object other)//на случай если залетит(метод будет перегружен для всех последующих классов)
+    public override bool Equals(Object other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))
             return false;
         else
         {
-           // Debug.Log("findEqual");
-            InventoryExpansion p = (InventoryExpansion)other;//от этого по хорошему избавиться
+
+            InventoryExpansion p = (InventoryExpansion)other;
             return addingCells == p.addingCells && base.Equals(p);
         }
 

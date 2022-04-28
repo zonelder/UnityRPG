@@ -7,14 +7,12 @@ public abstract  class TimedBuff
     
     protected float Duration;
     protected int EffectStacks;
-    public ScriptableBuff Buff { get; }
+    public  ScriptableBuff Buff { get; }
     protected readonly GameObject Obj;
-    public bool IsFinished;
+    protected  bool IsFinished;
 
     public string ShowDuration()
     {
-       // var ts = TimeSpan.FromSeconds(Duration);
-        //highscoreT.text = string.Format("{0:00}:{1:00}", (int)ts.TotalMinutes, (int)ts.Seconds);
         return System.String.Format("{0:0.0}c", Duration);
     }
     public string ShowStacks()
@@ -35,33 +33,28 @@ public abstract  class TimedBuff
         if (Duration <= 0)
         {
             End();
-            //IsFinished = true;
         }
     }
-
-    /**
-     * Activates buff or extends duration if ScriptableBuff has IsDurationStacked or IsEffectStacked set to true.
-     */
     public void Activate()
     {
-        if (Buff.IsEffectStacked || Duration <= 0)//эфекты стакаются
+        if (Buff.IsEffectStacked || Duration <= 0)
         {
             ApplyEffect();
             EffectStacks++;
         }
-        if (Buff.IsDurationStacked || Duration <= 0)//стакается время
+        if (Buff.IsDurationStacked || Duration <= 0)
         {
             Duration += Buff.Duration;
         }
-        if(!Buff.IsDurationStacked)//не стакаются ни эффекты ни время
+        if(!Buff.IsDurationStacked)
         {
-            Duration = Buff.Duration;//обновляем эффект
+            Duration = Buff.Duration;
         }
     }
     protected abstract void ApplyEffect();
     public abstract void End();
 
-    public virtual bool Equals(TimedBuff other)//на случай если залетит(метод будет перегружен для всех последующих классов)
+    public virtual bool Equals(TimedBuff other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))
             return false;
@@ -73,5 +66,7 @@ public abstract  class TimedBuff
 
 
     }
+
+    public bool Finished() => IsFinished;
 
 }

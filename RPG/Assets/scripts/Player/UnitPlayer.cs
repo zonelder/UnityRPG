@@ -2,107 +2,106 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class UnitPlayer : UnitStats
+public class UnitPlayer : HittableEntity
 {
-    int pointstat = 0; //кол-во поинтов дающихся при повышении(только для игрока)
+    private int pointstat = 0; //кол-во поинтов дающихся при повышении(только для игрока)(вынести окно с хаарктеристиками в одельный класс?)
     public bool showStats;
     public UnitPlayer():base(1000,600,20,20,20)
     {
-        //кастомныые
-       // _base.HP = 1000;
-       // _base.MP = 600;
-       // _base.STR = 20;
-        //_base.vitality = 20;
-        //_base.energy = 20;
+        showStats = false;
+        _base.HP = new AbstractStrip(1000,10,100);
+  
+        StartExistence();
         _improved.damage.minDMG = 30;
         _improved.damage.maxDMG = 40;
-        _improved.HPregen = 10;
-        //this.newImprovedStats();
-        //this.newDmg();
-        showStats = false;
-        StartExistence();
     }
 
-   public override  void Start()
-    {
-        base.Start();
-        curHP = _improved.HP / 2;
-    }
-
-
-    // Update is called once per frame
-    public override void Update()
+    protected  override void Update()
     {
         base.Update();
-            if (Input.GetKeyDown(KeyCode.P)) //Принажатии на клавишу P
-            {
-            //GetComponent<PlayerGUI>().showStats = !GetComponent<PlayerGUI>().showStats;//меняем открываем или закрываем окно(фигня связывает этот юнит и другой)
-            showStats = !showStats;
-            }
-
-        if (curEXP >=ExpToUp) //Если количество опыта у нас рано и ли больше нужного кол-ва опыта
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            this.lvlUp(); //повышаем уровень
-            pointstat += 5; //Добавляем очки статов
+            showStats = !showStats;
+        }
+        if (exp.isEnouth())
+        {
+            exp.lvlUp();
+            pointstat += 5;
         }
     }
 
     void OnGUI()
     {
-        if (showStats)
+        if (!showStats)
+            useGUILayout = false; //Скрываем окно статов
+        else//негибко- надо сделать GUIskin
         {
             GUI.Box(new Rect(10, 70, 300, 300), "stats");
-            GUI.Label(new Rect(10, 95, 300, 300), "LvL: " + lvl);
-            GUI.Label(new Rect(10, 110, 300, 300), "hp: " + _improved.HP);
-            GUI.Label(new Rect(10, 125, 300, 300), "mp: " + _improved.MP);
-            GUI.Label(new Rect(10, 140, 300, 300), "exp: " + ExpToUp);
+            GUI.Label(new Rect(10, 95, 300, 300), "LvL: " + exp.level());
+            GUI.Label(new Rect(10, 110, 300, 300), "hp: " + _improved.HP.Max());
+            GUI.Label(new Rect(10, 125, 300, 300), "mp: " + _improved.MP.Max());
+            GUI.Label(new Rect(10, 140, 300, 300), "expToUp: " + exp.RequiredExp());
             GUI.Label(new Rect(10, 155, 300, 300), "str: " + _improved.attributes.STR);
             GUI.Label(new Rect(10, 170, 300, 300), "vitality: " + _improved.attributes.vitality);
             GUI.Label(new Rect(10, 185, 300, 300), "intellect: " + _improved.attributes.intellect);
             GUI.Label(new Rect(10, 200, 300, 300), "damage: " + _improved.damage.minDMG+ " ~ "+ _improved.damage.maxDMG);
-            if (pointstat > 0) //если очков статов больше 0 делаем кнопки для повышения статов
+            if (pointstat > 0) 
             {
                 GUI.Label(new Rect(10, 250, 300, 20), "points " + pointstat.ToString());
-                if (GUI.Button(new Rect(150, 155, 20, 20), "+")) //Для силы
-                {
-                    if (pointstat > 0)
-                    {
-                        pointstat -= 1;
-                        _base.ChangeSTR(1);
-                        _improved.ChangeSTR(1);
-                    }
-                }
-                if (GUI.Button(new Rect(150, 170, 20, 20), "+")) //Для живучести
-                {
-                    if (pointstat > 0)
-                    {
-                        pointstat -= 1;
-                        _base.ChangeVitality(1);
-                        _improved.ChangeVitality(1);
-                    }
-                }
-                if (GUI.Button(new Rect(150, 185, 20, 20), "+")) //Для маны
-                {
-                    if (pointstat > 0)
-                    {
-                        pointstat -= 1;
-                        //_base.energy += 1;
-                        _base.ChangeIntellect(1);
-                        _improved.ChangeIntellect(1);
-                    }
-                }
+                PlusStrButton();
+                PlusVitalityButton();
+                PlusManIntellectButton();
             }
         }
-        else// if (showstat == 0)
-            useGUILayout = false; //Скрываем окно статов
-        if (state == LifeStates.DEAD) //Если умерли
+        if (state == LifeStates.DEAD)
         {
-            if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2, 100, 50), "Переиграть")) //Ресуем кнопку переиграть
+            OnDeadGUI();
+        }    
+    }
+
+    private void PlusStrButton()
+    {
+        if (GUI.Button(new Rect(150, 155, 20, 20), "+")) //Для силы
+        {
+            if (pointstat > 0)
             {
-               SceneManager.LoadScene(0);
+                pointstat -= 1;
+                _base.ChangeSTR(1);
+                _improved.ChangeSTR(1);
             }
         }
+    } 
+    private void PlusVitalityButton()
+    {
+        if (GUI.Button(new Rect(150, 170, 20, 20), "+")) //Для живучести
+        {
+            if (pointstat > 0)
+            {
+                pointstat -= 1;
+                _base.ChangeVitality(1);
+                _improved.ChangeVitality(1);
+            }
+        }
+    }
 
-        
+    private void PlusManIntellectButton()
+    {
+        if (GUI.Button(new Rect(150, 185, 20, 20), "+")) //Для маны
+        {
+            if (pointstat > 0)
+            {
+                pointstat -= 1;
+                _base.ChangeIntellect(1);
+                _improved.ChangeIntellect(1);
+            }
+        }
+    }
+
+    private void OnDeadGUI()
+    {
+        if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2, 100, 50), "Переиграть"))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

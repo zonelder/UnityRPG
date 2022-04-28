@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealingPosion : ScriptableItem
 {
-    float recoverHP = 100;
+    private float recoverHP = 100;
     public HealingPosion(float value)
     {
         recoverHP = value;
@@ -13,10 +13,9 @@ public class HealingPosion : ScriptableItem
         base.IsRemoveWhenUsed = true;
     }
      
-    public override bool Equals(Object other)//проверка на одинаковость.исполбзуем в инвентаре
+    public override bool Equals(Object other)
     {
-        //Debug.Log("Check on equals in HPposion");..уже работает
-        if (other == null || !this.GetType().Equals(other.GetType()))//сложная реализация
+        if (other == null || !this.GetType().Equals(other.GetType()))
         {
             return false;
         }
@@ -30,6 +29,6 @@ public class HealingPosion : ScriptableItem
     }
     public override void  Use(GameObject Unit)
     {
-        Unit.GetComponent<UnitStats>().curHP += recoverHP;
+        Unit.GetComponent<UnitStats>()._improved.HP.AddToCurrent(recoverHP);
     }
 }

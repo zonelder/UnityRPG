@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HittableEntity : MonoBehaviour
+public class HittableEntity : UnitStats
 {
-    public float curHP; //кол-во жизней персонаж нынешние
-    public float curMP; //кол-во маны персонажа
     [SerializeField]
     private GameObject outgoingDamageText;
     [SerializeField]
     private GameObject outgoingCritText;
+
+
+    public HittableEntity(int HP, int MP, int STR, int vitality, int energy):base(HP, MP, STR, vitality, energy) { }
     private void OnTriggerEnter(Collider collision)
     {
        if (collision.gameObject.tag == "weapon")//тут спорная хуйня я бы поменял
@@ -31,7 +32,7 @@ public class HittableEntity : MonoBehaviour
     public void Hit(float improvedDamage)
     {
         Debug.Log(Mathf.Floor(improvedDamage) + " damage done");
-        curHP -= improvedDamage;
+        _improved.HP.DistractFromCurrent(improvedDamage);
         
     }
     public void HitWillDone(GameObject attaker, Weapon weapon)
@@ -55,7 +56,7 @@ public class HittableEntity : MonoBehaviour
             attaker.GetComponent<UnitStats>().GetExpFrom(GetComponent<UnitStats>());//если после нанесения урона хп мало то выдаем опыт убийце
         }
     }
-    public bool UnitDead() => curHP <= 0;
+    public bool UnitDead() => _improved.HP.Current() <= 0;
 
     private void FloatingText(GameObject camera,DamageType type)
     {
@@ -69,8 +70,7 @@ public class HittableEntity : MonoBehaviour
             //if(calculatedDamage.type == DamageType.crit)
             curText = Instantiate(outgoingCritText, gameObject.transform.position + TextOffset, camera.transform.rotation);
         ///crete copy of needed text>
-        curText.GetComponent<TextLifeTime>().camera = camera;
-        curText.GetComponent<TextLifeTime>().targetUnit = gameObject;
+        curText.GetComponent<TextLifeTime>().SetTextCarrier(gameObject, camera);
         curText.GetComponent<Canvas>().worldCamera = camera.GetComponent<Camera>();
         Destroy(curText, 2);
     }

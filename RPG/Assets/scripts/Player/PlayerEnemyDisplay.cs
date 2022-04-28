@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class PlayerEnemyDisplay : MonoBehaviour
 {
-    bool is_fighting = false;
-    public  GameObject Enemy;
-    float timer = 0;
-   // public GUIStyle HPBar;
-   // public GUIStyle fullBar;
-    public GUISkin EnemyHPbar;
+    private bool is_fighting = false;
+    private  GameObject Enemy;
+     private float timer = 0;
+   [SerializeField]
+    private GUISkin EnemyHPbar;
     public PlayerEnemyDisplay()
     {
        // HPBar.normal.background=Resources.Load("GUI/BarSprites/REDSprite") as Texture2D;
@@ -38,7 +37,7 @@ public class PlayerEnemyDisplay : MonoBehaviour
         
         if (is_fighting)
         {  
-            float HealthBarLen = Enemy.GetComponent<UnitStats>().curHP / Enemy.GetComponent<UnitStats>()._improved.HP;
+            float HealthBarLen = Enemy.GetComponent<UnitStats>()._improved.HP.Current() / Enemy.GetComponent<UnitStats>()._improved.HP.Max();
             GUI.Box(new Rect(Screen.width / 2 - 127, 15, 254, 15)," ", EnemyHPbar.GetStyle("FullHPBar"));
             GUI.Box(new Rect(Screen.width/2-127, 15, 254 * HealthBarLen, 15), " ", EnemyHPbar.GetStyle("CurHPBar"));
             GUI.Box(new Rect(Screen.width / 2 - 127, 15, 254 , 15), Enemy.name, EnemyHPbar.GetStyle("EnemyName"));

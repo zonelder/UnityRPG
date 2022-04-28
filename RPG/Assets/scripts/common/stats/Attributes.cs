@@ -5,17 +5,28 @@ using UnityEngine;
 public class Attributes 
 {
     //<attributes>
-    public int STR;//сила(урон от обьектных хитбоксов(оружие на пример) предельная настройка аттак базированых на таких хитбоксах))
+    public int STR;//сила
     public int dextresity;//ловкость  
-    public int intellect; //интелект(урон от любых созданных хитбоксов, предельная величина хитбоксов) 
-    public int vitality;//живучесть(хп,регенерация)
-    public int will;//воля-увеличивает мп и реген мп
-    public int luck;//удача-влияет на любые пересчеты со случайными величины(шанс крита, распределение урона и тд)
-                    //еще один атрибут(надо куда то деть крит урон, может сюда а может в предыдущие атрибуты)
+    public int intellect; //интелект
+    public int vitality;//живучесть
+    public int will;//воля
+    public int luck;//удача
                     //еще один атрибут
-                    //поднять до 8
+                    //еще один атрибут
                     //</attributes>
     public Attributes()
     {
+    }
+
+    public Attributes(Attributes newAttr)
+    {
+        STR = newAttr.STR;
+        dextresity = newAttr.dextresity;
+        intellect = newAttr.intellect;
+        vitality = newAttr.vitality;
+        will = newAttr.will;
+        luck = newAttr.luck;
+        //
+        //
     }
 }

@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public int InventorySize = 10;
     public bool inventoryOpen = false;
-    public GameObject carrier;
-    public GUISkin oneCellSkin;
-    List<ScriptableItem> cells = new List<ScriptableItem>(0);
-    List<int> CountOfItem = new List<int>(0);
-    Inventory()
-    {
-    }
+    [SerializeField]
+    private int InventorySize = 10;
+    [SerializeField]
+    private GameObject carrier;
+    [SerializeField]
+    private GUISkin oneCellSkin;
+    private List<ScriptableItem> cells = new List<ScriptableItem>(0);
+    private List<int> CountOfItem = new List<int>(0);
     public void AddItem(ScriptableItem NewItem,int count=1)
     {
 
         if(this.Contains(NewItem))//елси предмет уже есть в инвенторе
         {
 
-            //int i = cells.LastIndexOf(NewItem);
             int i = this.LastIndexOf(NewItem);
             if (CountOfItem[i]+count>cells[i].CountInStack)//если столько пихнуть невозмоожно
             {
@@ -42,11 +41,11 @@ public class Inventory : MonoBehaviour
             CountOfItem.Add(count);
         }
     }
-    public void RemoveItem(ScriptableItem DeletedItem,int count=1)
+    public void AddCells(int additional) => InventorySize += additional;
+    public  void RemoveItem(ScriptableItem DeletedItem,int count=1)
     {
         if (count <= 0)//на случай неправильных влетов в функцию
             return;
-        // int i = cells.LastIndexOf(DeletedItem);
         int i = this.LastIndexOf(DeletedItem);
         if (i < 0 || i >= cells.Count)
             Debug.Log("Try to REMOVE ITEM BUT INDEX IS out of range with"+ i);
@@ -75,20 +74,12 @@ public class Inventory : MonoBehaviour
 
     public void UseItemAt(int i)
     {
-        if (carrier.GetComponent<IUnitState>().state == UnitState.WAITING)//лишн€€ св€зь. надо перестроить все так что бы тут только юзалось без проверок и процего
-        {
+     
             cells[i].Use(carrier);
-            carrier.GetComponent<IUnitState>().state = UnitState.USE_ITEM;
-            carrier.GetComponent<IUnitState>().itemTime = new Cooldown(cells[i].usingDuration);
-            carrier.GetComponent<IUnitState>().itemTime.Start—ountdown();
-            if (cells[i].IsRemoveWhenUsed)
-                this.RemoveItem(cells[i]);
-        }
-        else
-            Debug.Log("cant use it now");
-      
+            if (cells[i].RemoveAfterUse())
+                this.RemoveItem(cells[i]);      
     }
-    public bool Contains(ScriptableItem Item)
+    private bool Contains(ScriptableItem Item)
     {
         for(int i=0;i<cells.Count;i++)
         {
@@ -97,7 +88,7 @@ public class Inventory : MonoBehaviour
         }
         return false;
     }
-    public int LastIndexOf(ScriptableItem Item)
+    private int LastIndexOf(ScriptableItem Item)
     {
         int index = 0;
         for (int i = 0; i < cells.Count; i++)
@@ -124,12 +115,12 @@ public class Inventory : MonoBehaviour
                 GUI.Box(new Rect(Screen.width - 305 + (i % 5) * 58, 100 + (i / 5) * 58, 57, 57), " ");//пуста€ €чейка
                 if (i < cells.Count)//если €чейка не пуста€ 
                 {
-                    oneCellSkin.GetStyle("ItemImg").normal.background = cells[i].ItemImg;
-                if (GUI.Button(new Rect(Screen.width - 305 + (i % 5) * 58, 100 + (i / 5) * 58, 57, 57), CountOfItem[i].ToString(), oneCellSkin.GetStyle("ItemImg")))//рисуем то что в €чейе
-                {
-                    if (i < cells.Count)
-                        this.UseItemAt(i);
-                }
+                    oneCellSkin.GetStyle("ItemImg").normal.background = cells[i].GetTexture();
+                    if (GUI.Button(new Rect(Screen.width - 305 + (i % 5) * 58, 100 + (i / 5) * 58, 57, 57), CountOfItem[i].ToString(), oneCellSkin.GetStyle("ItemImg")))//рисуем то что в €чейе
+                    {
+                        if (i < cells.Count)
+                            this.UseItemAt(i);
+                    }
 
                 }
             }

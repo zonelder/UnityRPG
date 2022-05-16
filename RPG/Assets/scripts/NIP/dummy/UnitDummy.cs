@@ -5,11 +5,11 @@ using UnityEngine;
 public class UnitDummy : UnitNIP
 {
     public bool reviveAtOnce = true;
-    public UnitDummy():base(700, 200, 0, 0, 0)//отвечает за базовые зарактеристики у данного юнита
+    public UnitDummy():base(700, 200, 0, 0, 0)
     {
 
-        base.exp.SetDieExpirience(200);
-        this.StartExistence();
+        base.Exp.SetDieExpirience(200);
+        StartExistence();
 
     }
 
@@ -22,9 +22,9 @@ public class UnitDummy : UnitNIP
             if(reviveAtOnce)
             {
                 state = LifeStates.STABLE;
-                _improved.HP.Refresh();
+                Improved.HP.Refresh();
                                      
-                _improved.MP.Refresh();            
+                Improved.MP.Refresh();            
             }
 
         }

@@ -13,26 +13,19 @@ public class HittableEntity : UnitStats
     public HittableEntity(int HP, int MP, int STR, int vitality, int energy):base(HP, MP, STR, vitality, energy) { }
     private void OnTriggerEnter(Collider collision)
     {
-       if (collision.gameObject.tag == "weapon")//тут спорна€ хуйн€ € бы помен€л
+       if (collision.gameObject.tag == "weapon")//тут спорна€ вещь € бы помен€л
         {
             GameObject attaker = collision.gameObject.transform.parent.gameObject;//узнаем самого атакующего по его оружию
             HitWillDone(attaker, collision.gameObject.GetComponent<Weapon>());
 
-        }
-       if(collision.gameObject.tag =="createdHitBox")
-        {
-            //надо чтобы на самом хитбокве висели все данные о нем в случае если игрок будет кастовать уже нечто другое а эта этака еще не закончитьс€
-            //подобное можно сделать с и милишкой. если в оружие держать и обновл€ть информацию о свойствах атаки и ее особенност€х
-        }
-
-        
+        }        
     }
 
 
     public void Hit(float improvedDamage)
     {
         Debug.Log(Mathf.Floor(improvedDamage) + " damage done");
-        _improved.HP.DistractFromCurrent(improvedDamage);
+        Improved.HP.DistractFromCurrent(improvedDamage);
         
     }
     public void HitWillDone(GameObject attaker, Weapon weapon)
@@ -44,7 +37,7 @@ public class HittableEntity : UnitStats
             Hit(calculatedDamage);
             if (attaker.tag == "Player")//вывод информации на дисплей в случае если это игрок
             {
-                    attaker.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
+                attaker.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
              
                 GameObject camera = attaker.transform.Find("playerCam").gameObject;
                 FloatingText(camera, calculatedDamage.type);
@@ -56,11 +49,11 @@ public class HittableEntity : UnitStats
             attaker.GetComponent<UnitStats>().GetExpFrom(GetComponent<UnitStats>());//если после нанесени€ урона хп мало то выдаем опыт убийце
         }
     }
-    public bool UnitDead() => _improved.HP.Current() <= 0;
+    public bool UnitDead() => Improved.HP.Current() <= 0;
 
     private void FloatingText(GameObject camera,DamageType type)
     {
-        Vector3 TextOffset = -1.5f * camera.transform.right - 0.7f * camera.transform.up + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f));
+        Vector3 TextOffset = -1.5f * camera.transform.right - 0.7f * camera.transform.up + 0.3f*Random.insideUnitSphere;
         //custom value
         //<create copy of needed text>
         GameObject curText;

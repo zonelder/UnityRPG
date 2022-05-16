@@ -9,6 +9,8 @@ public enum RaycastState
     SHOOT,
     AFTER_SHOOT
 }
+
+[System.Serializable]
 public class RaycastAttack : Attack
 {
     private RaycastState rState;
@@ -17,8 +19,11 @@ public class RaycastAttack : Attack
     private GameObject weapon;
     private LineRenderer laserLine;
     private Cooldown lineRenderTime = new Cooldown(0.4f);
+    [SerializeField]
     private float timeToAim=0.0f;
+    [SerializeField]
     private float timeToShoot=0.4f;
+    [SerializeField]
     private float weaponRange = 100;
     public RaycastAttack(GameObject user)
     {
@@ -38,17 +43,17 @@ public class RaycastAttack : Attack
     public override void TickTime(float delta,float SpeedAmp=1)
     {
         base.TickTime(delta,SpeedAmp);
-        if(property.duration.curTime()>timeToAim && rState==RaycastState.BEFORE_AIMING)
+        if(Property.Duration.curTime()>timeToAim && rState==RaycastState.BEFORE_AIMING)
         {
             rState = RaycastState.AIMING;
             lineRenderTime.StartÑountdown();
         }
-        if(rState ==RaycastState.AIMING && !(property.duration.curTime() > timeToShoot))
+        if(rState ==RaycastState.AIMING && !(Property.Duration.curTime() > timeToShoot))
         {
             Aim();
 
         }
-        if(rState == RaycastState.AIMING && property.duration.curTime() > timeToShoot)
+        if(rState == RaycastState.AIMING && Property.Duration.curTime() > timeToShoot)
         {
             rState = RaycastState.SHOOT;
             Shoot();
@@ -121,7 +126,6 @@ public class RaycastAttack : Attack
     }
     public override void EndAttack()
     {
-        //isActive = false;
         laserLine.positionCount = 0;
         base.EndAttack();
     }

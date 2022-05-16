@@ -14,65 +14,85 @@ public class UnitStats : MonoBehaviour
 {
     [SerializeField]
     protected LifeStates state;
-    [SerializeField]
-    public   Level exp;
-    public BaseStats _base = new BaseStats(0,0,0,0,0);
-    [SerializeField]
-    public Stats _improved = new Stats(0, 0, 0, 0, 0);
+    public  Level Exp;
+
+
+    public BaseStats Base;
+    public Stats Improved;
+
+    private Coroutine _MPAtrophy;
+    private Coroutine _HPAtrophy;
 
     public UnitStats(int HP, int MP, int STR, int vitality, int energy)
     {
-        _base = new BaseStats(HP, MP, STR, vitality, energy);
-        exp = new Level();
+        Base = new BaseStats(HP, MP, STR, vitality, energy);
+        Exp = new Level();
         
     }
-    protected void StartExistence()//вызываем в дочерних классах чтобы доформировать юнита
+
+    public void OnEnable()
     {
-        _improved = new Stats(_base);
+        Improved.HP.StripOver += OnHPOver;
+        Improved.MP.StripOver += OnMPOver;
+    }
+    public void OnDisable()
+    {
+        Improved.HP.StripOver -= OnHPOver;
+        Improved.MP.StripOver -= OnMPOver;
+    }
+    protected void StartExistence()
+    {
+        // Вызываем в дочерних классах чтобы доформировать юнита
+        Improved = new Stats(Base);
+        refresh();
+        
     }
     protected virtual void Start()
     {
         Time.timeScale = 1;
         state = LifeStates.STABLE;
-        
+        StartCoroutine(Improved.HP.RegenerateByTime());
+        StartCoroutine(Improved.MP.RegenerateByTime());
+
     }
     protected virtual void Update()
     {
-        if(state != LifeStates.DEAD)
-        {
-            _improved.HP.StripTick(Time.deltaTime,state);
-            _improved.MP.StripTick(Time.deltaTime, state);
-        }
-        if (_improved.HP.Current() <= 0)
-        {
-            if (state != LifeStates.BODY_ON_THE_EDGE)
-            {
-                if (state == LifeStates.MIND_ON_THE_EDGE)
-                    state = LifeStates.DEAD;
-                else
-                    state = LifeStates.BODY_ON_THE_EDGE;
-            }
-        }
-        if (_improved.MP.Current() <= 0)
-        {
-            if(state!=LifeStates.MIND_ON_THE_EDGE)
-            {
-                if (state == LifeStates.BODY_ON_THE_EDGE)
-                    state = LifeStates.DEAD;
-                else
-                    state= LifeStates.MIND_ON_THE_EDGE;
-            }
-        }         
     }
+    private void OnHPOver()
+    {
+        if (state == LifeStates.MIND_ON_THE_EDGE)
+        {
+            StopCoroutine(_HPAtrophy);
+            state = LifeStates.DEAD;
+        }
+        else
+        {
+           _MPAtrophy= StartCoroutine(Improved.MP.StartAtrophy());
+            state = LifeStates.BODY_ON_THE_EDGE;
+        }
+    }
+    private void OnMPOver()
+    {
+        if (state == LifeStates.BODY_ON_THE_EDGE)
+        {
+            StopCoroutine(_MPAtrophy);
+            state = LifeStates.DEAD;
+        }
+        else
+        {
+          _HPAtrophy=  StartCoroutine(Improved.HP.StartAtrophy());
+            state = LifeStates.MIND_ON_THE_EDGE;
 
+        }
+    }
     public void refresh()
     {
-        _improved.HP.Refresh();
-        _improved.MP.Refresh();
+        Improved.HP.Refresh();
+        Improved.MP.Refresh();
     }
 
     public void GetExpFrom(UnitStats defeatedEnemy)
     {
-        exp.CatchExpirience( defeatedEnemy.exp.DieExpirience());
+        Exp.CatchExpirience( defeatedEnemy.Exp.DieExpirience());
     }
 }

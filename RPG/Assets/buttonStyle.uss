@@ -1,0 +1,25 @@
+.menuButtonStyle {
+    height: 35px;
+    width: 188px;
+    -unity-text-align: middle-center;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left-color: rgba(79, 77, 77, 255);
+    border-right-color: rgba(79, 77, 77, 255);
+    border-top-color: rgba(79, 77, 77, 255);
+    border-bottom-color: rgba(79, 77, 77, 255);
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    flex-grow: 1;
+    overflow: visible;
+    opacity: 1;
+    -unity-background-image-tint-color: rgba(106, 99, 99, 255);
+    background-color: rgba(166, 163, 163, 255);
+    -unity-font: url('/Assets/UI Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss');
+    -unity-font-style: normal;
+    color: rgba(19, 18, 18, 255);
+}

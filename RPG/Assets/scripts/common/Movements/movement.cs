@@ -15,9 +15,9 @@ public class movement : MonoBehaviour
     private GameObject cam;
 
     private  int speed;
-    private static int defaultSpeed=6;
-
-    private int perpendicularMove;//переменные для анимирования и фиксация движения персонажа,могут принимать значения(-1,0,1)
+    private static int s_defaultSpeed=6;
+    [Range(-1,1)]
+    private int perpendicularMove;
     private int moveForward;
 
     private Vector3 _surfaceNormal;
@@ -33,7 +33,7 @@ public class movement : MonoBehaviour
     private void Start()
     {
         canMove = true;
-        speed= defaultSpeed;
+        speed= s_defaultSpeed;
         PlayerRigit = gameObject.GetComponent<Rigidbody>();
         cam = transform.Find("playerCam").gameObject;
         isstay = true;
@@ -78,11 +78,11 @@ public class movement : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.LeftShift))//спринт
         {
-            speed = defaultSpeed * 2;
+            speed = s_defaultSpeed * 2;
         }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            speed = defaultSpeed;
+            speed = s_defaultSpeed;
         }
         if (Input.GetKey(KeyCode.W))
         {
@@ -92,7 +92,7 @@ public class movement : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.S))
         {
-            speed = defaultSpeed / 2;
+            speed = s_defaultSpeed / 2;
             moveForward = -1;
             direction -= cam.transform.forward;
             lookTo += cam.transform.forward;
@@ -100,7 +100,7 @@ public class movement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.S))
         {
             moveForward = 0;
-            speed = defaultSpeed;
+            speed =s_defaultSpeed;
         }
         if (Input.GetKey(KeyCode.A))
         {
@@ -116,13 +116,13 @@ public class movement : MonoBehaviour
             perpendicularMove = 1;
             direction += cam.transform.right;
             if(moveForward!=0)
-            lookTo += moveForward * cam.transform.right;
+                lookTo += moveForward * cam.transform.right;
             else
                 lookTo += cam.transform.right;
         }
 
-
-        direction.y = 0;//чтобы не выбло вертикальных компонент из-за положения камеры
+        // Чтобы не выбло вертикальных компонент из-за положения камеры
+        direction.y = 0;
         lookTo.y = 0;
         if (Input.GetKey(KeyCode.Space))
         {

@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class Cooldown
 {
     //модифицируемой значение
+    [SerializeField]
     private float cooldownTime;
 
     //не модифицируемые значени€. пусть нельз€ уменьшать врем€ отката 

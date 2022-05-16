@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
 public class ActiveAbility : AbstractAbility
 {
-    private int strokesNum = 0;
-    private List<Attack> attack = new List<Attack>();
-    public  Cooldown cooldown;
-    public Costs costs;
+    private int _strokesNum = 0;
+    [SerializeReference]
+    private List<Attack> _attack = new List<Attack>();
+    public Cooldown cooldown;
     public ActiveAbility(float cooldown) { this.cooldown = new Cooldown(cooldown); }
-    public int Size() => strokesNum;
+    public int Size() => _strokesNum;
     public void AddAttack(Attack NewAttack)
     {
-        attack.Add(NewAttack);
-        strokesNum++;
+        _attack.Add(NewAttack);
+        _strokesNum++;
     }
     public Attack GetAttackAt(int num)
     {
-        return attack[num];
+        return _attack[num];
     }
     public override void StartAbility()
     {

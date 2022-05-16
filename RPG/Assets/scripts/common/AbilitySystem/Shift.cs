@@ -2,41 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
 public class Shift
 {
-    public bool alreadyUsed=false;
-    public float startTime=0;//время от начала каста атаки когда надо начать перемещаться
-    public float initialSpeed;//x=0
-    public float finalSpeed;//x=shift.magnitude
-    public Cooldown duration=new Cooldown(1);//расчитывается как время за которое будет пройден вектор shift и не может быть изменен извне
-    private Vector3 shift;//вектор который надо пройти
+    public bool AlreadyUsed=false;
+    private float _startTime=0;//время от начала каста атаки когда надо начать перемещаться
 
-    public void SetStartTime(float time) { startTime = time; }
-    public float GetStartTime() { return startTime; }
-    public Vector3 Get() { return shift; }
-    public void Set(Vector3 value) { shift = value; }
-    public Vector3 VectorOfMove(GameObject unit)
+    [SerializeField]
+    private AnimationCurve _forwardMove;
+    [SerializeField]
+    private float _forwardLength;
+
+    [SerializeField]
+    private AnimationCurve _rightMove;
+    [SerializeField]
+    private float _rightLength;
+
+    [SerializeField]
+    private AnimationCurve _upMove;
+    [SerializeField]
+    private float _upLength;
+    public Cooldown Duration=new Cooldown(1);//расчитывается как время за которое будет пройден вектор shift и не может быть изменен извне
+    private Vector3 _startPosition;
+    private Vector3 _forwardDirection;
+    private Vector3 _rightDirection;
+    private Vector3 _upDirection;
+    public void SetStartTime(float time) { _startTime = time; }
+    public float StartTime() { return _startTime; }
+   public void SetStartTransform(Transform curUnitTransform)
     {
-        return unit.transform.forward*shift.z +unit.transform.right * shift.x + unit.transform.up * shift.y;
+        _startPosition = curUnitTransform.position;
+        _forwardDirection = curUnitTransform.forward;
+        _rightDirection = curUnitTransform.right;
+        _upDirection = curUnitTransform.up;
     }
-    public float VelocityAt(float time)
+
+    public Vector3 CurPosition()
     {
-        return ((finalSpeed - initialSpeed) / duration.GetCooldown() * time + initialSpeed);//линейнай зависимость
+        return PositionAt(Duration.curTime()/ Duration.GetCooldown());
     }
-    public float Velocity()//использует время с момента анчала отсчета 
+    public Vector3 PositionAt(float time)
     {
-        return ((finalSpeed - initialSpeed) / duration.GetCooldown() * duration.curTime() + initialSpeed);//линейнай зависимость
+        return _startPosition+_forwardDirection * _forwardMove.Evaluate(time)*_forwardLength 
+                             +_rightDirection* _rightMove.Evaluate(time)*_rightLength
+                             + _upDirection * _upMove.Evaluate(time)*_upLength;
     }
-    public void SetSpeed(float startSpeed, float endSpeed)
+
+    public Vector3 GetLenghts()
     {
-        initialSpeed = startSpeed;
-        finalSpeed = endSpeed;
-    }
-    public void RecalculateDuration()
-    {
-        float path = shift.magnitude;
-        float avrVelocity = (finalSpeed + initialSpeed) / 2;//работает только если скорость изменяется линейно от начала до конца
-        duration.SetCooldown(path / avrVelocity);
+        return new Vector3(_rightLength, _upLength, _forwardLength);
     }
 
     public Shift() { }

@@ -2,27 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
 public class AttackStats
 {
-    public Multiplier speedAmp;
-    public Multiplier attackSpeedAmp;
-    public Multiplier damageAmp;
-    public Cooldown duration;
+    public Multiplier SpeedAmp;
+    public Multiplier AttackSpeedAmp;
+    public Multiplier DamageAmp;
+    public Cooldown Duration;
 
     public AttackStats(float SAmp = 1, float ASAmp = 1, float dAmp = 1, float duration = 1)
     {
-        speedAmp = new Multiplier(SAmp);
-        attackSpeedAmp = new Multiplier(ASAmp);
-        damageAmp = new Multiplier(dAmp);
-        this.duration = new Cooldown(duration);
+        SpeedAmp = new Multiplier(SAmp);
+        AttackSpeedAmp = new Multiplier(ASAmp);
+        DamageAmp = new Multiplier(dAmp);
+        Duration = new Cooldown(duration);
     }
     public void SetAll(float dAmp,float sAmp,float asAmp,float time)
     {
-        speedAmp.value = sAmp;
-        attackSpeedAmp.value = asAmp;
-        damageAmp.value = dAmp;
-        duration.SetCooldown(time);
+        SpeedAmp.SetValue(sAmp);
+        AttackSpeedAmp.SetValue(asAmp);
+        DamageAmp.SetValue( dAmp);
+        Duration.SetCooldown(time);
     }
-
-
 }

@@ -620,21 +620,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  exp:
+  Exp:
     lvl: 0
     expForDeath: 200
-  _improved:
+  Improved:
     MP:
-      max: 200
-      regen: 0
+      _max: 200
+      _regen: 0
       current: 200
     HP:
-      max: 700
-      regen: 0
+      _max: 700
+      _regen: 0
       current: 700
     SP:
-      max: 0
-      regen: 0
+      _max: 0
+      _regen: 0
       current: 0
     accuracy: 0
     armor: 0
@@ -970,22 +970,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ece4b79ebd289647a041fa3fb05aa79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 1
-  exp:
+  state: 0
+  Exp:
     lvl: 0
     expForDeath: 1
-  _improved:
+  Improved:
     MP:
-      max: 600
-      regen: 0
+      _max: 600
+      _regen: 0
       current: 600
     HP:
-      max: 1072
-      regen: 10
-      current: 1072
+      _max: 1000
+      _regen: 10
+      current: 1000
     SP:
-      max: 0
-      regen: 0
+      _max: 0
+      _regen: 0
       current: 0
     accuracy: 0
     armor: 0
@@ -1018,9 +1018,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce336b9a9e04f1a42a56a2bf8c625a6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curAbility:
+    _name: 
+    isActive: 0
+    _attack: []
+    cooldown:
+      cooldownTime: 0
   weapon: {fileID: 1784074508}
   curAttackIndex: 0
   state: 0
+  references:
+    version: 1
 --- !u!114 &1456653852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1039,29 +1047,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -2
-      outSlope: -2
-      tangentMode: 34
+      inSlope: -6.6352572
+      outSlope: -6.6352572
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0.024999976
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1114,7 +1113,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a05097333f90234cb0598f664369d9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ability: []
   projectile: {fileID: 4356088914552461496, guid: b58445cac4adefc44b90ee845299d39d, type: 3}
+  references:
+    version: 1
 --- !u!1 &1784074506
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,6 +1164,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30ac64df794a2b047be708aa904951f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curAttackEffects:
+    SpeedAmp:
+      _value: 1
+    AttackSpeedAmp:
+      _value: 1
+    DamageAmp:
+      _value: 1
+    Duration:
+      cooldownTime: 1
   hitBox: {fileID: 1784074509}
 --- !u!65 &1784074509
 BoxCollider:
@@ -1465,21 +1476,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  exp:
+  Exp:
     lvl: 0
     expForDeath: 200
-  _improved:
+  Improved:
     MP:
-      max: 200
-      regen: 0
+      _max: 200
+      _regen: 0
       current: 200
     HP:
-      max: 700
-      regen: 0
+      _max: 700
+      _regen: 0
       current: 700
     SP:
-      max: 0
-      regen: 0
+      _max: 0
+      _regen: 0
       current: 0
     accuracy: 0
     armor: 0
@@ -1538,7 +1549,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mySkin: {fileID: 11400000, guid: 267236d25226335458bf7d9235c6f329, type: 2}
   Char: {fileID: 1456653849}
-  Visible: 1
 --- !u!1001 &4569635167280721495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1619,7 +1629,15 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4569635166823012584, guid: 169871b60fc30504692e6a8e5072bd89, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569635166823012584, guid: 169871b60fc30504692e6a8e5072bd89, type: 3}
       propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569635166823012584, guid: 169871b60fc30504692e6a8e5072bd89, type: 3}
+      propertyPath: m_CollisionDetection
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4569635166823012585, guid: 169871b60fc30504692e6a8e5072bd89, type: 3}

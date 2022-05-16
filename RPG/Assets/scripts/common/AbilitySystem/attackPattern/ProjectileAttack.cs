@@ -9,13 +9,18 @@ public enum ProjectileState
     AFTER_LAUNCH
 }
 
-public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уже много, лучше выделить класс под это
+[System.Serializable]
+public class ProjectileAttack : Attack
 {
+    // Пока допустим нормально. хотя свойств уже много, лучше выделить класс под это.
     private ProjectileState pState;
     private LineRenderer sightLine;
+    [SerializeField]
     private float impulseLaunch = 10.0f;
+    [SerializeField]
     private float launchTime = 0;//время относительно начала атаки когда надо запустить снаряд
     private Cooldown launchPreparation;//время подготовки с запуску снаряда
+    [SerializeField]
     private GameObject projectile;
     private GameObject weapon;
     private GameObject camera;
@@ -32,6 +37,7 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
         projectile.GetComponent<Projectile>().isBase = true;
         projectile.GetComponent<Projectile>().projectileStats = weapon.GetComponent<Weapon>();
         projectile.GetComponent<Projectile>().user = weapon.transform.parent.gameObject;
+       
     }
  
     public override void StartAttack()
@@ -43,7 +49,7 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
     public override void TickTime(float delta, float SpeedAmp = 1)
     {
         base.TickTime(delta,SpeedAmp);
-        if (property.duration.curTime() > launchTime && pState == ProjectileState.BEFORE_PREPARATION )
+        if (Property.Duration.curTime() > launchTime && pState == ProjectileState.BEFORE_PREPARATION )
         {
             pState = ProjectileState.PREPARATION;
             launchPreparation.StartСountdown();
@@ -123,9 +129,8 @@ public class ProjectileAttack : Attack//пока допустим нормально. хотя свойств уж
             sightLine.SetPosition(i, segments[i]);
     }
   
-    private void Launch()//запускаем снаряд
+    private void Launch()
     {
-        //создание снаряда и его запуск
         GameObject curProjectile= MonoBehaviour.Instantiate(projectile, weapon.transform.position + weapon.transform.forward, weapon.transform.rotation);
         curProjectile.GetComponent<Projectile>().isBase = false;
         curProjectile.GetComponent<Rigidbody>().AddForce(impulseLaunch*camera.transform.forward,ForceMode.Impulse);

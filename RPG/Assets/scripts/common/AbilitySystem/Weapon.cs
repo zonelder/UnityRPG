@@ -10,7 +10,7 @@ public class Weapon : MonoBehaviour
     private MeshFilter mesh;
     public void Awake()
     { 
-        curDamage = gameObject.transform.parent.gameObject.GetComponent<UnitStats>()._improved.damage;
+        curDamage = gameObject.transform.parent.gameObject.GetComponent<UnitStats>().Improved.damage;
     }
     public Collider GetHitBox() { return hitBox; }
     public  void SetHitBox(Collider NewHitBox) { hitBox = NewHitBox; }
@@ -23,7 +23,7 @@ public class Weapon : MonoBehaviour
     public GeneratedDamage CalculateDamage()
     {
         GeneratedDamage damage = curDamage.calculate();
-        damage.damage *= curAttackEffects.damageAmp;
+        damage.damage *= curAttackEffects.DamageAmp;
         return damage;
     }
     public void SetToDefault()

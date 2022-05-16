@@ -4,39 +4,70 @@ using UnityEngine;
 
 
 [System.Serializable]
-public class Strip : AbstractStrip//общий класс для всех полосок. если позже не появиться особых взаимодействий для каздой из полос, то все классы будут заменены этим
+public class Strip : AbstractStrip
 {
+    public delegate void StripMethod();
+    public event StripMethod StripOver;
+
     [SerializeField]
-    protected float current;
-    protected LifeStates AtrophyActivatorState;//в этом классе нет возможности становить таковое состояние,это делается только из производных классов и только в конструкторе
-    public Strip(float _max) : base(_max) {
+    private float current;
+    private bool atrophyWork;
+    public Strip(float _max) : base(_max) 
+    {
     }
 
-    public Strip(float _max, float reg, float Atrophy = 100) : base(_max)
+    public Strip(float _max, float reg, float Atrophy = 100) : base(_max,reg,Atrophy)
     {
-        current = max;
-        this.atrophy = Atrophy;
-        regen = reg;
+        current = Max();
+        atrophyWork=false;
     }
-    public void Refresh() => current = max;
-    public virtual void  StripTick(float deltaTime, LifeStates state)
+
+    public void Refresh()
     {
-        current += regen * deltaTime;
-        if (current > max)
-            current = max;
-        if (state == AtrophyActivatorState)
+
+        AddToCurrent(Max());
+        atrophyWork = false;
+    }
+
+    public IEnumerator StartAtrophy()
+    {
+        while(true)
         {
-            current -= atrophy * deltaTime;
+            DistractFromCurrent(Atrophy());
+            yield return new WaitForSeconds(1.0f);
         }
-        if (current <= 0)
-            current = 0;
-
     }
 
-
-    public void AddToCurrent(float additional) => current += additional;
-    public void DistractFromCurrent(float distracted) => current -= distracted;
+    public IEnumerator RegenerateByTime()
+    {
+        while (true)
+        {
+            AddToCurrent(Regen());
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
+    public void  AddToCurrent(float additional)
+    {
+        current += additional;
+        if (current > Max())
+        {
+            current = Max();
+        }
+    }
+    public void DistractFromCurrent(float distracted)
+    {
+          current -= distracted;
+        if (current <= 0)
+        {
+            current = 0;
+            if (!atrophyWork)
+            {
+                atrophyWork = true;
+                StripOver();
+            }
+            
+        }
+    }
 
     public float Current() => current;
-    //public static Health operator +(Health a, float b) => return Health(a.max+b);
 }

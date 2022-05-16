@@ -12,4 +12,7 @@ public class Stamina :Strip
     {
     }
 
+    public Stamina(AbstractStrip AbstractSP) : base(AbstractSP.Max(), AbstractSP.Regen(), AbstractSP.Atrophy())
+    {
+    }
 }

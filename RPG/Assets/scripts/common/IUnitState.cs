@@ -24,22 +24,18 @@ public class IUnitState : MonoBehaviour
 
     private void AbilityAction()
     {
-        float finalSpeedAmp = curAttack.property.speedAmp;//Должно учитывать не только бонусы от атаки но и бонусы от бафов, от экипы  и тд
+        float finalSpeedAmp = curAttack.Property.SpeedAmp;//Должно учитывать не только бонусы от атаки но и бонусы от бафов, от экипы  и тд
         curAttack.TickTime(Time.deltaTime, finalSpeedAmp);
-        if (!curAttack.shift.duration.IsReady())//если время перемещаться
+
+        if (!curAttack.Shift.Duration.IsReady())//если время перемещаться
         {
-            Shifting();
+            //Shifting();
+            transform.position = curAttack.Shift.CurPosition();
         }
-        if (curAttack.property.duration.IsReady())//если кончилась атака
+        if (curAttack.Property.Duration.IsReady())//если кончилась атака
         {
             SwitchAttack();
         }
-    }
-    private void Shifting()
-    {
-        Vector3 shift = curAttack.shift.VectorOfMove(gameObject);//направление движения с учетом того куда смотрит юнит
-        shift.Normalize();
-        gameObject.transform.position += (shift) * curAttack.shift.Velocity() * curAttack.property.speedAmp * Time.deltaTime;//изменяем положение юнита по заданому вектору с заданой скоростью
     }
     public void UseAbilityAt(int i)
     {
@@ -55,8 +51,9 @@ public class IUnitState : MonoBehaviour
     public void BeginNewAttack()
     {
         GetComponent<movement>().RotateByCamera();
-        curAttack = curAbility.GetAttackAt(curAttackIndex); 
-        weapon.SetAttackEffects(curAttack.property);
+        curAttack = curAbility.GetAttackAt(curAttackIndex);
+        curAttack.Shift.SetStartTransform(transform);
+        weapon.SetAttackEffects(curAttack.Property);
         Debug.Log("start " + (curAttackIndex + 1) + "th attack");
         curAttack.StartAttack();
     }

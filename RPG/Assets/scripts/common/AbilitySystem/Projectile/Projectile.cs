@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    //<пачка булевых переменных определяющая поведение обьекта>
-   //может быть и брольше по этмоу тови задумать о вынесении их в отдельный класс  и формироавании шаблона state для класса projectile
+    // <пачка булевых переменных определяющая поведение обьекта>
+   // может быть и больше поэтому cтоиn задумать о вынесении их в отдельный класс(шаблон state machine)
    [SerializeField]
     public  bool isBase = false;//надо зактырть
     [SerializeField]
@@ -21,12 +21,17 @@ public class Projectile : MonoBehaviour
     private Cooldown delayBfDestroy = new Cooldown(3.0f);
     [SerializeField]
     private GameObject destroyEffect;
+    [SerializeField]
+    private Shift _moveTrajectory;
     private float radius = 5.0f;
    
      public void Awake()
     {
         actionDone = false;
         delayBfDestroy.StartСountdown();
+        _moveTrajectory.Duration.SetCooldown(delayBfDestroy.GetCooldown());
+        _moveTrajectory.Duration.StartСountdown();
+        _moveTrajectory.SetStartTransform(transform);
     }
     public void Update()
     {
@@ -38,15 +43,15 @@ public class Projectile : MonoBehaviour
                 delayBfDestroy.TickTime(Time.deltaTime);
                 onFly();
             }
-            if (delayBfDestroy.IsReady() && !actionDone)//если таймер уже отсчитал и готов быть уничтожен
+            if (delayBfDestroy.IsReady() && !actionDone)
             {
-
+                // если таймер уже отсчитал и готов быть уничтожен
                 OnEndLiveTime();
                 actionDone = true;
             }
         }
     }
-    public void OnTouch(GameObject tangentSurface)//что происходит когда снаряд касается окружения или противника
+    public void OnTouch(GameObject tangentSurface)
     {
         Debug.Log(gameObject.name + " Touch "+tangentSurface.name);
         OnAttackWhenTouch(tangentSurface);
@@ -60,19 +65,12 @@ public class Projectile : MonoBehaviour
     }
     public void OnAttackWhenTouch(GameObject obj)
     {
-        if (obj.tag == "Unit")//в случчае если коснулись юнита
+        HittableEntity beatenEntity = obj.GetComponent<HittableEntity>();
+        if (beatenEntity != null)
         {
-            Debug.Log("encounter a " + obj.name);
-            //obj.GetComponent<HittableEntity>().Hit(10.0f);//наносиим урон от удара
-            HittableEntity beatenEntity = obj.GetComponent<HittableEntity>();
-            if (beatenEntity != null)
-                beatenEntity.HitWillDone(user, projectileStats);
-            //примеры взаимодействий по касанию. надо опписать как можно больше возможных взаимодействий
-
+            beatenEntity.HitWillDone(user, projectileStats);
         }
-        //OnEndLiveTime();
-
-
+            // примеры взаимодействий по касанию. надо опписать как можно больше возможных взаимодействий
     }
     public void OnEndLiveTime()
     {
@@ -85,21 +83,23 @@ public class Projectile : MonoBehaviour
 
         
         
-        //<base module for projectile>
+        // <base module for projectile>
         if (destroyEffect != null)
         {
-            GameObject curEffect = Instantiate(destroyEffect, transform.position, transform.rotation);//запустили эфект который проигрывается при уничтожении обьекта(уничтожить потом его тоже надо)
+            // запустили эфект который проигрывается при уничтожении обьекта(уничтожить потом его тоже надо)
+
+            GameObject curEffect = Instantiate(destroyEffect, transform.position, transform.rotation);
             Destroy(curEffect, 3.9f);
         }
-        //Debug.Log("destroy");
         Destroy(gameObject);
-        //</base module for projectile>
+        // </base module for projectile>
 
 
     }
     private void onFly()
     {
-        
+        _moveTrajectory.Duration.TickTime(Time.deltaTime);
+        transform.position = _moveTrajectory.CurPosition();
     }
     private void OnCollisionEnter(Collision coll)
     {

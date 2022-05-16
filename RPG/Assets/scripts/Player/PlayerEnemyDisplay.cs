@@ -37,7 +37,7 @@ public class PlayerEnemyDisplay : MonoBehaviour
         
         if (is_fighting)
         {  
-            float HealthBarLen = Enemy.GetComponent<UnitStats>()._improved.HP.Current() / Enemy.GetComponent<UnitStats>()._improved.HP.Max();
+            float HealthBarLen = Enemy.GetComponent<UnitStats>().Improved.HP.Current() / Enemy.GetComponent<UnitStats>().Improved.HP.Max();
             GUI.Box(new Rect(Screen.width / 2 - 127, 15, 254, 15)," ", EnemyHPbar.GetStyle("FullHPBar"));
             GUI.Box(new Rect(Screen.width/2-127, 15, 254 * HealthBarLen, 15), " ", EnemyHPbar.GetStyle("CurHPBar"));
             GUI.Box(new Rect(Screen.width / 2 - 127, 15, 254 , 15), Enemy.name, EnemyHPbar.GetStyle("EnemyName"));

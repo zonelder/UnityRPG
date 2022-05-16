@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AbstractAbility //абилка это по сити набор последовательных сценариев с некоторыми числовыми данными
+[System.Serializable]
+public abstract class AbstractAbility
 {
-    private string name;
+    [SerializeField]
+    private string _name;
+    [HideInInspector]
     public bool isActive = false;
 
     protected AbstractAbility(string name)
     {
-        this.name = name;
+        _name = name;
     }
     protected AbstractAbility()
     {

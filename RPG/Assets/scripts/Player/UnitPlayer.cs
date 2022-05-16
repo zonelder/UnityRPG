@@ -9,11 +9,11 @@ public class UnitPlayer : HittableEntity
     public UnitPlayer():base(1000,600,20,20,20)
     {
         showStats = false;
-        _base.HP = new AbstractStrip(1000,10,100);
+        Base.HP = new AbstractStrip(1000,10,100);
   
         StartExistence();
-        _improved.damage.minDMG = 30;
-        _improved.damage.maxDMG = 40;
+        Improved.damage.minDMG = 30;
+        Improved.damage.maxDMG = 40;
     }
 
     protected  override void Update()
@@ -23,9 +23,9 @@ public class UnitPlayer : HittableEntity
         {
             showStats = !showStats;
         }
-        if (exp.isEnouth())
+        if (Exp.isEnouth())
         {
-            exp.lvlUp();
+            Exp.lvlUp();
             pointstat += 5;
         }
     }
@@ -33,18 +33,19 @@ public class UnitPlayer : HittableEntity
     void OnGUI()
     {
         if (!showStats)
-            useGUILayout = false; //Скрываем окно статов
-        else//негибко- надо сделать GUIskin
+            useGUILayout = false;
+        else
         {
+            // Негибко- перетащим в UI Builder 
             GUI.Box(new Rect(10, 70, 300, 300), "stats");
-            GUI.Label(new Rect(10, 95, 300, 300), "LvL: " + exp.level());
-            GUI.Label(new Rect(10, 110, 300, 300), "hp: " + _improved.HP.Max());
-            GUI.Label(new Rect(10, 125, 300, 300), "mp: " + _improved.MP.Max());
-            GUI.Label(new Rect(10, 140, 300, 300), "expToUp: " + exp.RequiredExp());
-            GUI.Label(new Rect(10, 155, 300, 300), "str: " + _improved.attributes.STR);
-            GUI.Label(new Rect(10, 170, 300, 300), "vitality: " + _improved.attributes.vitality);
-            GUI.Label(new Rect(10, 185, 300, 300), "intellect: " + _improved.attributes.intellect);
-            GUI.Label(new Rect(10, 200, 300, 300), "damage: " + _improved.damage.minDMG+ " ~ "+ _improved.damage.maxDMG);
+            GUI.Label(new Rect(10, 95, 300, 300), "LvL: " + Exp.level());
+            GUI.Label(new Rect(10, 110, 300, 300), "hp: " + Improved.HP.Max());
+            GUI.Label(new Rect(10, 125, 300, 300), "mp: " + Improved.MP.Max());
+            GUI.Label(new Rect(10, 140, 300, 300), "expToUp: " + Exp.RequiredExp());
+            GUI.Label(new Rect(10, 155, 300, 300), "str: " + Improved.attributes.STR);
+            GUI.Label(new Rect(10, 170, 300, 300), "vitality: " + Improved.attributes.vitality);
+            GUI.Label(new Rect(10, 185, 300, 300), "intellect: " + Improved.attributes.intellect);
+            GUI.Label(new Rect(10, 200, 300, 300), "damage: " + Improved.damage.minDMG+ " ~ "+ Improved.damage.maxDMG);
             if (pointstat > 0) 
             {
                 GUI.Label(new Rect(10, 250, 300, 20), "points " + pointstat.ToString());
@@ -66,8 +67,8 @@ public class UnitPlayer : HittableEntity
             if (pointstat > 0)
             {
                 pointstat -= 1;
-                _base.ChangeSTR(1);
-                _improved.ChangeSTR(1);
+                Base.ChangeSTR(1);
+                Improved.ChangeSTR(1);
             }
         }
     } 
@@ -78,8 +79,8 @@ public class UnitPlayer : HittableEntity
             if (pointstat > 0)
             {
                 pointstat -= 1;
-                _base.ChangeVitality(1);
-                _improved.ChangeVitality(1);
+                Base.ChangeVitality(1);
+                Improved.ChangeVitality(1);
             }
         }
     }
@@ -91,8 +92,8 @@ public class UnitPlayer : HittableEntity
             if (pointstat > 0)
             {
                 pointstat -= 1;
-                _base.ChangeIntellect(1);
-                _improved.ChangeIntellect(1);
+                Base.ChangeIntellect(1);
+                Improved.ChangeIntellect(1);
             }
         }
     }

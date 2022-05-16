@@ -29,6 +29,6 @@ public class HealingPosion : ScriptableItem
     }
     public override void  Use(GameObject Unit)
     {
-        Unit.GetComponent<UnitStats>()._improved.HP.AddToCurrent(recoverHP);
+        Unit.GetComponent<UnitStats>().Improved.HP.AddToCurrent(recoverHP);
     }
 }

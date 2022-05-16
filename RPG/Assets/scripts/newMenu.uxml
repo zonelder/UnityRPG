@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="/Assets/buttonStyle.uss" />
+    <ui:VisualElement name="Screen" style="height: initial; width: initial; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1;">
+        <ui:VisualElement name="mainMenu" style="bottom: auto; top: 30%; display: flex;">
+            <ui:Button text="start game" display-tooltip-when-elided="true" name="startButton" class="menuButtonStyle" />
+            <ui:Button text="setting" display-tooltip-when-elided="true" name="settingButton" class="menuButtonStyle" style="width: 188px; height: 35px;" />
+            <ui:Button text="exit" display-tooltip-when-elided="true" name="exitButton" class="menuButtonStyle" style="width: 188px; height: 35px;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="askForExit" style="height: 91px; width: 201px; align-items: center; display: flex; visibility: hidden; background-color: rgb(159, 158, 158); border-top-left-radius: 9px; border-bottom-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+            <ui:Label text="you really want to exit?" display-tooltip-when-elided="true" name="ask" style="align-items: center;" />
+            <ui:VisualElement name="answersButtons" style="align-items: center; flex-direction: row; margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;">
+                <ui:Button text="yes" display-tooltip-when-elided="true" name="yesButton" style="height: 10px; width: 50px; border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); color: rgb(0, 0, 0);" />
+                <ui:Button text="no" display-tooltip-when-elided="true" name="noButton" style="height: 10px; width: 50px; border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); color: rgb(0, 0, 0);" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

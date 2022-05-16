@@ -2,56 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public abstract class Attack
 {
    
-    protected bool isActive=false; 
-    protected Animation attackAnimation;
-
+    private bool isActive=false; 
 
     /// <переменные_отвечающие_за_характеристики>
-    public AttackStats property=new AttackStats();
-    public Shift shift=new Shift();
+    public AttackStats Property=new AttackStats();
+    public Shift Shift=new Shift();
     /// </переменные_отвечающие_за_характеристики>
-    /// 
 
     public bool InUse() => isActive;
     public virtual  void StartAttack()
     {
         
         isActive = true;
-        property.duration.StartСountdown();
+        Property.Duration.StartСountdown();
     }
 
     public virtual void TickTime(float delta,float finalSpeedAmp=1)
     {
-        property.duration.TickTime(delta);
-        if(!shift.alreadyUsed && property.duration.curTime()>shift.startTime)// в случае если  еще не юзалос перемещение то начинаем перемещать 
+        Property.Duration.TickTime(delta);
+        if(!Shift.AlreadyUsed && Property.Duration.curTime()>Shift.StartTime())
         {
-            shift.duration.StartСountdown();
-            shift.alreadyUsed = true;
+            // В случае если  еще не юзалос перемещение то начинаем перемещать. 
+            Shift.Duration.StartСountdown();
+            Shift.AlreadyUsed = true;
         }
-        if(!shift.duration.IsReady())
+        if(!Shift.Duration.IsReady())
         {
-            shift.duration.TickTime(finalSpeedAmp*delta);
+            Shift.Duration.TickTime(finalSpeedAmp*delta);
         }
     }
 
 
 
-    public void CalculateDuration()
+    public void RecalculateDuration()
     {
-        float shiftEndTime = shift.duration.GetCooldown() + shift.startTime;
-        if (shiftEndTime > property.duration.GetCooldown())//если абилка закоччиться раньше чем дэш
+        float shiftEndTime = Shift.Duration.GetCooldown() + Shift.StartTime();
+        if (shiftEndTime > Property.Duration.GetCooldown())
         {
-            float dt = shiftEndTime - property.duration.GetCooldown();
-            property.duration.SetCooldown(property.duration.GetCooldown() + dt);//увеличиваем время чтобы атака кончала в упор к концу деша
+            float dt = shiftEndTime - Property.Duration.GetCooldown();
+            Property.Duration.SetCooldown(Property.Duration.GetCooldown() + dt);
+            // Увеличиваем время чтобы атака кончала в упор к концу деша.
         }
-       
+
     }
     public virtual void EndAttack()
     {
         isActive = false;
-        shift.alreadyUsed = false;
+        Shift.AlreadyUsed = false;
     }
 }

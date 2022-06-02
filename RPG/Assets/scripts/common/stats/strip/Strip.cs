@@ -6,7 +6,6 @@ using UnityEngine;
 [System.Serializable]
 public class Strip : AbstractStrip
 {
-    public delegate void StripMethod();
     public event StripMethod StripOver;
 
     [SerializeField]
@@ -48,6 +47,8 @@ public class Strip : AbstractStrip
     }
     public void  AddToCurrent(float additional)
     {
+        if (additional <0)
+            throw new System.ArgumentException("expect positive value,but get " + additional);
         current += additional;
         if (current > Max())
         {
@@ -56,6 +57,8 @@ public class Strip : AbstractStrip
     }
     public void DistractFromCurrent(float distracted)
     {
+        if (distracted < 0)
+            throw new System.ArgumentException("expect positive value,but get "+distracted);
           current -= distracted;
         if (current <= 0)
         {
@@ -71,3 +74,4 @@ public class Strip : AbstractStrip
 
     public float Current() => current;
 }
+public delegate void StripMethod();

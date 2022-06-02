@@ -15,7 +15,7 @@ public class APBuff : ScriptableBuff
         base.IsEffectStacked = true;
     }
 
-    public override bool Equals(Object other)
+    public override bool Equals(ScriptableBuff other)
     {
 
         if (other == null || !this.GetType().Equals(other.GetType()))

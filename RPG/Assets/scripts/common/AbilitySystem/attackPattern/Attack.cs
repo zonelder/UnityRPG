@@ -24,7 +24,7 @@ public abstract class Attack
     public virtual void TickTime(float delta,float finalSpeedAmp=1)
     {
         Property.Duration.TickTime(delta);
-        if(!Shift.AlreadyUsed && Property.Duration.curTime()>Shift.StartTime())
+        if(!Shift.AlreadyUsed && Property.Duration.curTime()>Shift.StartTime)
         {
             // В случае если  еще не юзалос перемещение то начинаем перемещать. 
             Shift.Duration.StartСountdown();
@@ -40,7 +40,7 @@ public abstract class Attack
 
     public void RecalculateDuration()
     {
-        float shiftEndTime = Shift.Duration.GetCooldown() + Shift.StartTime();
+        float shiftEndTime = Shift.Duration.GetCooldown() + Shift.StartTime;
         if (shiftEndTime > Property.Duration.GetCooldown())
         {
             float dt = shiftEndTime - Property.Duration.GetCooldown();

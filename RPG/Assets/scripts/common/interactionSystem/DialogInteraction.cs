@@ -46,14 +46,14 @@ public class DialogInteraction : AbstractInteraction
     {
         Debug.Log("start inter");
         Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze =true;
-        Unit.GetComponent<movement>().canMove = false;
+        Unit.GetComponent<movement>().DisableMove();
         dialogStart = true;
     }
     public override void EndInteract()
     {
         Debug.Log("end Inter");
         Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze = false;
-        Unit.GetComponent<movement>().canMove = true;
+        Unit.GetComponent<movement>().EnableMove();
         dialogStart = false;
     }
     void OnGUI()

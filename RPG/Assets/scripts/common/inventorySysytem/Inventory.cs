@@ -4,86 +4,76 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public bool inventoryOpen = false;
-    [SerializeField]
-    private int InventorySize = 10;
-    [SerializeField]
-    private GameObject carrier;
-    [SerializeField]
-    private GUISkin oneCellSkin;
-    private List<ScriptableItem> cells = new List<ScriptableItem>(0);
-    private List<int> CountOfItem = new List<int>(0);
+
+    [SerializeField] private int _inventorySize = 10;
+    [SerializeField] private GameObject carrier;
+
+
+    private readonly List<Cell> _cells = new List<Cell>();
+    public int Size() => _inventorySize;
+    public int OccupiedCellsSize() => _cells.Count;
+    public Cell this[int index]
+    {
+        get=>_cells[index];    
+    }
+
     public void AddItem(ScriptableItem NewItem,int count=1)
     {
 
-        if(this.Contains(NewItem))//елси предмет уже есть в инвенторе
+        if(Contains(NewItem))
         {
 
-            int i = this.LastIndexOf(NewItem);
-            if (CountOfItem[i]+count>cells[i].CountInStack)//если столько пихнуть невозмоожно
+            int index = LastIndexOf(NewItem);
+            int suit = count;
+            if(!_cells[index].CanPlaceAmount(count))
             {
-               
-                int much = (cells[i].CountInStack - count);
-                CountOfItem[i] +=much ;//допихиваем сколько можно
+                suit= _cells[index].Item.CountInStack - count;
+                _cells.Add(new Cell(NewItem,count- suit));
 
-                cells.Add(NewItem);//и выдел€ем новую €чейку под предметы
-                CountOfItem.Add(count - much);
             }
-            else//если заппихать можно в старые €чейки
-            {
-                CountOfItem[i] += count;//пихаем
-            }
-            
+            _cells[index].PlaceAmount(suit);
         }
-        else //такого предмета еще нет
-        {
-            cells.Add(NewItem);//посел€ем его там;
-            CountOfItem.Add(count);
-        }
-    }
-    public void AddCells(int additional) => InventorySize += additional;
-    public  void RemoveItem(ScriptableItem DeletedItem,int count=1)
-    {
-        if (count <= 0)//на случай неправильных влетов в функцию
-            return;
-        int i = this.LastIndexOf(DeletedItem);
-        if (i < 0 || i >= cells.Count)
-            Debug.Log("Try to REMOVE ITEM BUT INDEX IS out of range with"+ i);
         else
         {
-            if (CountOfItem[i] - count < 0)//если после выкидывани€ не должно остатьс€ ничего
-            {
-                int much = count - CountOfItem[i];//высчитываем сколько удалить после того как уйдет эта €чейка;
-                cells.RemoveAt(i);
-                CountOfItem.RemoveAt(i);//удал€ем эту €чейку и обнул€ем ее содержимое
-                this.RemoveItem(DeletedItem, much);//удал€ем остатки
-            }
-            else//если после выкидывани€ должно остатьс€ еще
-            {
-                CountOfItem[i] -= count;//просто уменьшим счетчик
-            }
-
-            if (CountOfItem[i] <= 0)//проверка на состо€тельность 
-            {
-                cells.RemoveAt(i);
-                CountOfItem.RemoveAt(i);
-            }
+            _cells.Add(new Cell(NewItem, count));
         }
+    }
+    public void AddCells(int additional) => _inventorySize += additional;
+    public  void RemoveItem(ScriptableItem DeletedItem,int removeCount=1)
+    {
+        if (removeCount <= 0)
+            throw new System.ArgumentOutOfRangeException("cant remove negative count of items");
+
+        int index = this.LastIndexOf(DeletedItem);
+        if (index == -1)
+            throw new System.ArgumentException("such item not found");
+
+        if (_cells[index].CanRemoveAmount(removeCount))
+        {
+            _cells[index].RemoveAmount(removeCount);
+        }
+        else
+        {
+            _cells.RemoveAt(index);
+            RemoveItem(DeletedItem, removeCount - _cells[index].Count);
+            return;
+        }
+        if (_cells[index].Empty())
+            _cells.RemoveAt(index);
         
     }
-
     public void UseItemAt(int i)
     {
      
-            cells[i].Use(carrier);
-            if (cells[i].RemoveAfterUse())
-                this.RemoveItem(cells[i]);      
+            _cells[i].Item.Use(carrier);
+            if (_cells[i].Item.RemoveAfterUse())
+                RemoveItem(_cells[i].Item,1);      
     }
     private bool Contains(ScriptableItem Item)
     {
-        for(int i=0;i<cells.Count;i++)
+        for(int i=0;i<_cells.Count;i++)
         {
-            if (Item.Equals(cells[i]))
+            if (Item.Equals(_cells[i].Item))
                 return true;
         }
         return false;
@@ -91,39 +81,11 @@ public class Inventory : MonoBehaviour
     private int LastIndexOf(ScriptableItem Item)
     {
         int index = 0;
-        for (int i = 0; i < cells.Count; i++)
-            if (Item.Equals(cells[i]))
+        for (int i = 0; i < _cells.Count; i++)
+            if (Item.Equals(_cells[i].Item))
                 index = i;
 
         return index;
     }
 
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.I))
-        {
-            inventoryOpen =!inventoryOpen;
-        }
-    }
-    void OnGUI()
-    {
-        if (inventoryOpen)//
-        {
-            GUI.Box(new Rect(Screen.width - 310, 70, 300, 300), "inventory");
-            for (int i = 0; i <InventorySize; ++i)
-            {
-                GUI.Box(new Rect(Screen.width - 305 + (i % 5) * 58, 100 + (i / 5) * 58, 57, 57), " ");//пуста€ €чейка
-                if (i < cells.Count)//если €чейка не пуста€ 
-                {
-                    oneCellSkin.GetStyle("ItemImg").normal.background = cells[i].GetTexture();
-                    if (GUI.Button(new Rect(Screen.width - 305 + (i % 5) * 58, 100 + (i / 5) * 58, 57, 57), CountOfItem[i].ToString(), oneCellSkin.GetStyle("ItemImg")))//рисуем то что в €чейе
-                    {
-                        if (i < cells.Count)
-                            this.UseItemAt(i);
-                    }
-
-                }
-            }
-        }
-    }
 }

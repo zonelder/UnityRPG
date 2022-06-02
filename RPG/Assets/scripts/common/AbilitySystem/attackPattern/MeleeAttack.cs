@@ -8,18 +8,23 @@ public class MeleeAttack : Attack
     public MeleeAttack(GameObject user)
     {
         weapon = user.transform.Find("weapon").gameObject.GetComponent<Weapon>();
+     
     }
 
     public override void StartAttack()
     {
         base.StartAttack();
-        weapon.hitBox.enabled=true;
-       
+
+        weapon.ActivateHitBox();
+        weapon.Sheath.PullWeapon();
+
     }
     public override void EndAttack()
     {
-        
-        weapon.hitBox.enabled=false;
+
+        weapon.DeactivateHitBox();
+        weapon.Sheath.PlaceWeapon();
         base.EndAttack();
+       
     }
 }

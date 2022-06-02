@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    public  Sheath Sheath;
     public AttackStats curAttackEffects=new AttackStats();
     public Damage curDamage;
     public Collider hitBox;
@@ -31,4 +32,15 @@ public class Weapon : MonoBehaviour
         curAttackEffects = new AttackStats();// пустой экземпляр
     }
 
+    public void ActivateHitBox()
+    {
+        gameObject.SetActive(true);
+        hitBox.enabled = true;
+    }
+
+    public void DeactivateHitBox()
+    {
+        gameObject.SetActive(false);
+        hitBox.enabled = false;
+    }
 }

@@ -6,54 +6,58 @@ using UnityEngine;
 [System.Serializable]
 public class Shift
 {
-    public bool AlreadyUsed=false;
-    private float _startTime=0;//время от начала каста атаки когда надо начать перемещаться
 
-    [SerializeField]
-    private AnimationCurve _forwardMove;
-    [SerializeField]
-    private float _forwardLength;
+    [HideInInspector] public bool AlreadyUsed=false;
+    public Cooldown Duration;// Время за которое будет пройдена траектори
+    private float _startTime=0;
 
-    [SerializeField]
-    private AnimationCurve _rightMove;
-    [SerializeField]
-    private float _rightLength;
-
-    [SerializeField]
-    private AnimationCurve _upMove;
-    [SerializeField]
-    private float _upLength;
-    public Cooldown Duration=new Cooldown(1);//расчитывается как время за которое будет пройден вектор shift и не может быть изменен извне
-    private Vector3 _startPosition;
-    private Vector3 _forwardDirection;
-    private Vector3 _rightDirection;
-    private Vector3 _upDirection;
+    public Curve3 trajectory;
+    [SerializeField]  private Vector3 _scale;
+    private Basis _startTransform;
+    // Позиция и направление, в котором началось перемещение
     public void SetStartTime(float time) { _startTime = time; }
-    public float StartTime() { return _startTime; }
-   public void SetStartTransform(Transform curUnitTransform)
+    public float StartTime=>_startTime;
+    public void SetStartTransform(Transform curUnitTransform)
     {
-        _startPosition = curUnitTransform.position;
-        _forwardDirection = curUnitTransform.forward;
-        _rightDirection = curUnitTransform.right;
-        _upDirection = curUnitTransform.up;
+        _startTransform = new Basis(curUnitTransform);
     }
-
+    public Vector3 CurLocalPosition()
+    {
+        return  LocalPositionAt(Duration.curTime() / Duration.GetCooldown());
+    }
     public Vector3 CurPosition()
     {
         return PositionAt(Duration.curTime()/ Duration.GetCooldown());
     }
     public Vector3 PositionAt(float time)
     {
-        return _startPosition+_forwardDirection * _forwardMove.Evaluate(time)*_forwardLength 
-                             +_rightDirection* _rightMove.Evaluate(time)*_rightLength
-                             + _upDirection * _upMove.Evaluate(time)*_upLength;
+        
+        return _startTransform.ConvertToWorldSpace(LocalPositionAt(time));
     }
-
-    public Vector3 GetLenghts()
+    public Vector3 LocalPositionAt(float time)
     {
-        return new Vector3(_rightLength, _upLength, _forwardLength);
+        Vector3 localPos = trajectory.Evaluate(time);
+        localPos.Scale(_scale);
+        return localPos;
+    }
+    public Vector3 Scale
+    {
+        get => _scale;
+        set { _scale = value; }
+    }
+    public Vector3 GetKeyGlobalPosition(int index)=> PositionAt(trajectory.GetKeyTime(index));
+    public Vector3 GetKeyLocalPosition(int index) => LocalPositionAt(trajectory.GetKeyTime(index));
+    public int GetKeyLength()
+    {
+        return trajectory.Length;
     }
 
-    public Shift() { }
+
+    public Shift()
+    {
+        _scale = Vector3.one;
+        trajectory = Curve3.Constant(0, 1, 0);
+        Duration = new Cooldown(1);
+    }
 
 }

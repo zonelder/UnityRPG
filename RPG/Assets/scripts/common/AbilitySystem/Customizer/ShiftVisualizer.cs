@@ -8,7 +8,7 @@ public class ShiftVisualizer : MonoBehaviour
     private static  int s_segmentCount=10;
 
     public Shift VisualizedShift;
-
+    public bool IsPlaying;
 
     private void Awake()
     {
@@ -18,32 +18,21 @@ public class ShiftVisualizer : MonoBehaviour
     {
         VisualizedShift.Duration.Start—ountdown();
     }
-    public void OnDrawGizmos()
-    {
-        for(int i=0;i<s_segmentCount-1;++i)
-        {
-            float t = (float)i / s_segmentCount;
-            float next_t = (float)(i + 1) /s_segmentCount;
-            Gizmos.DrawLine(VisualizedShift.PositionAt(t), VisualizedShift.PositionAt(next_t));
-        }
-    }
-
     private void Update()
     {
-        if (VisualizedShift.Duration.IsReady())
-            RestartShift();
-        else
-            VisualizedShift.Duration.TickTime(Time.deltaTime);
-        transform.position = VisualizedShift.CurPosition();
+        if(IsPlaying)
+        {
+            if (VisualizedShift.Duration.IsReady())
+                RestartShift();
+            else
+                VisualizedShift.Duration.TickTime(Time.deltaTime);
+            transform.localPosition = VisualizedShift.CurLocalPosition();
+        }
+        
     }
 
     private void RestartShift()
     {
         VisualizedShift.Duration.Start—ountdown();
-    }
-
-    public Vector3 GetLengths()
-    {
-        return VisualizedShift.GetLenghts();
     }
 }

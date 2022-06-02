@@ -108,5 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 379a5875a2c08cd4d9c53fc793842b6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  s_unselectMaterial: {fileID: 2100000, guid: e46619994d1887642ae9aa41bc8764b6, type: 2}
-  s_selectMaterial: {fileID: 2100000, guid: f7918ff69ebeeb24cbe033b76c4045c7, type: 2}
+  _unselectMaterial: {fileID: 2100000, guid: e46619994d1887642ae9aa41bc8764b6, type: 2}
+  _selectMaterial: {fileID: 2100000, guid: f7918ff69ebeeb24cbe033b76c4045c7, type: 2}
+  _mouseOverMaterial: {fileID: 2100000, guid: 5a0ffbdc5b30cc949a73aaf3230e948f, type: 2}
+  _arrowsOnSelected: {fileID: 42258479119385803, guid: 122f8c21a0ac40148bf87a28d8696099, type: 3}

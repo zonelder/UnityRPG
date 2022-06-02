@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public abstract class ScriptableBuff: ScriptableObject
+public abstract class ScriptableBuff
 {
 
     public Texture2D BuffImg;
@@ -11,13 +11,13 @@ public abstract class ScriptableBuff: ScriptableObject
 
 
 
-    public virtual bool Equals(Object other)
+    public virtual bool Equals(ScriptableBuff other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))
             return false;
         else
         {
-            ScriptableBuff p = (ScriptableBuff)other;
+            ScriptableBuff p =other;
             return Duration == p.Duration && IsDurationStacked == p.IsDurationStacked && IsEffectStacked==p.IsEffectStacked;
         }
 

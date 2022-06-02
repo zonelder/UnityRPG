@@ -2,25 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [RequireComponent(typeof(Rigidbody))]
 public class movement : MonoBehaviour
 {
-    public bool canMove;
+    public bool _canMove;
     public bool use;//если персонаж взаимодействует с чем-то
-    private bool isstay;//може в дальнейшем пригодиться, пока не исключаем
+    private bool isStay;
+    private bool _canRotate;
 
-    [SerializeField]
     private Jump _jump;
-    private Rigidbody PlayerRigit;
-    private GameObject cam;
-
+    private Rigidbody _playerRigit;
+    private GameObject _cam;
+    private GroundCheck _IsGround;
     private  int speed;
     private static int s_defaultSpeed=6;
-    [Range(-1,1)]
-    private int perpendicularMove;
-    private int moveForward;
-
     private Vector3 _surfaceNormal;
+    public event MoveMethods OnMove;
+
+    public void DisableRotation() => _canRotate = false;
+    public void EnableRotation() => _canRotate = true;
+    public void DisableMove() => _canMove = false;
+    public void EnableMove() => _canMove = true;
+    public void RotateByCamera()
+    {
+        Vector3 cameraForward = _cam.transform.forward;
+        cameraForward.y = 0;
+        transform.forward = cameraForward;
+    }
     private Vector3 Project(Vector3 forward)
     {
         return forward - Vector3.Dot(forward, _surfaceNormal) * _surfaceNormal;
@@ -32,31 +41,39 @@ public class movement : MonoBehaviour
     }
     private void Start()
     {
-        canMove = true;
+        _canMove = true;
         speed= s_defaultSpeed;
-        PlayerRigit = gameObject.GetComponent<Rigidbody>();
-        cam = transform.Find("playerCam").gameObject;
-        isstay = true;
+        _playerRigit = gameObject.GetComponent<Rigidbody>();
+        _cam = transform.Find("playerCam").gameObject;
+        _IsGround = GetComponent<GroundCheck>();
+
+        _jump = GetComponent<Jump>();
+        _jump.OnStartJump += DisableRotation;
+        _jump.OnEndJump += EnableRotation;
+        isStay = true;
     }
     private void Move(Vector3 direction)
     {
+
         if (direction == Vector3.zero)
         {
-            isstay = true;
+            isStay = true;
             return;
         }
-
-
-        isstay = false;
+        if (!_IsGround.Check)
+            return;
+        isStay = false;
+        _canRotate = true;
         Vector3 directionAlongSurface = Project(direction.normalized);
-        Vector3 offSet =directionAlongSurface.normalized * speed * Time.deltaTime;
-        PlayerRigit.MovePosition(PlayerRigit.position + offSet);
+        _playerRigit.velocity = directionAlongSurface.normalized * speed;
+        OnMove?.Invoke(directionAlongSurface.normalized * speed);
+        
     }
     private void Rotate(Vector3 lookTo)
     {
-        if (!isstay)//если двигаюсь(когда мы стоим персонаж не привязан к повороту камеры и мы можем его осматривать)
+        if (!isStay && lookTo!=Vector3.zero && _canRotate)//если двигаюсь(когда мы стоим персонаж не привязан к повороту камеры и мы можем его осматривать)
         {       
-                transform.forward = lookTo;//поворациваем по направлению движения
+                transform.forward = lookTo;
             //сюда бы корутину которая постепенно будет поворачивать игрока
         }
     }
@@ -71,12 +88,13 @@ public class movement : MonoBehaviour
     private void ReadInput()
     {
         Vector3 direction = Vector3.zero;
-        Vector3 lookTo = Vector3.zero;
+        direction += Input.GetAxis("Vertical") *_cam.transform.forward;
+        direction += Input.GetAxis("Horizontal") * _cam.transform.right;
         if (Input.GetKey(KeyCode.R))
         {
             use = true;
         }
-        if (Input.GetKey(KeyCode.LeftShift))//спринт
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = s_defaultSpeed * 2;
         }
@@ -84,71 +102,24 @@ public class movement : MonoBehaviour
         {
             speed = s_defaultSpeed;
         }
-        if (Input.GetKey(KeyCode.W))
-        {
-            moveForward = 1;
-            direction += cam.transform.forward;
-            lookTo += cam.transform.forward;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            speed = s_defaultSpeed / 2;
-            moveForward = -1;
-            direction -= cam.transform.forward;
-            lookTo += cam.transform.forward;
-        }
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            moveForward = 0;
-            speed =s_defaultSpeed;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            perpendicularMove = -1;
-            direction -= cam.transform.right;
-            if (moveForward != 0)
-                lookTo -= moveForward * cam.transform.right;
-            else
-                lookTo -= cam.transform.right;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            perpendicularMove = 1;
-            direction += cam.transform.right;
-            if(moveForward!=0)
-                lookTo += moveForward * cam.transform.right;
-            else
-                lookTo += cam.transform.right;
-        }
-
-        // Чтобы не выбло вертикальных компонент из-за положения камеры
         direction.y = 0;
-        lookTo.y = 0;
         if (Input.GetKey(KeyCode.Space))
         {
             _jump.StartJump(direction, speed);
         }
 
         Move(direction);
-
-        Rotate(lookTo);
+        Rotate(direction);
    
 }
     private void Update()
     {
-        perpendicularMove = 0;
-        moveForward = 0;
         use = false;
-        if (canMove)
+        if (_canMove)
         {
             ReadInput();
         }
     }
-     
-    public void RotateByCamera()
-    {
-        Vector3 cameraForward = cam.transform.forward;
-        cameraForward.y = 0;
-        transform.forward =cameraForward;
-    }
+
 }
+public delegate void MoveMethods(Vector3 velocity);

@@ -8,15 +8,17 @@ public enum UnitState
 }
 public class IUnitState : MonoBehaviour
 {
-    public ActiveAbility curAbility;
-    public Attack curAttack;
-    public Weapon weapon;
-    public int curAttackIndex = 0;
-    public UnitState state = UnitState.WAITING;
-    public void  Update()
+    private ActiveAbility _curAbility;
+    private Attack _curAttack;
+    [SerializeField]private Weapon _weapon;
+    private int curAttackIndex = 0;
+    private UnitState state = UnitState.WAITING;
+
+    private movement _unitMove;
+    private void  Update()
     {
         InputToActivateAbility();
-        if (state == UnitState.USE_ABILITY && curAbility.IsUse())
+        if (state == UnitState.USE_ABILITY && _curAbility.IsUse())
         {
             AbilityAction();
         }
@@ -24,58 +26,58 @@ public class IUnitState : MonoBehaviour
 
     private void AbilityAction()
     {
-        float finalSpeedAmp = curAttack.Property.SpeedAmp;//Должно учитывать не только бонусы от атаки но и бонусы от бафов, от экипы  и тд
-        curAttack.TickTime(Time.deltaTime, finalSpeedAmp);
+        float finalSpeedAmp = _curAttack.Property.SpeedAmp;//Должно учитывать не только бонусы от атаки но и бонусы от бафов, от экипы  и тд
+        _curAttack.TickTime(Time.deltaTime, finalSpeedAmp);
 
-        if (!curAttack.Shift.Duration.IsReady())//если время перемещаться
+        if (!_curAttack.Shift.Duration.IsReady())//если время перемещаться
         {
             //Shifting();
-            transform.position = curAttack.Shift.CurPosition();
+            transform.position = _curAttack.Shift.CurPosition();
         }
-        if (curAttack.Property.Duration.IsReady())//если кончилась атака
+        if (_curAttack.Property.Duration.IsReady())//если кончилась атака
         {
             SwitchAttack();
         }
     }
-    public void UseAbilityAt(int i)
+    private void UseAbilityAt(int i)
     {
-            curAbility = gameObject.GetComponent<SkillBook>().GetAbilityAt(i);
-            if (curAbility.cooldown.IsReady())
+            _curAbility = gameObject.GetComponent<SkillBook>().GetAbilityAt(i);
+            if (_curAbility.cooldown.IsReady())
             {
                 state = UnitState.USE_ABILITY;
-                curAbility.StartAbility();
-                DisableMove();
+                _curAbility.StartAbility();
+                _unitMove.DisableMove();
                 BeginNewAttack();
             }
     }
     public void BeginNewAttack()
     {
-        GetComponent<movement>().RotateByCamera();
-        curAttack = curAbility.GetAttackAt(curAttackIndex);
-        curAttack.Shift.SetStartTransform(transform);
-        weapon.SetAttackEffects(curAttack.Property);
+        _unitMove.RotateByCamera();
+        _curAttack = _curAbility.GetAttackAt(curAttackIndex);
+        _curAttack.Shift.SetStartTransform(transform);
+        _weapon.SetAttackEffects(_curAttack.Property);
         Debug.Log("start " + (curAttackIndex + 1) + "th attack");
-        curAttack.StartAttack();
+        _curAttack.StartAttack();
     }
-    public void SwitchAttack()
+    private void SwitchAttack()
     {
-        curAttack.EndAttack();
+        _curAttack.EndAttack();
         curAttackIndex++;
-        if (curAttackIndex >= curAbility.Size())
+        if (curAttackIndex >= _curAbility.Size())
         {
             curAttackIndex = 0;
             state = UnitState.WAITING;
-            weapon.SetToDefault();
-            EnableMove();
+            _weapon.SetToDefault();
+            _unitMove.EnableMove();
         }
 
         else
         {
-            curAttack.EndAttack();
+            _curAttack.EndAttack();
             BeginNewAttack();
         }
     }
-    public void InputToActivateAbility()
+    private void InputToActivateAbility()
     {
         if (Input.GetKeyDown(KeyCode.Q) && state == UnitState.WAITING)
         {
@@ -88,6 +90,8 @@ public class IUnitState : MonoBehaviour
 
         }
     }
-    private  void DisableMove() { gameObject.GetComponent<movement>().canMove = false; }
-    private void EnableMove() { gameObject.GetComponent<movement>().canMove = true; }
+    private void OnEnable()
+    {
+        _unitMove = gameObject.GetComponent<movement>();
+    }
 }

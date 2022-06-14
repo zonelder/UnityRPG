@@ -10,47 +10,45 @@ namespace stats
         public AbstractStrip HP;
         public AbstractStrip MP;
         public AbstractStrip SP;
-        public float accuracy;
-        public float armor;
-        public float armorRegen;
-        public Attributes attributes = new Attributes();
+        public Attributes Attributes = new Attributes();
         public BaseStats()
         {
 
         }
 
-        public BaseStats(int HP, int MP, int STR, int vitality, int intellect)
+        public BaseStats(int hp, int mp, int STR, int vitality, int intellect)
         {
-            this.HP = new AbstractStrip(HP);
-            this.MP = new AbstractStrip(MP);
-            attributes.intellect = intellect;
-            attributes.STR = STR;
-            attributes.vitality = vitality;
+            HP = new AbstractStrip(hp);
+            MP = new AbstractStrip(mp);
+            Attributes.intellect = intellect;
+            Attributes.STR = STR;
+            Attributes.vitality = vitality;
         }
+
         public virtual void ChangeSTR(int d_STR)
         {
-            attributes.STR += d_STR;
+            Attributes.STR += d_STR;
         }
         public virtual void ChangeDextresity(int d_dext)
         {
-            attributes.dextresity += d_dext;
+            Attributes.dextresity += d_dext;
         }
         public virtual void ChangeIntellect(int d_int)
         {
-            attributes.intellect += d_int;
+            Attributes.intellect += d_int;
         }
         public virtual void ChangeVitality(int d_vitality)
         {
-            attributes.vitality += d_vitality;
+            Attributes.vitality += d_vitality;
         }
 
         public virtual void ChangeWill(int d_will)
         {
-            attributes.will += d_will;
+            Attributes.will += d_will;
         }
         public virtual void ChangeLuck(int d_luck)
         {
-            attributes.luck += d_luck;
+            Attributes.luck += d_luck;
         }
 
     }

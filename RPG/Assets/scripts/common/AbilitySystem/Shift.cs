@@ -8,7 +8,7 @@ public class Shift
 {
 
     [HideInInspector] public bool AlreadyUsed=false;
-    public Cooldown Duration;// Время за которое будет пройдена траектори
+    public Cooldown Duration;
     private float _startTime=0;
 
     public Curve3 trajectory;
@@ -23,11 +23,11 @@ public class Shift
     }
     public Vector3 CurLocalPosition()
     {
-        return  LocalPositionAt(Duration.curTime() / Duration.GetCooldown());
+        return  LocalPositionAt(Duration.CurTime() / Duration.GetCooldown());
     }
     public Vector3 CurPosition()
     {
-        return PositionAt(Duration.curTime()/ Duration.GetCooldown());
+        return PositionAt(Duration.CurTime()/ Duration.GetCooldown());
     }
     public Vector3 PositionAt(float time)
     {

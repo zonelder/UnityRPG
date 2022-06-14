@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+
 public class MainMenuController : MonoBehaviour
 {
     private Cooldown _hideMenuTimer;
@@ -29,7 +28,7 @@ public class MainMenuController : MonoBehaviour
     }
     private void SettingButtonPressed()
     {
-        // Do noting now
+        throw new System.NotImplementedException();
     }
     private void ExitButtonPressed()
     {

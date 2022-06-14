@@ -1,34 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public delegate void TimerMethods(UpdateMethods methods);
 [System.Serializable]
 public class Cooldown
 {
-    //модифицируемой значение
-    [SerializeField]
-    private float cooldownTime;
+    [SerializeField] private float _cooldownTime;
+    private float _remainingTime;
 
-    //не модифицируемые значения. пусть нельзя уменьшать время отката 
-    private float remainingTime;//
-    private bool isCountDown;//ведется ли отсчет(в кд ли способность)
-
+    public event TimerMethods OnEndCountDown;
+    public event TimerMethods OnStartCountDown;
     public Cooldown(float cooldownTime)
     {
-        this.cooldownTime = cooldownTime;
-        remainingTime = 0;
-        isCountDown = false;
+        _cooldownTime = cooldownTime;
+        _remainingTime = 0;
     }
-    public float GetCooldown() { return cooldownTime; }
-    public void  SetCooldown(float value) { cooldownTime = value; }
-    public float curTime() { return cooldownTime - remainingTime; }
-    public bool IsReady()
-    {
-        return !isCountDown;
-    }
+    public float GetCooldown() => _cooldownTime;
+    public void SetCooldown(float value) => _cooldownTime = value;
+    public float CurTime() => _cooldownTime - _remainingTime;
+    public bool IsReady => _remainingTime <= 0;
     public void TickTime(float delta)
     {
-        remainingTime -= delta;
-        if (remainingTime <= 0)
+        _remainingTime -= delta;
+        if (IsReady)
         {
             EndCountDown();
         }
@@ -36,14 +31,14 @@ public class Cooldown
 
     public void StartСountdown()
     {
-        if(isCountDown)//на случай еесли юзер будет запрашивать активироваь то, что уже активинованно
+        if (!IsReady)
         {
             Debug.Log("timer is not ready");
         }
         else
         {
-            remainingTime = cooldownTime;
-            isCountDown = true;
+            _remainingTime = _cooldownTime;
+            OnStartCountDown?.Invoke(TickTime);
         }
     }
     public void RestartCountdown()
@@ -51,17 +46,9 @@ public class Cooldown
         EndCountDown();
         StartСountdown();
     }
-    private  void EndCountDown()//конец отсчета(оспользуется только если remaningTime стало меньше нуля )
+    private void EndCountDown()
     {
-        if(!isCountDown)
-        {
-            Debug.Log("timer is ready but there was a request to end ability");
-        }
-        else
-        {
-            remainingTime = 0;
-            isCountDown = false;
-        }
+        _remainingTime = 0;
+        OnEndCountDown?.Invoke(TickTime);
     }
-
 }

@@ -10,15 +10,13 @@ public class UnitPlayer : HittableEntity
     {
         showStats = false;
         Base.HP = new AbstractStrip(1000,10,100);
-  
+
         StartExistence();
-        Improved.damage.minDMG = 30;
-        Improved.damage.maxDMG = 40;
+        Improved.Damage = new Damage(30, 40, 30, 1.5f);
     }
 
-    protected  override void Update()
+    private void Update()
     {
-        base.Update();
         if (Input.GetKeyDown(KeyCode.P))
         {
             showStats = !showStats;
@@ -42,10 +40,10 @@ public class UnitPlayer : HittableEntity
             GUI.Label(new Rect(10, 110, 300, 300), "hp: " + Improved.HP.Max());
             GUI.Label(new Rect(10, 125, 300, 300), "mp: " + Improved.MP.Max());
             GUI.Label(new Rect(10, 140, 300, 300), "expToUp: " + Exp.RequiredExp());
-            GUI.Label(new Rect(10, 155, 300, 300), "str: " + Improved.attributes.STR);
-            GUI.Label(new Rect(10, 170, 300, 300), "vitality: " + Improved.attributes.vitality);
-            GUI.Label(new Rect(10, 185, 300, 300), "intellect: " + Improved.attributes.intellect);
-            GUI.Label(new Rect(10, 200, 300, 300), "damage: " + Improved.damage.minDMG+ " ~ "+ Improved.damage.maxDMG);
+            GUI.Label(new Rect(10, 155, 300, 300), "str: " + Improved.Attributes.STR);
+            GUI.Label(new Rect(10, 170, 300, 300), "vitality: " + Improved.Attributes.vitality);
+            GUI.Label(new Rect(10, 185, 300, 300), "intellect: " + Improved.Attributes.intellect);
+            GUI.Label(new Rect(10, 200, 300, 300), "damage: " + Improved.Damage.Min+ " ~ "+ Improved.Damage.Max);
             if (pointstat > 0) 
             {
                 GUI.Label(new Rect(10, 250, 300, 20), "points " + pointstat.ToString());

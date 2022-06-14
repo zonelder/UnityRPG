@@ -4,63 +4,68 @@ using UnityEngine;
 using System.Linq;
 public class BuffableEntity : MonoBehaviour
 {
-    private int _size = 0;
     private readonly List<TimedBuff> _buffs = new List<TimedBuff>();
 
-
-    public int Size() => _size;
+    public int Size => _buffs.Count;
     public TimedBuff this[int index]
     {
         get
         {
-            if (index < 0 || index >= _size)
+            if (index < 0 || index >= _buffs.Count)
                 throw new System.IndexOutOfRangeException();
             else
                 return _buffs[index];
         }
     }
 
-    private void Update()
-    {
-
-        for (int i=0;i<_size;++i)
-        {
-            _buffs[i].Tick(Time.deltaTime);
-            if (_buffs[i].Finished())
-            {
-                _buffs.RemoveAt(i);
-                --_size;
-            }
-        }
-    }
     public void AddBuff(TimedBuff buff)
     {
-        if (this.IsBuffContains(buff))
+        if (IsBuffContains(buff))
         {
             _buffs[IndexOf(buff)].Activate();
         }
         else
         {
             _buffs.Add(buff);
+            buff.OnEndBuff += RemoveFirstFinished;
             buff.Activate();
-            ++_size;
         }
     }
+
+    private void Update()
+    {
+        for (int i=0;i< _buffs.Count; ++i)
+        {
+            _buffs[i].Tick(Time.deltaTime);
+        }
+    }
+    private void RemoveFirstFinished()
+    {
+        for(int i=0;i<_buffs.Count;++i)
+        {
+            if(_buffs[i].IsFinished)
+            {
+                _buffs[i].OnEndBuff -= RemoveFirstFinished;
+                _buffs.RemoveAt(i);
+                break;
+            }
+        }
+    }
+
     private int IndexOf(TimedBuff Buff)
     {
         int index = -1;
-        for (int i = 0; i < _size; i++)
+        for (int i = 0; i < _buffs.Count; i++)
             if (Buff.Equals(_buffs[i]))
             {   
                 index = i;
                 return index;
             }
-
         return index;
     }
     private bool IsBuffContains(TimedBuff NewBuff)
     {
-        for(int i=0;i<_size;++i)
+        for(int i=0;i < _buffs.Count; ++i)
         {
             if (NewBuff.Equals(_buffs[i]))
                 return true;

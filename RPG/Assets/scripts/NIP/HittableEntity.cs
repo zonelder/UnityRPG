@@ -9,44 +9,40 @@ public class HittableEntity : UnitStats
     [SerializeField]
     private GameObject outgoingCritText;
 
-
     public HittableEntity(int HP, int MP, int STR, int vitality, int energy):base(HP, MP, STR, vitality, energy) { }
     private void OnTriggerEnter(Collider collision)
     {
-       if (collision.gameObject.tag == "weapon")//тут спорная вещь я бы поменял
+       if (collision.gameObject.GetComponent<Weapon>()!=null)
         {
             GameObject attaker = collision.gameObject.transform.parent.gameObject;//узнаем самого атакующего по его оружию
-            HitWillDone(attaker, collision.gameObject.GetComponent<Weapon>());
-
+            HitWillDone(attaker.GetComponent<UnitStats>());
         }        
     }
 
-
-    public void Hit(float improvedDamage)
+    private void Hit(float improvedDamage)
     {
         Debug.Log(Mathf.Floor(improvedDamage) + " damage done");
         Improved.HP.DistractFromCurrent(improvedDamage);
         
     }
-    public void HitWillDone(GameObject attaker, Weapon weapon)
+    public void HitWillDone(UnitStats attaker)
     {
-        if (attaker != gameObject)//сами себя не домажим
+        if (attaker != GetComponent<UnitStats>())//сами себя не домажим
         {
-            GeneratedDamage calculatedDamage = weapon.CalculateDamage();
+            GeneratedDamage calculatedDamage =attaker.Improved.CalculateDamage();
 
             Hit(calculatedDamage);
-            if (attaker.tag == "Player")//вывод информации на дисплей в случае если это игрок
+            //лучше перегрузтить данный метод для игрока и для непися чтобы уйти от ветвления
+            if ((UnitPlayer)attaker !=null)
             {
-                attaker.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
-             
                 GameObject camera = attaker.transform.Find("playerCam").gameObject;
-                FloatingText(camera, calculatedDamage.type);
-                
+                camera.GetComponent<PlayerEnemyDisplay>().FightWith(gameObject);
+                FloatingText(camera, calculatedDamage.type);          
             }
         }
         if (UnitDead())
         {
-            attaker.GetComponent<UnitStats>().GetExpFrom(GetComponent<UnitStats>());//если после нанесения урона хп мало то выдаем опыт убийце
+            attaker.GetComponent<UnitStats>().Exp.CatchExpirience(Exp.DieExpirience());//если после нанесения урона хп мало то выдаем опыт убийце
         }
     }
     public bool UnitDead() => Improved.HP.Current() <= 0;
@@ -54,13 +50,11 @@ public class HittableEntity : UnitStats
     private void FloatingText(GameObject camera,DamageType type)
     {
         Vector3 TextOffset = -1.5f * camera.transform.right - 0.7f * camera.transform.up + 0.3f*Random.insideUnitSphere;
-        //custom value
         //<create copy of needed text>
         GameObject curText;
         if (type == DamageType.common)
             curText = Instantiate(outgoingDamageText, gameObject.transform.position + TextOffset, camera.transform.rotation);
         else
-            //if(calculatedDamage.type == DamageType.crit)
             curText = Instantiate(outgoingCritText, gameObject.transform.position + TextOffset, camera.transform.rotation);
         ///crete copy of needed text>
         curText.GetComponent<TextLifeTime>().SetTextCarrier(gameObject, camera);

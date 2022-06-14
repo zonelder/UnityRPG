@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void StripMethod();
 
 [System.Serializable]
 public class Strip : AbstractStrip
 {
-    public event StripMethod StripOver;
+    public event StripMethod OnStripOver;
+    public event StripMethod OnStripFull;
 
     [SerializeField]
-    private float current;
+    private float _current;
     private bool atrophyWork;
     public Strip(float _max) : base(_max) 
     {
@@ -17,7 +19,7 @@ public class Strip : AbstractStrip
 
     public Strip(float _max, float reg, float Atrophy = 100) : base(_max,reg,Atrophy)
     {
-        current = Max();
+        _current = Max();
         atrophyWork=false;
     }
 
@@ -49,29 +51,29 @@ public class Strip : AbstractStrip
     {
         if (additional <0)
             throw new System.ArgumentException("expect positive value,but get " + additional);
-        current += additional;
-        if (current > Max())
+        _current += additional;
+        if (_current > Max())
         {
-            current = Max();
+            _current = Max();
+            OnStripFull?.Invoke();
         }
     }
     public void DistractFromCurrent(float distracted)
     {
         if (distracted < 0)
             throw new System.ArgumentException("expect positive value,but get "+distracted);
-          current -= distracted;
-        if (current <= 0)
+          _current -= distracted;
+        if (_current <= 0)
         {
-            current = 0;
+            _current = 0;
             if (!atrophyWork)
             {
                 atrophyWork = true;
-                StripOver();
+                OnStripOver?.Invoke();
             }
             
         }
     }
 
-    public float Current() => current;
+    public float Current() => _current;
 }
-public delegate void StripMethod();

@@ -12,10 +12,8 @@ public enum LifeStates
 }
 public class UnitStats : MonoBehaviour
 {
-    [SerializeField]
-    protected LifeStates state;
+    [SerializeField] protected LifeStates state;
     public  Level Exp;
-
 
     public BaseStats Base;
     public Stats Improved;
@@ -32,13 +30,13 @@ public class UnitStats : MonoBehaviour
 
     public void OnEnable()
     {
-        Improved.HP.StripOver += OnHPOver;
-        Improved.MP.StripOver += OnMPOver;
+        Improved.HP.OnStripOver += OnHPOver;
+        Improved.MP.OnStripOver += OnMPOver;
     }
     public void OnDisable()
     {
-        Improved.HP.StripOver -= OnHPOver;
-        Improved.MP.StripOver -= OnMPOver;
+        Improved.HP.OnStripOver -= OnHPOver;
+        Improved.MP.OnStripOver -= OnMPOver;
     }
     protected void StartExistence()
     {
@@ -54,9 +52,6 @@ public class UnitStats : MonoBehaviour
         StartCoroutine(Improved.HP.RegenerateByTime());
         StartCoroutine(Improved.MP.RegenerateByTime());
 
-    }
-    protected virtual void Update()
-    {
     }
     private void OnHPOver()
     {

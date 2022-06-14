@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class AbstractStrip
 {
-    [SerializeField]
-    private float _max;
-    [SerializeField]
-    private float _regen;
-    // Unit per second
+    [SerializeField] private float _max;
+    // Unit per Second
+    [SerializeField] private float _regen;
     private float _atrophy;
 
     public AbstractStrip(float max)

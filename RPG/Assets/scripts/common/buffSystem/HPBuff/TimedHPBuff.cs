@@ -15,13 +15,10 @@ public class TimedHPBuff : TimedBuff
         HPBuff _Buff = (HPBuff)Buff;
         BasicInfluences.ChangeHP(Obj, _Buff.ExtraHP);
     }
-    public override void End()
+    protected override void CancelEffect()
     {
         HPBuff _Buff = (HPBuff)Buff;
         BasicInfluences.ChangeHP(Obj,-_Buff.ExtraHP);
-        EffectStacks = 0;
-        if(EffectStacks==0)
-        base.IsFinished = true;
     }
 
     public override bool Equals(TimedBuff other)

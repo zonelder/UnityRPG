@@ -2,29 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
+public delegate void BuffEvent();
 public abstract  class TimedBuff
 {
-    
-    protected float Duration;
-    protected int EffectStacks;
+    //protected fields/ надо переделать под приватные
+    public event BuffEvent OnApplyEffect;
+    public event BuffEvent OnCancelEffect;
+    public event BuffEvent OnEndBuff;
+    public  float Duration
+    {
+        get;
+        private set;
+    }
+    public  int EffectStacks
+    {
+        get;
+        private set;
+    }
     public  ScriptableBuff Buff { get; }
     protected readonly GameObject Obj;
-    protected  bool IsFinished;
-
-    public string ShowDuration()
+    public bool IsFinished
     {
-        return System.String.Format("{0:0.0}c", Duration);
-    }
-    public string ShowStacks()
-    {
-        if (EffectStacks != 1)
-            return EffectStacks.ToString();
-        else return " ";
+        get
+        {
+            return EffectStacks <= 1 && Duration <= 0;
+        }
     }
     public TimedBuff(ScriptableBuff buff, GameObject obj)
     {
         Buff = buff;
         Obj = obj;
+        EffectStacks =0;
     }
 
     public void Tick(float delta)
@@ -32,17 +41,18 @@ public abstract  class TimedBuff
         Duration -= delta;
         if (Duration <= 0)
         {
-            End();
+            Deactivale();
         }
     }
     public void Activate()
     {
-        if (Buff.IsEffectStacked || Duration <= 0)
+        if (Buff.IsEffectStacked)
         {
             ApplyEffect();
+            OnApplyEffect?.Invoke();
             EffectStacks++;
         }
-        if (Buff.IsDurationStacked || Duration <= 0)
+        if (Buff.IsDurationStacked)
         {
             Duration += Buff.Duration;
         }
@@ -51,9 +61,22 @@ public abstract  class TimedBuff
             Duration = Buff.Duration;
         }
     }
-    protected abstract void ApplyEffect();
-    public abstract void End();
-
+    public void Deactivale()
+    {
+        EffectStacks--;
+        CancelEffect();
+        if (EffectStacks==0)
+        {
+            OnEndBuff?.Invoke();
+        }
+        else
+        {
+            Duration = Buff.Duration;
+            OnCancelEffect?.Invoke();
+        }
+    }
+    protected  abstract void ApplyEffect();
+    protected abstract void CancelEffect();
     public virtual bool Equals(TimedBuff other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))

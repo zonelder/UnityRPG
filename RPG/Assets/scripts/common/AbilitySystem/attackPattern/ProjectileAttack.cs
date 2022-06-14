@@ -14,53 +14,44 @@ public class ProjectileAttack : Attack
 {
     // Пока допустим нормально. хотя свойств уже много, лучше выделить класс под это.
     private ProjectileState pState;
-    private LineRenderer sightLine;
-    [SerializeField]
-    private float impulseLaunch = 10.0f;
-    [SerializeField]
-    private float launchTime = 0;//время относительно начала атаки когда надо запустить снаряд
-    private Cooldown launchPreparation;//время подготовки с запуску снаряда
-    [SerializeField]
-    private GameObject projectile;
-    private GameObject weapon;
-    private GameObject camera;
+    [SerializeField] private float _launchTime = 0;
+    private Cooldown _launchPreparation;
+    [SerializeField] private GameObject _projectile;
+    private Transform _launchPoint;
+    private GameObject _camera;
    public ProjectileAttack(GameObject user)
     {
-        weapon = user.transform.Find("weapon").gameObject;
-        camera = user.transform.Find("playerCam").gameObject;
-        launchPreparation= new Cooldown(1.0f);
-        sightLine = weapon.GetComponent<LineRenderer>();
+        _launchPoint = user.transform.Find("weapon").transform;
+        _camera = user.transform.Find("playerCam").gameObject;
+        _launchPreparation= new Cooldown(1.0f);
     }
     public void SetProjectile(GameObject newProjectile)//плохой очень метод
     {
-        projectile = newProjectile;
-        projectile.GetComponent<Projectile>().isBase = true;
-        projectile.GetComponent<Projectile>().projectileStats = weapon.GetComponent<Weapon>();
-        projectile.GetComponent<Projectile>().user = weapon.transform.parent.gameObject;
+        _projectile = newProjectile;
+        _projectile.GetComponent<Projectile>().isBase = true;
+        _projectile.GetComponent<Projectile>().User = _launchPoint.transform.parent.gameObject.GetComponent<UnitStats>();
        
     }
  
     public override void StartAttack()
     {
-        base.StartAttack();
         pState = ProjectileState.BEFORE_PREPARATION;
     }
 
     public override void TickTime(float delta, float SpeedAmp = 1)
     {
-        base.TickTime(delta,SpeedAmp);
-        if (Property.Duration.curTime() > launchTime && pState == ProjectileState.BEFORE_PREPARATION )
+        if (Property.Duration.CurTime() > _launchTime && pState == ProjectileState.BEFORE_PREPARATION )
         {
             pState = ProjectileState.PREPARATION;
-            launchPreparation.StartСountdown();
+            _launchPreparation.StartСountdown();
         }
-        if(pState == ProjectileState.PREPARATION && !(launchPreparation.IsReady()))
+        if(pState == ProjectileState.PREPARATION && !(_launchPreparation.IsReady))
         {
             RenderTrajectory();
-            launchPreparation.TickTime(delta);
+            _launchPreparation.TickTime(delta);
         }
 
-        if(pState == ProjectileState.PREPARATION && launchPreparation.IsReady())
+        if(pState == ProjectileState.PREPARATION && _launchPreparation.IsReady)
         {
             
             Launch();
@@ -71,74 +62,21 @@ public class ProjectileAttack : Attack
     }
     private void ClearTrajctory()
     {
-        sightLine.positionCount = 0;
-        sightLine.enabled = false;
     }
     private void RenderTrajectory()
     {
-        sightLine.enabled = true;
-        Collider _hitObject = null;
-        const int segmentCount = 20;
-
-        Vector3[] segments = new Vector3[segmentCount];
-
-
-        // The first line point is wherever the player's cannon, etc is
-        segments[0] = weapon.transform.position + weapon.transform.forward;
-        float segmentScale = 1;
-
-        Vector3 segVelocity = camera.transform.forward * impulseLaunch / projectile.GetComponent<Rigidbody>().mass;
-        for (int i=1;i<segmentCount;i++)
-        {
-            float segTime = (segVelocity.sqrMagnitude != 0) ? segmentScale / segVelocity.magnitude : 0;
-
-            segVelocity = segVelocity + Physics.gravity * segTime;
-
-            RaycastHit hit;
-
-            if (Physics.Raycast(segments[i - 1], segVelocity, out hit, segmentScale))
-            {
-
-                _hitObject = hit.collider;
-
-                segments[i] = segments[i - 1] + segVelocity.normalized * hit.distance;
-
-                segVelocity = segVelocity - Physics.gravity * (segmentScale - hit.distance) / segVelocity.magnitude;
-                //bounce
-                
-                
-                //incorect in some cases.is should be calculate using physicMaterials;
-                segVelocity = Vector3.Reflect(segVelocity, hit.normal);
-            }
-            // If our raycast hit no objects, then set the next position to the last one plus v*t
-            else
-            {
-                segments[i] = segments[i - 1] + segVelocity * segTime;
-            }
-
-        }
-        Color startColor = Color.red;
-        Color endColor = startColor;
-        startColor.a = 1;
-        endColor.a = 0;
-        sightLine.endColor = Color.red;
-        sightLine.startColor = Color.red;
-
-        sightLine.positionCount= segmentCount;
-        for (int i = 0; i < segmentCount; i++)
-            sightLine.SetPosition(i, segments[i]);
+        //broken
     }
   
     private void Launch()
     {
-        GameObject curProjectile= MonoBehaviour.Instantiate(projectile, weapon.transform.position + weapon.transform.forward, weapon.transform.rotation);
+        GameObject curProjectile= MonoBehaviour.Instantiate(_projectile, _launchPoint.position + _launchPoint.forward, _launchPoint.transform.rotation);
+        curProjectile.GetComponent<Projectile>().SettingTrajectory(_launchPoint);
         curProjectile.GetComponent<Projectile>().isBase = false;
-        curProjectile.GetComponent<Rigidbody>().AddForce(impulseLaunch*camera.transform.forward,ForceMode.Impulse);
 
         pState = ProjectileState.AFTER_LAUNCH;
     }
     public override void EndAttack()
     {
-        base.EndAttack();
     }
 }

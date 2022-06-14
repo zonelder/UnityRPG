@@ -8,9 +8,9 @@ public class HealingPosion : ScriptableItem
     public HealingPosion(float value)
     {
         recoverHP = value;
-        base.ItemImg = Resources.Load<Texture2D>("Items/Potions/HP");
-        base.CountInStack = 100;
-        base.IsRemoveWhenUsed = true;
+        ItemImg = Resources.Load<Texture2D>("Items/Potions/HP");
+        CountInStack = 10;
+        IsRemoveWhenUsed = true;
     }
      
     public override bool Equals(Object other)

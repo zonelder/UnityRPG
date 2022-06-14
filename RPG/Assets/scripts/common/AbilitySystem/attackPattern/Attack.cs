@@ -5,53 +5,44 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Attack
 {
-   
-    private bool isActive=false; 
-
     /// <переменные_отвечающие_за_характеристики>
     public AttackStats Property=new AttackStats();
     public Shift Shift=new Shift();
     /// </переменные_отвечающие_за_характеристики>
+    public abstract void StartAttack();
 
-    public bool InUse() => isActive;
-    public virtual  void StartAttack()
+    public virtual IEnumerator AttackByTime(UnitStats unit)
     {
-        
-        isActive = true;
+        Shift.SetStartTransform(unit.transform);
+        unit.Improved.AddAttackEffects(Property);
         Property.Duration.StartСountdown();
-    }
+        StartAttack();
 
-    public virtual void TickTime(float delta,float finalSpeedAmp=1)
-    {
-        Property.Duration.TickTime(delta);
-        if(!Shift.AlreadyUsed && Property.Duration.curTime()>Shift.StartTime)
+        while (!Property.Duration.IsReady)
         {
-            // В случае если  еще не юзалос перемещение то начинаем перемещать. 
-            Shift.Duration.StartСountdown();
-            Shift.AlreadyUsed = true;
+            // Должно учитывать не только бонусы от атаки но и бонусы от бафов, от экипы  и тд
+            float finalSpeedAmp =Property.SpeedAmp;
+            Property.Duration.TickTime(Time.deltaTime);
+            if (!Shift.AlreadyUsed && Property.Duration.CurTime() > Shift.StartTime)
+            {
+                // В случае если  еще не юзалос перемещение то начинаем перемещать. 
+                Shift.Duration.StartСountdown();
+                Shift.AlreadyUsed = true;
+            }
+
+            TickTime(Time.deltaTime, finalSpeedAmp);
+
+            if (!Shift.Duration.IsReady)
+            {
+                Shift.Duration.TickTime(finalSpeedAmp * Time.deltaTime);
+                unit.transform.position =Shift.CurPosition();
+            }
+            yield return null;
         }
-        if(!Shift.Duration.IsReady())
-        {
-            Shift.Duration.TickTime(finalSpeedAmp*delta);
-        }
-    }
-
-
-
-    public void RecalculateDuration()
-    {
-        float shiftEndTime = Shift.Duration.GetCooldown() + Shift.StartTime;
-        if (shiftEndTime > Property.Duration.GetCooldown())
-        {
-            float dt = shiftEndTime - Property.Duration.GetCooldown();
-            Property.Duration.SetCooldown(Property.Duration.GetCooldown() + dt);
-            // Увеличиваем время чтобы атака кончала в упор к концу деша.
-        }
-
-    }
-    public virtual void EndAttack()
-    {
-        isActive = false;
+        unit.Improved.DistractAttackEffects(Property);
+        EndAttack();
         Shift.AlreadyUsed = false;
     }
+    public abstract void TickTime(float delta, float finalSpeedAmp = 1);
+    public abstract void EndAttack();
 }

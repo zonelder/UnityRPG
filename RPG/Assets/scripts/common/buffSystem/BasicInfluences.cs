@@ -6,7 +6,7 @@ public static  class BasicInfluences
 {
         public static void ChangeDamage(GameObject unit, float minAdd,float maxAdd)
         {
-        unit.GetComponent<UnitStats>().Improved.damage.ChangeDamage(minAdd, maxAdd);
+        unit.GetComponent<UnitStats>().Improved.Damage.ChangeDamage(minAdd, maxAdd);
         }
         public static void ChangeHP(GameObject unit,float extraHP)
         {

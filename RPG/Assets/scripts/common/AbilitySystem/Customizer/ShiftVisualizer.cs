@@ -22,7 +22,7 @@ public class ShiftVisualizer : MonoBehaviour
     {
         if(IsPlaying)
         {
-            if (VisualizedShift.Duration.IsReady())
+            if (VisualizedShift.Duration.IsReady)
                 RestartShift();
             else
                 VisualizedShift.Duration.TickTime(Time.deltaTime);

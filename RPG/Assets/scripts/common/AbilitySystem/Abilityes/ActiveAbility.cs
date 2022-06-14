@@ -2,36 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+public delegate void AbilityEvent();
 [System.Serializable]
 public class ActiveAbility : AbstractAbility
 {
-    private int _strokesNum = 0;
-    [SerializeReference]
-    private List<Attack> _attack = new List<Attack>();
-    public Cooldown cooldown;
-    public ActiveAbility(float cooldown) { this.cooldown = new Cooldown(cooldown); }
-    public int Size() => _strokesNum;
+    public Cooldown Cooldown;
+
+    public event AbilityEvent OnAbilityEnd;
+    public event AbilityEvent OnAbilityStart;
+
+    [SerializeReference] private List<Attack> _attack = new List<Attack>();
+    public ActiveAbility(float cooldown) => Cooldown = new Cooldown(cooldown);
+    public int StrokesCount => _attack.Count;
     public void AddAttack(Attack NewAttack)
     {
         _attack.Add(NewAttack);
-        _strokesNum++;
     }
-    public Attack GetAttackAt(int num)
+    public Attack GetAttackAt(int index)=> _attack[index];
+
+    public IEnumerator AbilityByTime(UnitStats unit)
     {
-        return _attack[num];
+        Cooldown.Start—ountdown();
+        OnAbilityStart?.Invoke();
+
+        for (int i = 0; i <StrokesCount; ++i)
+        {
+            yield return unit.StartCoroutine(_attack[i].AttackByTime(unit));
+        }
+
+        OnAbilityEnd?.Invoke();
     }
-    public override void StartAbility()
-    {
-        isActive = true;
-        cooldown.Start—ountdown();
-    }
-    public override void EndAbility()
-    {
-        isActive = false;
-    }
-    public bool IsUse() { return isActive; }
-    public override bool IsActiveAbility() { return true; }
-    public override bool IsPassiveAbility() { return false; }
 }
 

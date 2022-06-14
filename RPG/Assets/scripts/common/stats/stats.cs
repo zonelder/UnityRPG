@@ -10,19 +10,18 @@ namespace stats
         public Mana MP;
         public Health HP;
         public Stamina SP;
-        public float accuracy;
-        public float armor;
-        public float armorRegen;
 
-        public Attributes attributes;
-        public Damage damage;
+        public Attributes Attributes;
+        public Damage Damage;
+        public SecondaryStats Amplifiers;
 
         public Stats(BaseStats baseStats)
         {
             HP = new Health(baseStats.HP);
             MP = new Mana(baseStats.MP);
-            attributes =new Attributes(baseStats.attributes);
-            damage = new Damage();
+            Attributes =new Attributes(baseStats.Attributes);
+            Damage = new Damage();
+            Amplifiers = new SecondaryStats();
         }
 
 
@@ -30,49 +29,65 @@ namespace stats
         {
             this.HP = new Health(HP);
             this.MP = new Mana(MP);
-            damage = new Damage();
-            attributes = new Attributes();
-            attributes.intellect = intellect;
-            attributes.STR = STR;
-            attributes.vitality = vitality;
+            Damage = new Damage();
+            Amplifiers = new SecondaryStats();
+            Attributes = new Attributes();
+            Attributes.intellect = intellect;
+            Attributes.STR = STR;
+            Attributes.vitality = vitality;
  
         }
 
-        public  void ChangeSTR(int d_STR)
+        public GeneratedDamage CalculateDamage()
         {
-            attributes.STR += d_STR;
-            damage.ChangeDamage(d_STR * 1.5f, d_STR * 1.5f);
+            GeneratedDamage damage = Damage.calculate();
+            damage.damage *=Amplifiers.DamageAmp;
+            return damage;
+        }
+        public void AddAttackEffects(AttackStats attackStats)
+        {
+           Amplifiers.AttackSpeedAmp += attackStats.AttackSpeedAmp;
+           Amplifiers.SpeedAmp += attackStats.SpeedAmp;
+           Amplifiers.AttackSpeedAmp += attackStats.DamageAmp;
+        }
+        public void DistractAttackEffects(AttackStats attackStats)
+        {
+            Amplifiers.AttackSpeedAmp -= attackStats.AttackSpeedAmp;
+            Amplifiers.SpeedAmp -= attackStats.SpeedAmp;
+            Amplifiers.AttackSpeedAmp -= attackStats.DamageAmp;
+        }
+
+        public void ChangeSTR(int d_STR)
+        {
+            Attributes.STR += d_STR;
+            Damage.ChangeDamage(d_STR * 1.5f, d_STR * 1.5f);
         }
         public  void ChangeDextresity(int d_dext)
         {
-            attributes.dextresity += d_dext;
+            Attributes.dextresity += d_dext;
             //something to secondatyStats
         }
         public void ChangeIntellect(int d_int)
         {
-            attributes.intellect += d_int;
+            Attributes.intellect += d_int;
             //something to secondary stats
         }
         public  void ChangeVitality(int d_vitality)
         {
-            attributes.vitality += d_vitality;
+            Attributes.vitality += d_vitality;
             HP.AddToMax(Mathf.Floor(d_vitality * 3.6f));
             HP.AddRegen(Mathf.Floor(d_vitality * 1.2f));
         }
         public void ChangeWill(int d_will)
         {
-            attributes.will += d_will;
+            Attributes.will += d_will;
             MP.AddToMax(Mathf.Floor(d_will * 1.1f));
             MP.AddRegen(Mathf.Floor(d_will * 0.5f));
         }
         public void ChangeLuck(int d_luck)
         {
-            attributes.luck += d_luck;
-            damage.critChanñe += Mathf.Floor(d_luck*2.3f);
-        }
-
-
-   
-       
+            Attributes.luck += d_luck;
+            Damage.ChangeCritChance(Mathf.Floor(d_luck*2.3f));
+        }    
     }
 }

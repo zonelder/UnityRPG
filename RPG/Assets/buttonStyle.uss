@@ -19,7 +19,7 @@
     opacity: 1;
     -unity-background-image-tint-color: rgba(106, 99, 99, 255);
     background-color: rgba(166, 163, 163, 255);
-    -unity-font: url('/Assets/UI Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss');
+    /*-unity-font: url('/Assets/UI Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss');*/
     -unity-font-style: normal;
     color: rgba(19, 18, 18, 255);
 }

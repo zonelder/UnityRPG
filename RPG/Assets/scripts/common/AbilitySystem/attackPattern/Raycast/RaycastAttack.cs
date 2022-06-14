@@ -19,12 +19,9 @@ public class RaycastAttack : Attack
     private GameObject weapon;
     private LineRenderer laserLine;
     private Cooldown lineRenderTime = new Cooldown(0.4f);
-    [SerializeField]
-    private float timeToAim=0.0f;
-    [SerializeField]
-    private float timeToShoot=0.4f;
-    [SerializeField]
-    private float weaponRange = 100;
+    [SerializeField] private float timeToAim=0.0f;
+    [SerializeField] private float timeToShoot=0.4f;
+    [SerializeField] private float weaponRange = 100;
     public RaycastAttack(GameObject user)
     {
         weapon = user.transform.Find("weapon").gameObject;
@@ -36,29 +33,27 @@ public class RaycastAttack : Attack
     }
     public override void StartAttack()
     {
-        base.StartAttack();
         laserLine.positionCount = 2;
         rState = RaycastState.BEFORE_AIMING;
     }
     public override void TickTime(float delta,float SpeedAmp=1)
     {
-        base.TickTime(delta,SpeedAmp);
-        if(Property.Duration.curTime()>timeToAim && rState==RaycastState.BEFORE_AIMING)
+        if(Property.Duration.CurTime()>timeToAim && rState==RaycastState.BEFORE_AIMING)
         {
             rState = RaycastState.AIMING;
             lineRenderTime.StartÑountdown();
         }
-        if(rState ==RaycastState.AIMING && !(Property.Duration.curTime() > timeToShoot))
+        if(rState ==RaycastState.AIMING && !(Property.Duration.CurTime() > timeToShoot))
         {
             Aim();
 
         }
-        if(rState == RaycastState.AIMING && Property.Duration.curTime() > timeToShoot)
+        if(rState == RaycastState.AIMING && Property.Duration.CurTime() > timeToShoot)
         {
             rState = RaycastState.SHOOT;
             Shoot();
         }
-        if (!lineRenderTime.IsReady())
+        if (!lineRenderTime.IsReady)
         {
             lineRenderTime.TickTime(Time.deltaTime);
         }
@@ -90,8 +85,7 @@ public class RaycastAttack : Attack
     private void OnAttack(GameObject beaten)
     {
         HittableEntity enemy = beaten.GetComponent<HittableEntity>();
-        if (enemy!=null)
-        enemy.HitWillDone(weapon.transform.parent.gameObject, weapon.GetComponent<Weapon>());
+        enemy?.HitWillDone(weapon.transform.parent.gameObject.GetComponent<UnitStats>());
     }
     private void Shoot()
     {
@@ -110,11 +104,11 @@ public class RaycastAttack : Attack
             EndPoint = rayOrigin + (Cam.transform.forward * weaponRange);
         }
 
-        AttackBehaviour.BlowUp(EndPoint, 5, OnAttack);
-
         laserLine.SetPosition(1, EndPoint);
         laserLine.enabled = true;
 
+        //OnHit.Execute();
+        AttackBehaviour.BlowUp(EndPoint, 5, OnAttack);
 
         if (HitEffect != null)
         {
@@ -127,7 +121,6 @@ public class RaycastAttack : Attack
     public override void EndAttack()
     {
         laserLine.positionCount = 0;
-        base.EndAttack();
     }
    
 }

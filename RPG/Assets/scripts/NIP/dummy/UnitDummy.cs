@@ -13,9 +13,8 @@ public class UnitDummy : UnitNIP
 
     }
 
-    protected override void Update()
+    private  void Update()
     {
-        base.Update();
         if (state== LifeStates.DEAD)
         {
             Debug.Log("dummy has been killed");

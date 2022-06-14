@@ -11,26 +11,16 @@ public class TimedAPBuff : TimedBuff
         base.Buff.IsEffectStacked = true;
     }
 
-
     protected override void ApplyEffect()
     {
         APBuff DMGBuff = (APBuff)Buff;
         BasicInfluences.ChangeDamage(Obj, DMGBuff.ExtraMinAP, DMGBuff.ExtraMaxAP);
     }
-
-
-    public override void End()
+    protected override void CancelEffect()
     {
         APBuff DMGBuff = (APBuff)Buff;
         BasicInfluences.ChangeDamage(Obj, -DMGBuff.ExtraMinAP, -DMGBuff.ExtraMaxAP);
-        EffectStacks--;
-        if (EffectStacks == 0)
-            base.IsFinished = true;
-        else
-            Duration = DMGBuff.Duration;
     }
-
-
     public override bool Equals(TimedBuff other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))

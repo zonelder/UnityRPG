@@ -4,27 +4,24 @@ using UnityEngine;
 
 public class MeleeAttack : Attack
 {
-    private Weapon weapon;
+    private Weapon _weapon;
     public MeleeAttack(GameObject user)
     {
-        weapon = user.transform.Find("weapon").gameObject.GetComponent<Weapon>();
-     
+        _weapon = user.transform.Find("weapon").gameObject.GetComponent<Weapon>();
     }
 
     public override void StartAttack()
     {
-        base.StartAttack();
-
-        weapon.ActivateHitBox();
-        weapon.Sheath.PullWeapon();
+        _weapon.ActivateHitBox();
+        _weapon.Sheath.PullWeapon();
+    }
+    public override void TickTime(float delta,float speedAmp=1)
+    {
 
     }
     public override void EndAttack()
     {
-
-        weapon.DeactivateHitBox();
-        weapon.Sheath.PlaceWeapon();
-        base.EndAttack();
-       
+        _weapon.DeactivateHitBox();
+        _weapon.Sheath.PlaceWeapon();  
     }
 }

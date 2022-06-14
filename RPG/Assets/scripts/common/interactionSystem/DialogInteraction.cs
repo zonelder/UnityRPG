@@ -46,14 +46,14 @@ public class DialogInteraction : AbstractInteraction
     {
         Debug.Log("start inter");
         Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze =true;
-        Unit.GetComponent<movement>().DisableMove();
+        Unit.GetComponent<movement>().GetMoveStrategy(). DisableMove();
         dialogStart = true;
     }
     public override void EndInteract()
     {
         Debug.Log("end Inter");
         Unit.transform.Find("playerCam").GetComponent<moveCam>().CameraFreeze = false;
-        Unit.GetComponent<movement>().EnableMove();
+        Unit.GetComponent<movement>().GetMoveStrategy().EnableMove();
         dialogStart = false;
     }
     void OnGUI()
@@ -81,7 +81,7 @@ public class DialogInteraction : AbstractInteraction
 
         if (GUI.Button(new Rect(4 * Screen.width / 5 - Screen.height / 6 - 1, 4 * Screen.height / 5 + 6, Screen.height / 6, Screen.height / 6), "GetBuff "))
         {
-            TimedAPBuff toUnit = new TimedAPBuff(10, 15, Unit);
+            TimedAPBuff toUnit = new TimedAPBuff(10,15, Unit);
             toUnit.Buff.Duration = 10;
             Unit.GetComponent<BuffableEntity>().AddBuff(toUnit);
         }
@@ -101,4 +101,5 @@ public class DialogInteraction : AbstractInteraction
 
         }
     }
+
 }

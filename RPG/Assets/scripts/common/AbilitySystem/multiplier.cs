@@ -8,30 +8,24 @@ using UnityEngine;
 [System.Serializable]
 public class Multiplier
 {
-    [SerializeField][Range(1,3)]
+    [SerializeField][Range(0,3)]
     private float _value;
 
-    public Multiplier(float value = 1)
+    public Multiplier(float value = 0)
     {
         _value = value;
     }
 
     public void SetValue(float value) => _value = value;
-    public static Multiplier operator +(Multiplier a, Multiplier b) => new Multiplier(a._value + b._value - 1);
+    public static Multiplier operator +(Multiplier a, Multiplier b) => new Multiplier(a._value + b._value);
 
-    // Eсли пишу myMultiplier+2 будет 0.02+value.
-    public static Multiplier operator +(Multiplier a, float b) => new Multiplier(a._value + (b/100));
-    public static Multiplier operator +(float a, Multiplier b) => new Multiplier((a/100) + b._value);
+    public static Multiplier operator +(Multiplier a, float b) => new Multiplier(a._value + b);
+    public static Multiplier operator +(float a, Multiplier b) => new Multiplier(a + b._value);
 
-
-
-    public static Multiplier operator -(Multiplier a, Multiplier b) => new Multiplier(a._value - b._value + 1);
-    public static Multiplier operator -(Multiplier a, float b) => new Multiplier(a._value - (b/100));
-    public static Multiplier operator -(float a, Multiplier b) => new Multiplier(b._value-(a/100));
-
-
+    public static Multiplier operator -(Multiplier a, Multiplier b) => new Multiplier(a._value - b._value);
+    public static Multiplier operator -(Multiplier a, float b) => new Multiplier(a._value - b);
+    public static Multiplier operator -(float a, Multiplier b) => new Multiplier(b._value-a);
 
     public static implicit operator float(Multiplier multiplier)=> multiplier._value;
 
-    public static implicit operator int(Multiplier multiplier) => (int)(multiplier._value*100);
 }

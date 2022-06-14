@@ -14,7 +14,11 @@ public class Cell
             if (value < 0)
                 throw new System.ArgumentOutOfRangeException("can't be negative");
             else
+            {
+                if (value == 0)
+                    Item = null;
                 _count = value;
+            }
         }
     }
     public ScriptableItem Item { get; set; }
@@ -41,4 +45,10 @@ public class Cell
         _count -= amount;
     }
 
+
+    public void Fill() => _count = Item.CountInStack;
+
+    public int GetPlaceReminder(int AdditionalAmount)=> (CanPlaceAmount(AdditionalAmount)) ? 0:(_count + AdditionalAmount - Item.CountInStack);
+    public int GetRemoveReminder(int removeAmount) => (CanRemoveAmount(removeAmount)) ? 0 : (removeAmount -_count);
+    public void Desola() => Count = 0;
 }

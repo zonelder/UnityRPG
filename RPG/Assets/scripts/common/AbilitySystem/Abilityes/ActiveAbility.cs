@@ -20,7 +20,7 @@ public class ActiveAbility : AbstractAbility
     }
     public Attack GetAttackAt(int index)=> _attack[index];
 
-    public IEnumerator AbilityByTime(UnitStats unit)
+    public IEnumerator AbilityByTime(UnitEntity unit)
     {
         Cooldown.Start—ountdown();
         OnAbilityStart?.Invoke();

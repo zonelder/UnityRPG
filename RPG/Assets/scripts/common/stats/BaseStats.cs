@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace stats
 {
+    [System.Serializable]
     public class BaseStats//тут не производиться никаких расчетов, а просто храняться базовые значения для апределленных юнитов
     {
         //<abstract stats>

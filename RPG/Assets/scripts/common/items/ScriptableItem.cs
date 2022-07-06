@@ -9,7 +9,7 @@ public abstract class ScriptableItem : ScriptableObject
     protected Texture2D ItemImg;
     protected bool IsRemoveWhenUsed;
     protected string description;
-    public abstract void Use(GameObject Unit);
+    public abstract void Use(UnitEntity unit);
     public virtual bool Equals(Object other)
     {
         if (other == null || !this.GetType().Equals(other.GetType()))

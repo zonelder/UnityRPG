@@ -1,6 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+public delegate void method();
 public enum UnitState
 {
     WAITING,
@@ -8,10 +10,12 @@ public enum UnitState
 }
 public class IUnitState : MonoBehaviour
 {
+    public event Action OnAbilityStart;
+    public event Action OnAbilityEnd;
     private UnitState state = UnitState.WAITING;
     private Coroutine _curAbility;
     private movement _unitMove;
-    private UnitStats _unit;
+    private UnitEntity _unit;
     private void  Update()
     {
         InputToActivateAbility();
@@ -28,10 +32,12 @@ public class IUnitState : MonoBehaviour
     private IEnumerator AbilityObserve(ActiveAbility curAbility)
     {
         state = UnitState.USE_ABILITY;
-        _unitMove.GetMoveStrategy().DisableMove();
+        OnAbilityStart?.Invoke();
+        _unitMove.MoveStrategy.IsMoveable=false;
         yield return StartCoroutine(curAbility.AbilityByTime(_unit));
         state = UnitState.WAITING;
-        _unitMove.GetMoveStrategy().EnableMove();
+        OnAbilityEnd?.Invoke();
+        _unitMove.MoveStrategy.IsMoveable = true;
     }
     private void InputToActivateAbility()
     {
@@ -47,6 +53,6 @@ public class IUnitState : MonoBehaviour
     private void OnEnable()
     {
         _unitMove =GetComponent<movement>();
-        _unit = GetComponent<UnitStats>();
+        _unit = GetComponent<UnitEntity>();
     }
 }

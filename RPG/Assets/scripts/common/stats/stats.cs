@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace stats
@@ -25,17 +23,11 @@ namespace stats
         }
 
 
-        public Stats(int HP, int MP, int STR, int vitality, int intellect)
+        public Stats()
         {
-            this.HP = new Health(HP);
-            this.MP = new Mana(MP);
             Damage = new Damage();
             Amplifiers = new SecondaryStats();
             Attributes = new Attributes();
-            Attributes.intellect = intellect;
-            Attributes.STR = STR;
-            Attributes.vitality = vitality;
- 
         }
 
         public GeneratedDamage CalculateDamage()
@@ -46,14 +38,10 @@ namespace stats
         }
         public void AddAttackEffects(AttackStats attackStats)
         {
-           Amplifiers.AttackSpeedAmp += attackStats.AttackSpeedAmp;
-           Amplifiers.SpeedAmp += attackStats.SpeedAmp;
            Amplifiers.AttackSpeedAmp += attackStats.DamageAmp;
         }
         public void DistractAttackEffects(AttackStats attackStats)
         {
-            Amplifiers.AttackSpeedAmp -= attackStats.AttackSpeedAmp;
-            Amplifiers.SpeedAmp -= attackStats.SpeedAmp;
             Amplifiers.AttackSpeedAmp -= attackStats.DamageAmp;
         }
 

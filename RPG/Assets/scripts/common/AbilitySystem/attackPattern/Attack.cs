@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,9 +8,9 @@ public abstract class Attack
     public AttackStats Property=new AttackStats();
     public Shift Shift=new Shift();
     /// </переменные_отвечающие_за_характеристики>
-    public abstract void StartAttack();
+    protected abstract void StartAttack();
 
-    public virtual IEnumerator AttackByTime(UnitStats unit)
+    public  IEnumerator AttackByTime(UnitEntity unit)
     {
         Shift.SetStartTransform(unit.transform);
         unit.Improved.AddAttackEffects(Property);
@@ -20,8 +19,6 @@ public abstract class Attack
 
         while (!Property.Duration.IsReady)
         {
-            // Должно учитывать не только бонусы от атаки но и бонусы от бафов, от экипы  и тд
-            float finalSpeedAmp =Property.SpeedAmp;
             Property.Duration.TickTime(Time.deltaTime);
             if (!Shift.AlreadyUsed && Property.Duration.CurTime() > Shift.StartTime)
             {
@@ -30,12 +27,12 @@ public abstract class Attack
                 Shift.AlreadyUsed = true;
             }
 
-            TickTime(Time.deltaTime, finalSpeedAmp);
+            TickTime(Time.deltaTime*unit.Improved.Amplifiers.AttackSpeedAmp);
 
             if (!Shift.Duration.IsReady)
             {
-                Shift.Duration.TickTime(finalSpeedAmp * Time.deltaTime);
-                unit.transform.position =Shift.CurPosition();
+                Shift.Duration.TickTime(unit.Improved.Amplifiers.SpeedAmp * Time.deltaTime);
+                unit.transform.position += Shift.CurDeltaPosition();
             }
             yield return null;
         }
@@ -43,6 +40,6 @@ public abstract class Attack
         EndAttack();
         Shift.AlreadyUsed = false;
     }
-    public abstract void TickTime(float delta, float finalSpeedAmp = 1);
-    public abstract void EndAttack();
+    protected abstract void TickTime(float delta);
+    protected abstract void EndAttack();
 }

@@ -1,17 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-
-public delegate void UpdateMethods(float delta);
 [System.Serializable]
 public class SkillBook : MonoBehaviour
 {
     [SerializeField] private List<ActiveAbility> _ability = new List<ActiveAbility>();
 
-    public event UpdateMethods CountingDown;
+    public event Action<float> CountingDown;
     public void Update()
     {
+        //слишком замудрено. менять
         CountingDown?.Invoke(Time.deltaTime);
     }
     public ActiveAbility GetAbilityAt(int i) => _ability[i];
@@ -31,6 +30,6 @@ public class SkillBook : MonoBehaviour
     {
         _ability.Add(new ActiveAbility(1));
     }
-    private void StartCounting(UpdateMethods methods)=>CountingDown += methods;
-    private void StopCounting(UpdateMethods methods)=>CountingDown -= methods;
+    private void StartCounting(Action<float> methods)=>CountingDown += methods;
+    private void StopCounting(Action<float> methods)=>CountingDown -= methods;
 }

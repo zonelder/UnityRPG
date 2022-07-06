@@ -13,30 +13,33 @@ public enum RaycastState
 [System.Serializable]
 public class RaycastAttack : Attack
 {
+    public IHit ShootBehaviour;
+    // может все же стоит обьединить( так на пример баллистическое поведение будет кончатьс там где упал снаряд(а если не упадет?))
+    public IAim AimBehaviour;
+    [SerializeField] private float weaponRange = 100;
+
     private RaycastState rState;
-    public GameObject HitEffect;
-    private Camera Cam;
-    private GameObject weapon;
-    private LineRenderer laserLine;
+    private Camera _camera;
+    private Transform _weaponTransform;
+    [SerializeField] private LineRenderer laserLine;
     private Cooldown lineRenderTime = new Cooldown(0.4f);
     [SerializeField] private float timeToAim=0.0f;
     [SerializeField] private float timeToShoot=0.4f;
-    [SerializeField] private float weaponRange = 100;
+
     public RaycastAttack(GameObject user)
     {
-        weapon = user.transform.Find("weapon").gameObject;
-        Cam = user.transform.Find("playerCam").gameObject.GetComponent<Camera>(); ;
-        laserLine=weapon.GetComponent<LineRenderer>();
+        _weaponTransform = user.transform.Find("weapon").transform;
+        _camera = user.transform.Find("playerCam").gameObject.GetComponent<Camera>(); ;
+        laserLine= _weaponTransform.GetComponent<LineRenderer>();
         laserLine.startWidth = 0.02f;
         laserLine.endWidth = 0.02f;
-
     }
-    public override void StartAttack()
+    protected sealed override void StartAttack()
     {
         laserLine.positionCount = 2;
         rState = RaycastState.BEFORE_AIMING;
     }
-    public override void TickTime(float delta,float SpeedAmp=1)
+    protected sealed override void TickTime(float delta)
     {
         if(Property.Duration.CurTime()>timeToAim && rState==RaycastState.BEFORE_AIMING)
         {
@@ -55,7 +58,7 @@ public class RaycastAttack : Attack
         }
         if (!lineRenderTime.IsReady)
         {
-            lineRenderTime.TickTime(Time.deltaTime);
+            lineRenderTime.TickTime(delta);
         }
         else
         {
@@ -65,60 +68,26 @@ public class RaycastAttack : Attack
     }
     private void Aim()
     {
-        Vector3 rayOrigin = Cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
-
-        RaycastHit hit;
-        Vector3 EndPoint = Vector3.zero;
-        laserLine.SetPosition(0, weapon.transform.position);
-        if (Physics.Raycast(rayOrigin, Cam.transform.forward, out hit, weaponRange))
+        Vector3? hitPoint = AimBehaviour?.Execute(_camera, weaponRange);
+        if(hitPoint.HasValue)
         {
-            EndPoint = hit.point;
+            // Локику отображений целесообразно тоже куда то убрать(где то надо метить область где-то показывать трек)
+            laserLine.positionCount = 2;
+            laserLine.SetPosition(0, _weaponTransform.position);
+            laserLine.SetPosition(1, hitPoint.Value);
+            laserLine.enabled = true;
         }
-        else
-        {
-            EndPoint = rayOrigin + (Cam.transform.forward * weaponRange);
-        }
-
-        laserLine.SetPosition(1, EndPoint);
-        laserLine.enabled = true;
-    }
-    private void OnAttack(GameObject beaten)
-    {
-        HittableEntity enemy = beaten.GetComponent<HittableEntity>();
-        enemy?.HitWillDone(weapon.transform.parent.gameObject.GetComponent<UnitStats>());
     }
     private void Shoot()
     {
+        Vector3? hitPoint = AimBehaviour?.Execute(_camera, weaponRange);
 
-        Vector3 rayOrigin = Cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
-
-        RaycastHit hit;
-        Vector3 EndPoint = Vector3.zero;
-        laserLine.SetPosition(0, weapon.transform.position);
-        if (Physics.Raycast(rayOrigin, Cam.transform.forward, out hit, weaponRange))
-        {
-            EndPoint = hit.point;
-        }
-        else
-        {
-            EndPoint = rayOrigin + (Cam.transform.forward * weaponRange);
-        }
-
-        laserLine.SetPosition(1, EndPoint);
-        laserLine.enabled = true;
-
-        //OnHit.Execute();
-        AttackBehaviour.BlowUp(EndPoint, 5, OnAttack);
-
-        if (HitEffect != null)
-        {
-            GameObject curEffect = MonoBehaviour.Instantiate(HitEffect, laserLine.GetPosition(1), Cam.transform.rotation);//запустили эфект который проигрывается при уничтожении обьекта(уничтожить потом его тоже надо)
-            MonoBehaviour.Destroy(curEffect, 3.9f);
-        }
+        if(hitPoint.HasValue)
+        ShootBehaviour?.Execute(hitPoint.Value, _weaponTransform.parent.gameObject.GetComponent<UnitEntity>());
 
         rState = RaycastState.AFTER_SHOOT;
     }
-    public override void EndAttack()
+    protected sealed override void EndAttack()
     {
         laserLine.positionCount = 0;
     }

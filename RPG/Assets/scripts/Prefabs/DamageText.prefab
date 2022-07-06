@@ -114,5 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81392215e0dbfee44be7e10a9711841d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
+  _camera: {fileID: 0}
   targetUnit: {fileID: 0}
+  _floatingText: {fileID: 1160200692781092563}

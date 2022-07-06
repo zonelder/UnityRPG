@@ -13,9 +13,9 @@ public class InventoryExpansion : ScriptableItem
         base.IsRemoveWhenUsed = true;
     }
 
-    public override void Use(GameObject Unit)
+    public override void Use(UnitEntity unit)
     {
-        Unit.GetComponent<Inventory>().AddCells(addingCells);
+        unit.GetComponent<Inventory>().AddCells(addingCells);
     }
 
     public override bool Equals(Object other)

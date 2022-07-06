@@ -4,22 +4,26 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public  Sheath Sheath;
+    [SerializeField] private UnitEntity _unit;
+    [SerializeField] private Collider _hitBox;
+    [SerializeField] private MeshRenderer _mesh;
 
-    [SerializeField] private UnitStats _unit;
-
-    public Collider hitBox;
-    private MeshFilter mesh;
-    public Collider GetHitBox() => hitBox;
-    public  void SetHitBox(Collider NewHitBox) => hitBox = NewHitBox;
+    public UnitEntity Carrier => _unit;
+    public Collider GetHitBox() => _hitBox;
+    public void SetHitBox(Collider NewHitBox) => _hitBox = NewHitBox;
     public void ActivateHitBox()
     {
-        gameObject.SetActive(true);
-        hitBox.enabled = true;
+        _hitBox.enabled = true;
+        _mesh.enabled = true;
     }
     public void DeactivateHitBox()
     {
-        gameObject.SetActive(false);
-        hitBox.enabled = false;
+        _hitBox.enabled = false;
+        _mesh.enabled = false;
+    }
+
+    public Transform Transform
+    {
+        get;
     }
 }

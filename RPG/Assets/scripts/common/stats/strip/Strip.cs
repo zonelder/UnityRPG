@@ -65,15 +65,19 @@ public class Strip : AbstractStrip
           _current -= distracted;
         if (_current <= 0)
         {
-            _current = 0;
-            if (!atrophyWork)
-            {
-                atrophyWork = true;
-                OnStripOver?.Invoke();
-            }
-            
+            SetEmpty();
+        }
+    }
+    public void SetEmpty()
+    {
+        _current = 0;
+        if (!atrophyWork)
+        {
+            atrophyWork = true;
+            OnStripOver?.Invoke();
         }
     }
 
+    public float RemainingPercent =>_current / Max();
     public float Current() => _current;
 }

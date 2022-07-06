@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public delegate void levelEvent();
 [System.Serializable]
 public class Level
 {
+    public event levelEvent OnLevelUp;
     private const float nextLvlAmp = 3;
-    [SerializeField]
-    private  int lvl;
+    [SerializeField] private  int lvl;
     private float expToUp;
     private float curExp;
-    [SerializeField]
-    private float expForDeath;
+    [SerializeField] private float expForDeath;
 
     public Level()
     {
@@ -33,6 +34,9 @@ public class Level
         curExp = curExp - expToUp;
         expToUp *= nextLvlAmp;
         expForDeath += nextLvlAmp * 10;
+        OnLevelUp?.Invoke();
+        if (isEnouth)
+            lvlUp();
     }
     public int level() => lvl;
     public float RequiredExp() => expToUp;
@@ -41,6 +45,8 @@ public class Level
     public void CatchExpirience(float exp)
     {
         curExp += exp;
+        if (isEnouth)
+            lvlUp();
     }
-    public bool isEnouth() => curExp >= expToUp;
+    public bool isEnouth => curExp >= expToUp;
 }

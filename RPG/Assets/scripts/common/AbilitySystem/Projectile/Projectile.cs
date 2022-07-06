@@ -4,95 +4,50 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    // <пачка булевых переменных определяющая поведение обьекта>
-   // может быть и больше поэтому cтоиn задумать о вынесении их в отдельный класс(шаблон state machine)
-    [SerializeField] public  bool isBase = false;//надо зактырть
-    [SerializeField] private bool createCopiesOnDestroy = false;
-    [SerializeField] private bool explodeWhenDestory = true;
-    private bool actionDone = false;
-    //</пачка булевых переменных определяющая поведение обьекта>
+    public IDestroyable DestroyBehaviour;
+    public ITouchable TouchBehavoiur;
+    public IMoveable MoveBehaviour;
+    public Cooldown DelayBfDestroy = new Cooldown(3.0f);
 
-    public UnitStats User;//надо закрыть
-    private Cooldown delayBfDestroy = new Cooldown(3.0f);
-    [SerializeField] private GameObject destroyEffect;
-    [SerializeField] private Shift _moveTrajectory;
-    private float radius = 5.0f;
-   
-     public void Awake()
+    private UnitEntity _user;
+    public  void Create(Transform createPoint,UnitEntity user)
     {
-        actionDone = false;
-        delayBfDestroy.StartСountdown();
+        GameObject curProjectile = MonoBehaviour.Instantiate(gameObject, createPoint.position, createPoint.rotation);
+
+        curProjectile.GetComponent<Projectile>().DestroyBehaviour =DestroyBehaviour;
+        curProjectile.GetComponent<Projectile>().TouchBehavoiur = TouchBehavoiur;
+        curProjectile.GetComponent<Projectile>().MoveBehaviour = MoveBehaviour;
+
+        curProjectile.GetComponent<Projectile>().SetUser(user);
     }
-    public void SettingTrajectory(Transform unitTransform)
+    public void SetUser(UnitEntity user)
     {
-        // broken
-        _moveTrajectory.Duration.SetCooldown(delayBfDestroy.GetCooldown());
-        _moveTrajectory.Duration.StartСountdown();
-        _moveTrajectory.SetStartTransform(unitTransform);
+        _user = user;
+    }
+    public void Start()
+    {
+        DelayBfDestroy.StartСountdown();
+        MoveBehaviour.Execute(this,transform, _user);
     }
     public void Update()
     {
-        if (!isBase)
+        if (!DelayBfDestroy.IsReady)
         {
-            if (!delayBfDestroy.IsReady)
-            {
-                delayBfDestroy.TickTime(Time.deltaTime);
-                onFly();
-            }
-            if (delayBfDestroy.IsReady && !actionDone)
-            {
-                // если таймер уже отсчитал и готов быть уничтожен
-                OnEndLiveTime();
-                actionDone = true;
-            }
+            DelayBfDestroy.TickTime(Time.deltaTime);
         }
-    }
-    public void OnTouch(GameObject tangentSurface)
-    {
-        Debug.Log(gameObject.name + " Touch "+tangentSurface.name);
-        OnAttackWhenTouch(tangentSurface);
-    }
-    public void OnAttackWhenDestroy(GameObject beaten)
-    {
-        HittableEntity beatenEntity = beaten.GetComponent<HittableEntity>();
-        beatenEntity?.HitWillDone(User);
-
-    }
-    public void OnAttackWhenTouch(GameObject obj)
-    {
-        HittableEntity beatenEntity = obj.GetComponent<HittableEntity>();
-        beatenEntity?.HitWillDone(User);
-    }
-    public void OnEndLiveTime()
-    {
-        if(explodeWhenDestory)
-            AttackBehaviour.BlowUp(transform.position, radius, OnAttackWhenDestroy);
-
-        if (createCopiesOnDestroy)
-            AttackBehaviour.Create(transform.position, transform.rotation, gameObject, 3);
-        // <base module for projectile>
-        if (destroyEffect != null)
+        if (DelayBfDestroy.IsReady)
         {
-            // запустили эфект который проигрывается при уничтожении обьекта(уничтожить потом его тоже надо)
-
-            GameObject curEffect = Instantiate(destroyEffect, transform.position, transform.rotation);
-            Destroy(curEffect, 3.9f);
+            // если таймер уже отсчитал и  обьект готов быть уничтожен
+            EndLiveTime();
         }
+    } 
+    private void EndLiveTime()
+    {
+        DestroyBehaviour?.Execute(transform.position, _user);
         Destroy(gameObject);
-        // </base module for projectile>
-    }
-    private void onFly()
-    {
-        _moveTrajectory.Duration.TickTime(Time.deltaTime);
-        transform.position = _moveTrajectory.CurPosition();
     }
     private void OnCollisionEnter(Collision coll)
     {
-        OnTouch(coll.gameObject);
+        TouchBehavoiur.Execute(coll.gameObject, _user);
     }
-
-    public GameObject GetDestroyEffect() => destroyEffect;
-    public void StopCopy() => createCopiesOnDestroy = false;
-    public void SwitchBase() => isBase = !isBase;
-
 }

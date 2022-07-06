@@ -1,10 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(UnitEntity))]
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private GameObject carrier;
+    private UnitEntity _carrier;
 
     private readonly List<Cell> _cells = new List<Cell>();
     [SerializeField] private int _inventorySize = 10;
@@ -85,7 +85,7 @@ public class Inventory : MonoBehaviour
     }
     public void UseItemAt(int i)
     {
-        _cells[i].Item.Use(carrier);
+        _cells[i].Item.Use(_carrier);
         if (_cells[i].Item.RemoveAfterUse())
             RemoveItemAt(i,1);
     }
@@ -109,6 +109,11 @@ public class Inventory : MonoBehaviour
             }
 
         return index;
+    }
+
+    private void Start()
+    {
+        _carrier = GetComponent<UnitEntity>();
     }
 
 }

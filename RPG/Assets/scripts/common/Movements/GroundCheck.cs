@@ -5,39 +5,10 @@ using System.Linq;
 [RequireComponent(typeof(Collider))]
 public class GroundCheck : MonoBehaviour
 {
-    private readonly List<Collider> GroundColliders = new List<Collider>();
-    private Collider _myCollider;
-
+    // this check based on raycasting around space iin meaning to find any closed enouthh collider, so it can create some bugs in a future 
     public bool Check
     {
-        get => GroundColliders.Count > 0;
+        // check there are any collider(exept users collider) that too close to users collider
+        get => Physics.OverlapCapsule(transform.position- Vector3.up*0.55f, transform.position + Vector3.up * 0.5f,0.55f).Count<Collider>()>1;
     }
-    private void Start()
-    {
-        _myCollider = GetComponent<Collider>();
-    }
-    private void AddUnique(Collider newCollider)
-    {
-        if (!GroundColliders.Contains(newCollider))
-            GroundColliders.Add(newCollider);
-    }
-    private void Remove(Collider removedCollider)
-    {
-        if (GroundColliders.Contains(removedCollider))
-            GroundColliders.Remove(removedCollider);
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        AddUnique(collision.collider);
-    }
-    private void OnCollisionStay(Collision collision)
-    {
-        AddUnique(collision.collider);
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        Remove(collision.collider);
-    }
-
 }

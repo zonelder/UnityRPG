@@ -66,7 +66,6 @@ public struct Curve3
                           AnimationCurve.Constant(timeStart, timeEnd, value),
                           AnimationCurve.Constant(timeStart, timeEnd, value));
     }
-
     private bool IsKeyTimeEqual(int index) => x[index].time == y[index].time && y[index].time == z[index].time;
     private bool IsLengthEqual() => x.length == y.length && y.length == z.length;
 }

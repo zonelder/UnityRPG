@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class WalkMove : UnitMove
 {
-    private bool _canMove=true;
-    public override event MoveMethods OnMove;
-    public override void DisableMove() => _canMove = false;
-    public override void EnableMove() => _canMove = true;
-    public override bool IsMoveable => _canMove;
-    public override  void Move(Vector3 speedVector,Rigidbody unitRigit)
+    public override event InfluenceMethods ChangeMove;
+    public override event OnMoveMethod OnMove;
+    public override event OnMoveMethod OnStop;
+    public override  void Execute(Vector3 speedVector,Transform unitTransform)
     {
-        if (speedVector == Vector3.zero)
+        if(IsMoveable)
         {
-            return;
-        }
-        OnMove?.Invoke(ref speedVector);
-        unitRigit.velocity = speedVector;
+            if (speedVector == Vector3.zero)
+            {
+                OnStop?.Invoke();
+                return;
+            }
+            ChangeMove?.Invoke(ref speedVector);
+            unitTransform.position += speedVector*Time.fixedDeltaTime;
+            OnMove?.Invoke();
 
+        }
     }
 }

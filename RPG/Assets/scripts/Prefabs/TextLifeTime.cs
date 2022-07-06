@@ -1,23 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TextLifeTime : MonoBehaviour
 {
-   public  GameObject _camera;
+   public Camera _camera;
    public GameObject targetUnit;
-   private Vector3 offSet;
+   [SerializeField] private Text _floatingText;
+   private Vector3 _offSet ;
 
 
     public void SetTextCarrier(GameObject target,GameObject camera)
     {
         targetUnit = target;
-        _camera = camera;
+        _camera = camera.GetComponent<Camera>();
+        
+        _offSet = -1.5f * _camera.transform.right + 0.7f * _camera.transform.up;
     }
-    void Update()
+    public void SetTextCarrier(GameObject target, Camera camera)
     {
-        offSet = -2 * _camera.transform.right - 0.7f * _camera.transform.up;
+        targetUnit = target;
+        _camera = camera;
+
+        _offSet = -1.5f * _camera.transform.right + 0.7f * _camera.transform.up;
+    }
+
+    public void SetDamageValue(float value)
+    {
+        _floatingText.text = ((int)value).ToString();
+    }
+    private void Update()
+    {
         gameObject.transform.rotation = _camera.transform.rotation;
-        gameObject.transform.position = targetUnit.transform.position + offSet;
+        gameObject.transform.localPosition = _camera.transform.rotation * _offSet;
+        gameObject.transform.localScale = 0.003f * Vector3.Distance(_camera.transform.position, gameObject.transform.position) * Vector3.one;
     }
 }

@@ -5,23 +5,40 @@ using UnityEngine;
 public class MeleeAttack : Attack
 {
     private Weapon _weapon;
+    public Shift _weaponTrajectory;
     public MeleeAttack(GameObject user)
     {
-        _weapon = user.transform.Find("weapon").gameObject.GetComponent<Weapon>();
+        _weapon = user.transform.Find("weapon").GetComponent<Weapon>();
+        _weaponTrajectory = new Shift();
+        //_weaponTrajectory.trajectory.MoveKey(1,1,Vector3.forward);
     }
 
-    public override void StartAttack()
+    protected sealed override void StartAttack()
     {
         _weapon.ActivateHitBox();
-        _weapon.Sheath.PullWeapon();
+        _weaponTrajectory.SetStartTransform(_weapon.transform);
     }
-    public override void TickTime(float delta,float speedAmp=1)
+    protected sealed override void TickTime(float delta)
     {
+     /*
+     /// это все ужастно и нечитабельно. тут уже достаточно высокий уровень абстракции. должно быть лучше
+        if (!_weaponTrajectory.AlreadyUsed && Property.Duration.CurTime() >_weaponTrajectory.StartTime)
+        {
+            // В случае если  еще не юзалос перемещение то начинаем перемещать. 
+            _weaponTrajectory.Duration.StartСountdown();
+            _weaponTrajectory.AlreadyUsed = true;
+        }
 
+        if (!_weaponTrajectory.Duration.IsReady)
+        {
+            
+            _weaponTrajectory.Duration.TickTime(Time.deltaTime);
+            _weapon.transform.position +=_weaponTrajectory.CurDeltaPosition();
+        }
+     */
     }
-    public override void EndAttack()
+    protected sealed override void EndAttack()
     {
         _weapon.DeactivateHitBox();
-        _weapon.Sheath.PlaceWeapon();  
     }
 }

@@ -2,28 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitDummy : UnitNIP
+[RequireComponent(typeof(UnitEntity))]
+public class UnitDummy : MonoBehaviour
 {
     public bool reviveAtOnce = true;
-    public UnitDummy():base(700, 200, 0, 0, 0)
+    private UnitEntity _dummy;
+    private void Awake()
     {
-
-        base.Exp.SetDieExpirience(200);
-        StartExistence();
-
+        _dummy = GetComponent<UnitEntity>();
     }
-
     private  void Update()
     {
-        if (state== LifeStates.DEAD)
+        if (!_dummy.IsAlive)
         {
-            Debug.Log("dummy has been killed");
             if(reviveAtOnce)
             {
-                state = LifeStates.STABLE;
-                Improved.HP.Refresh();
-                                     
-                Improved.MP.Refresh();            
+               _dummy.Revive();
             }
 
         }

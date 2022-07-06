@@ -1,12 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-
+using System;
+public delegate void ShiftMethods();
 [System.Serializable]
 public class Shift
 {
-
+    public event Action OnShifting;
     [HideInInspector] public bool AlreadyUsed=false;
     public Cooldown Duration;
     private float _startTime=0;
@@ -17,6 +16,7 @@ public class Shift
     // Позиция и направление, в котором началось перемещение
     public void SetStartTime(float time) { _startTime = time; }
     public float StartTime=>_startTime;
+
     public void SetStartTransform(Transform curUnitTransform)
     {
         _startTransform = new Basis(curUnitTransform);
@@ -28,6 +28,10 @@ public class Shift
     public Vector3 CurPosition()
     {
         return PositionAt(Duration.CurTime()/ Duration.GetCooldown());
+    }
+    public Vector3 CurDeltaPosition()
+    {
+        return CurPosition() - PositionAt((Duration.CurTime() - Time.deltaTime) / Duration.GetCooldown());
     }
     public Vector3 PositionAt(float time)
     {
@@ -52,12 +56,21 @@ public class Shift
         return trajectory.Length;
     }
 
-
     public Shift()
     {
         _scale = Vector3.one;
         trajectory = Curve3.Constant(0, 1, 0);
         Duration = new Cooldown(1);
     }
-
+    //эта корутина работает плохо)
+    public IEnumerator ShiftByTime(GameObject unit)
+    {
+        Duration.StartСountdown();
+        while (!Duration.IsReady)
+        {
+            OnShifting?.Invoke();
+            unit.transform.position += CurDeltaPosition();
+            yield return null;
+        }
+    }
 }

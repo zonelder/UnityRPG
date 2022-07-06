@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void MoveMethods(ref Vector3 velocity);
+public delegate void InfluenceMethods(ref Vector3 velocity);
+public delegate void OnMoveMethod();
+
 public abstract class UnitMove
 {
-    public abstract  event MoveMethods OnMove;
-    public abstract void DisableMove();
-    public abstract void EnableMove();
-    public abstract bool IsMoveable { get; }
-    public abstract void Move(Vector3 direction, Rigidbody unitRigit);
+    public abstract event InfluenceMethods ChangeMove;
+    public abstract event OnMoveMethod OnMove;
+    public abstract event OnMoveMethod OnStop;
+    public bool IsMoveable { get; set; } = true;
+    public abstract void Execute(Vector3 direction, Transform unitTransform);
 }

@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Damage
 {
-    private float _min;
-    private float _max;
-    private float _critChance;
+    [SerializeField] private float _min;
+    [SerializeField] private float _max;
+    [SerializeField] private float _critChance;
     public float Min
     {
         get => _min;

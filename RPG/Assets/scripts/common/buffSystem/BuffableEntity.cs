@@ -39,6 +39,7 @@ public class BuffableEntity : MonoBehaviour
             _buffs[i].Tick(Time.deltaTime);
         }
     }
+    // Лушче сказать что баф кончается и информирует всех кого надо о том что именно он кончился
     private void RemoveFirstFinished()
     {
         for(int i=0;i<_buffs.Count;++i)

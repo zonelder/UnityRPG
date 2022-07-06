@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public delegate void TimerMethods(UpdateMethods methods);
 [System.Serializable]
 public class Cooldown
 {
     [SerializeField] private float _cooldownTime;
     private float _remainingTime;
 
-    public event TimerMethods OnEndCountDown;
-    public event TimerMethods OnStartCountDown;
+    public event  Action<Action<float>> OnEndCountDown;
+    public event  Action<Action<float>> OnStartCountDown;
     public Cooldown(float cooldownTime)
     {
         _cooldownTime = cooldownTime;
